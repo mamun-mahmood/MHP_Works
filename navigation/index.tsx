@@ -11,7 +11,7 @@ import {
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { Octicons, MaterialCommunityIcons ,MaterialIcons,FontAwesome5} from "@expo/vector-icons";
-import { View } from "react-native";
+import { Image, View } from "react-native";
 import { ColorSchemeName } from "react-native";
 import Colors from "../constants/Colors";
 
@@ -20,6 +20,10 @@ import { RootStackParamList } from "../types";
 import MainTabNavigator from "./MainTabNavigator";
 import LinkingConfiguration from "./LinkingConfiguration";
 import ChatRoomScreen from "../screens/ChatRoom";
+import styles from "../components/ChatListItem/style";
+import ContactScreen from "../screens/ContactScreen";
+import SignIn from "../screens/SignIn";
+import CameraScreen from "../CameraScreen";
 
 
 export default function Navigation({
@@ -86,7 +90,6 @@ function RootNavigator() {
         component={ChatRoomScreen}
         options={({ route }) => ({
           title: route.params.name,
-         
           headerRight: () => 
           <View style={{flexDirection:'row',width:100,justifyContent:'space-between',marginRight:10}}>
             <FontAwesome5 name="video" size={22} color={'white'} />
@@ -100,6 +103,21 @@ function RootNavigator() {
         name="NotFound"
         component={NotFoundScreen}
         options={{ title: "Oops!" }}
+      />
+       <Stack.Screen
+        name="Contacts"
+        component={ContactScreen}
+       
+      />
+       <Stack.Screen
+        name="SignIn"
+        component={SignIn}
+       
+      />
+        <Stack.Screen
+        name="Camera"
+        component={CameraScreen}
+       
       />
     </Stack.Navigator>
   );

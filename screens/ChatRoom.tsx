@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text ,FlatList,ImageBackground,KeyboardAvoidingView} from 'react-native'
+import { Text ,FlatList,ImageBackground,KeyboardAvoidingView,SafeAreaView } from 'react-native'
 
 import { useRoute } from '@react-navigation/core'
 import chatRoomData from '../data/Chats'

@@ -1,32 +1,100 @@
-import * as React from 'react';
-import { StyleSheet } from 'react-native';
+// Example to Make a Phone Call in React Native App
+// https://aboutreact.com/example-to-make-a-call-from-the-react-native-app/
 
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
+// import React in our code
+import React, { useState } from 'react';
 
-export default function TabTwoScreen() {
+// import all the components we are going to use
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
+
+// import Call API
+import call from 'react-native-phone-call';
+import Colors from '../constants/Colors';
+
+const TabTwoScreen = () => {
+  const [inputValue, setInputValue] = useState('9999999999');
+
+  const triggerCall = () => {
+    // Check for perfect 10 digit length
+    if (inputValue.length != 10) {
+      alert('Please insert correct contact number');
+      return;
+    }
+
+    const args = {
+      number: inputValue,
+      prompt: true,
+    };
+    // Make a call
+    call(args).catch(console.error);
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabTwoScreen.tsx" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
+        <Text style={styles.titleText}>
+         Make a Phone Call
+        </Text>
+        <Text style={styles.titleTextsmall}>Enter Conatct Number to Call</Text>
+        <TextInput
+          value={inputValue}
+          onChangeText={(inputValue) => setInputValue(inputValue)}
+          placeholder={'Enter Conatct Number to Call'}
+          keyboardType="numeric"
+          style={styles.textInput}
+        />
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.buttonStyle}
+          onPress={triggerCall}>
+          <Text style={styles.buttonTextStyle}>Make a Call</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
-}
+};
+
+export default TabTwoScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: 'white',
+    padding: 10,
+    textAlign: 'center',
   },
-  title: {
-    fontSize: 20,
+  titleText: {
+    fontSize: 22,
+    textAlign: 'center',
     fontWeight: 'bold',
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
+  titleTextsmall: {
+    marginVertical: 8,
+    fontSize: 16,
+  },
+  buttonStyle: {
+    justifyContent: 'center',
+    marginTop: 15,
+    padding: 10,
+    backgroundColor:Colors.light.tint,
+  },
+  buttonTextStyle: {
+    color: Colors.light.background,
+  
+    textAlign: 'center',
+  },
+  textInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    width: '100%',
+    paddingHorizontal: 10,
   },
 });

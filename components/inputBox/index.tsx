@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Platform, Text } from "react-native";
-import { View ,TextInput,KeyboardAvoidingView,TouchableOpacity} from "react-native";
+import { View ,TextInput,KeyboardAvoidingView,TouchableOpacity,SafeAreaView } from "react-native";
 import styles from './style'
 import {MaterialCommunityIcons,
     FontAwesome5,Entypo,Fontisto,MaterialIcons} from '@expo/vector-icons'

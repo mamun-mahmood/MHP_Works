@@ -14,6 +14,8 @@ import ChatScreen from '../screens/ChatScreen';
 import TabTwoScreen from '../screens/TabTwoScreen';
 import { MainTabParamList, ChatScreeneParamList, TabTwoParamList } from '../types';
 import { Fontisto } from '@expo/vector-icons';
+import SignIn from '../screens/SignIn';
+import CameraScreen from '../CameraScreen';
 const MainTab = createMaterialTopTabNavigator<MainTabParamList>();
 
 export default function MainTabNavigator() {
@@ -37,7 +39,7 @@ export default function MainTabNavigator() {
 
       <MainTab.Screen
         name="Camera"
-        component={ChatScreen}
+        component={CameraScreen}
         options={{
           tabBarIcon: ({ color }) => <Fontisto name="camera" color={color} size={18} />,
              tabBarLabel:()=>null
@@ -50,14 +52,14 @@ export default function MainTabNavigator() {
    }}
       />
         <MainTab.Screen
-        name="Status"
+        name="Calls"
         component={TabTwoNavigator}
         options={{
  }}
       />
         <MainTab.Screen
-        name="Calls"
-        component={TabTwoNavigator}
+        name="Account"
+        component={SignIn}
         options={{
    }}
       />
@@ -95,7 +97,7 @@ function TabTwoNavigator() {
       <TabTwoStack.Screen
         name="TabTwoScreen"
         component={TabTwoScreen}
-        options={{ headerTitle: 'Tab Two Title' }}
+        options={{ headerTitle: 'Calls' }}
       />
     </TabTwoStack.Navigator>
   );
