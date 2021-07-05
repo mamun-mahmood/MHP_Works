@@ -24,8 +24,8 @@ const ContactListItem = (props: ContactListItemProps) => {
       <View style={styles.leftContainer}>
         <Image source={{ uri: user.ProfilePic }} style={styles.avatar} />
         <View style={styles.midContainer}>
-          <Text style={styles.username}>{user.firstName+" " + user.lastName}</Text>
-          <Text style={styles.status}>{user.privateKey}</Text>
+          <Text style={styles.username}>{user.name}</Text>
+          <Text style={styles.status}>{user.veroKey}</Text>
         </View>
       </View>
 

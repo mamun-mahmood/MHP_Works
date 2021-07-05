@@ -6,14 +6,36 @@ import { AntDesign } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export default function SignIn() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [User, setUser] = useState();
+  const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('@storage_Key', jsonValue)
+    } catch (e) {
+      // saving error
+    }
+  }
 
+  
+const getData = async () => {
+  try {
+    const jsonValue = await AsyncStorage.getItem('@storage_Key')
+  
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch(e) {
+    // error reading value
+  }
+}
   const signInHandler = () => {
+
+    
  axios.post(` https://api.megahoot.net/api/users/login`, {
         email: Email,
         password: Password,
@@ -23,8 +45,12 @@ export default function SignIn() {
         var decoded = jwt_decode(data.token);
       if(decoded){
 setUser(decoded.result)
+global.privateKey=decoded.result.privateKey
+global.name=decoded.result.firstName +" "+decoded.result.lastName
+storeData(decoded.result)
 
-console.log(decoded.result)
+
+
       } 
        
       // handle success
@@ -46,11 +72,11 @@ console.log(decoded.result)
     setIsLoggedIn(!isLoggedIn)
    };
 
-  
+
   return (
       <SafeAreaView ><View style={{ justifyContent: "center",
-    alignItems: "center",backgroundColor:!isLoggedIn?'#e8dcef':'white',height:'100%'}}>
-      {!isLoggedIn ? (
+    alignItems: "center",backgroundColor:!global.privateKey?'#e8dcef':'white',height:'100%'}}>
+      {!global.privateKey ? (
         <View
           style={{
             justifyContent: "center",
@@ -97,13 +123,13 @@ console.log(decoded.result)
       ) : (
           
         <View style={{flex:1,width:'100%'}}>
-            {User? <View style={{flexDirection:'row',padding:10,margin:10}} >
-                <Image source={{ uri: User.ProfilePic }} style={styles.avatar} />
+            {global.privateKey? <View style={{flexDirection:'row',padding:10,margin:10}} >
+                <Image source={{ uri: global.ProfilePic }} style={styles.avatar} />
                 <View style={styles.midContainer} >
-                    <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}><Text style={styles.username}>{User?`${User.firstName} ${User.lastName}`:null}</Text>
+                    <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}><Text style={styles.username}>{global.name?`${global.name}`:null}</Text>
                     <AntDesign name="edit" size={18} color="black" /></View>
                  
-         <Text style={styles.time}>{User.privateKey}</Text></View>
+         <Text style={styles.time}>{global.privateKey}</Text></View>
          <View style={{marginLeft:'auto',justifyContent:'center'}}>
              <TouchableWithoutFeedback onPress={logOut}>
                 <AntDesign name="logout" size={24} color={Colors.light.tint}/>   

@@ -12,10 +12,10 @@ export type ChatListItemProps = {
 const ChatListItem = (props: ChatListItemProps) => {
   const { chatRoom } = props;
   const navigation =useNavigation();
-  const user = chatRoom.users[1];
+  const user = chatRoom;
 
   const onClick =()=>{
-   navigation.navigate('ChatRoom',{id:chatRoom.id,name:user.name,imageUri:user.imageUri})
+   navigation.navigate('ChatRoom',{id:user.veroKey,name:user.name,imageUri:user.imageUri})
   }
   return (
     <TouchableWithoutFeedback onPress={onClick}> 
@@ -26,14 +26,14 @@ const ChatListItem = (props: ChatListItemProps) => {
         <View style={styles.midContainer}>
           <Text style={styles.username}>{user.name}</Text>
           <Text numberOfLines={1} style={styles.lastMessage}>
-            {chatRoom.lastMessage.content}
+            {chatRoom.veroKey}
           </Text>
         </View>
       </View>
 
       <Text style={styles.time}>
-
-{moment(chatRoom.lastMessage.createdAt).format('DD/MM/YYYY')}   
+"yesterday"
+{/* {moment(chatRoom.lastMessage.createdAt).format('DD/MM/YYYY')}    */}
           </Text>
     </View>
     

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, FlatList ,View} from "react-native";
+import { StyleSheet, FlatList ,View,Text} from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import ChatListItem from "../components/ChatListItem";
@@ -13,14 +13,25 @@ import { useEffect } from "react";
 import axios from 'axios';
 
 export default function ContactScreen() {
+  
   const [users,setUsers]=useState([]);
 
   useEffect(()=>{
               const fetUsers=async ()=>{
                 try{
-                   const userData= await axios.get('https://api.megahoot.net/api/users/')
-                  console.log(userData.data.data)
-                  setUsers(userData.data.data)
+                   const userData= await axios.post('https://api.megahoot.net/api/contact/contact-list/',{
+                     veroKey:global.privateKey,
+                     name:global.name
+                   })
+
+                   const contactParse = JSON.parse(userData.data.data.contact)
+                  //  contactParse.forEach((contact) => users.push(contact))
+               
+                   console.log(userData.data.data,users)
+                  setUsers(contactParse)
+                global.contacts=userData.data.data.contact
+                console.log(global.contacts,"8686")
+                 
                 } catch (e){
                   console.log(e)
                 }
@@ -32,7 +43,7 @@ export default function ContactScreen() {
       <FlatList style={{width:'100%'}}
         data={users}
         renderItem={({ item }) => <ContactListItem user={item} />}
-        keyExtractor={(item)=>item.id}
+        keyExtractor={(item)=>item.veroKey}
      />
   
   

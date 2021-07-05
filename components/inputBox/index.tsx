@@ -4,14 +4,16 @@ import { View ,TextInput,KeyboardAvoidingView,TouchableOpacity,SafeAreaView } fr
 import styles from './style'
 import {MaterialCommunityIcons,
     FontAwesome5,Entypo,Fontisto,MaterialIcons} from '@expo/vector-icons'
-const InputBox = () => {
+const InputBox = (props) => {
 
     const [message,setMessage]=useState('');
 const onMicroPhonePress=()=>{
 console.warn('MicroPhone Press')
 }
 const onSendPress=()=>{
-    console.warn('send Press')  
+    // console.warn('send Press')  
+    props.onMessageSend(message)
+    setMessage('')
 } 
 const onPress=()=>{
         if(!message){
@@ -37,7 +39,7 @@ onSendPress()
         </View>
         <TouchableOpacity onPress={onPress}><View style={styles.buttonContainer}>
             {!message?<MaterialCommunityIcons name="microphone" size={28} color="white" />
-       :   <MaterialIcons name="send" size={28} color="white" />
+       :   <MaterialIcons name="send" size={28} color="white"  />
     }
           </View></TouchableOpacity>
         

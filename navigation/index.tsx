@@ -10,7 +10,7 @@ import {
 } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import { Octicons, MaterialCommunityIcons ,MaterialIcons,FontAwesome5} from "@expo/vector-icons";
+import { Octicons, MaterialCommunityIcons ,MaterialIcons,FontAwesome5,AntDesign} from "@expo/vector-icons";
 import { Image, View } from "react-native";
 import { ColorSchemeName } from "react-native";
 import Colors from "../constants/Colors";
@@ -107,6 +107,16 @@ function RootNavigator() {
        <Stack.Screen
         name="Contacts"
         component={ContactScreen}
+        options={({ route }) => ({
+          title: "Contacts",
+          headerRight: () => 
+          <View style={{flexDirection:'row',marginRight:10}}>
+          
+            <AntDesign name="plus" size={28} color="white" />
+            
+
+          </View>,
+        })}
        
       />
        <Stack.Screen

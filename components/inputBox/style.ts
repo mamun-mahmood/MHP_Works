@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
   },
   buttonContainer: {
+  
     backgroundColor: Colors.light.tint,
     borderRadius: 50,
     width: 50,

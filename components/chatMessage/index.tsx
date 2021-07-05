@@ -1,19 +1,25 @@
 import moment from "moment";
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, View } from "react-native";
 import { Message } from "../../types";
 import styles from "./style";
 
-export type ChatMessageProps = {
-  message: Message;
-};
+import { useState } from 'react'
 
-const ChatMessage = (props: ChatMessageProps) => {
+// export type ChatMessageProps = {
+//   message: Message;
+// };
+
+const ChatMessage = (props) => {
+
+console.log(props.message,"sky")
   const { message } = props;
 
   const isMyMessage = () => {
-    return message.user.id === "u1";
+    return message.from ===global.privateKey;
   };
+
+  
   return (
     <View style={styles.container}>
       <View
@@ -26,9 +32,9 @@ const ChatMessage = (props: ChatMessageProps) => {
           },
         ]}
       >
-        {!isMyMessage() && <Text style={styles.name}>{message.user.name}</Text>}
-        <Text style={styles.message}>{message.content}</Text>
-        <Text style={styles.time}>{moment(message.createdAt).fromNow()}</Text>
+        {!isMyMessage() && <Text style={styles.name}>{message.message.userName}</Text>}
+        <Text style={styles.message}>{message.message.text}</Text>
+        <Text style={styles.time}>{moment(message.message.date).fromNow()}</Text>
       </View>
     </View>
   );
