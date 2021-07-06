@@ -1,38 +1,46 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Image,SafeAreaView } from "react-native";
+import { View, Text, TextInput, Button, Image,SafeAreaView,AsyncStorage } from "react-native";
 import styles from "../components/ContactListItem/style";
 import Colors from "../constants/Colors";
 import { AntDesign } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
+import { useFocusEffect } from "@react-navigation/native";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignIn() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [User, setUser] = useState();
-  const storeData = async (value) => {
+  const [myToken,setMyToken]=useState({});
+  
+  async function storeToken(user) {
     try {
-      const jsonValue = JSON.stringify(value)
-      await AsyncStorage.setItem('@storage_Key', jsonValue)
-    } catch (e) {
-      // saving error
+       await AsyncStorage.setItem("userData", JSON.stringify(user));
+    } catch (error) {
+      console.log("Something went wrong", error);
+    }
+  }
+  async function getToken() {
+    try {
+      let userData = await AsyncStorage.getItem("userData");
+      let data = JSON.parse(userData);
+     
+      setMyToken({privateKey:data.result.privateKey,name:data.result.name})
+      console.log(myToken.privateKey,"token by local");
+    } catch (error) {
+      console.log("Something went wrong", error);
     }
   }
 
-  
-const getData = async () => {
-  try {
-    const jsonValue = await AsyncStorage.getItem('@storage_Key')
-  
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
-  } catch(e) {
-    // error reading value
-  }
-}
+  useFocusEffect(
+    React.useCallback(() => {
+      getToken()
+     
+    }, [])
+  );
   const signInHandler = () => {
 
     
@@ -47,7 +55,7 @@ const getData = async () => {
 setUser(decoded.result)
 global.privateKey=decoded.result.privateKey
 global.name=decoded.result.firstName +" "+decoded.result.lastName
-storeData(decoded.result)
+storeToken(decoded)
 
 
 

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, FlatList,View,Text} from "react-native";
+import { StyleSheet, FlatList,View,Text,AsyncStorage} from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import ChatListItem from "../components/ChatListItem";
@@ -12,9 +12,23 @@ import { useEffect } from "react";
 import { useFocusEffect } from '@react-navigation/native';
 export default function ChatScreen() {
   const [users,setUsers]=useState([]);
+  const [myToken,setMyToken]=useState({});
+
+  async function getToken() {
+    try {
+      let userData = await AsyncStorage.getItem("userData");
+      let data = JSON.parse(userData);
+     
+      setMyToken({privateKey:data.result.privateKey,name:data.result.name})
+      console.log(myToken.privateKey,"token by local");
+    } catch (error) {
+      console.log("Something went wrong", error);
+    }
+  }
 
   useFocusEffect(
     React.useCallback(() => {
+      getToken()
       const fetUsers=async ()=>{
         try{
            const userData= await axios.post('https://api.megahoot.net/api/contact/contact-list/',{

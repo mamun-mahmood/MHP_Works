@@ -4,11 +4,14 @@ import { View ,TextInput,KeyboardAvoidingView,TouchableOpacity,SafeAreaView } fr
 import styles from './style'
 import {MaterialCommunityIcons,
     FontAwesome5,Entypo,Fontisto,MaterialIcons} from '@expo/vector-icons'
+    import EmojiSelector from 'react-native-emoji-selector'
 const InputBox = (props) => {
-
+  
     const [message,setMessage]=useState('');
+    const [showEmoji,setshowEmoji]=useState(false);
 const onMicroPhonePress=()=>{
 console.log('MicroPhone Press')
+props.microPhoneClicked()
 }
 const onSendPress=()=>{
     // console.warn('send Press')  
@@ -22,19 +25,28 @@ onMicroPhonePress()
 onSendPress()
         }
     }
+
+    const onPressCamera=()=>{
+      props.cameraPicker()
+    }
   return (
     <View style={styles.container}>
         <View style={styles.mainContainer}>
-            <FontAwesome5 name="laugh-beam" size={24} color="grey" />
            
+           {showEmoji? <View><EmojiSelector showTabs={false} 
+
+onEmojiSelected={emoji => { props.onMessageSend(emoji);setshowEmoji(false)}}
+/></View>: <TouchableOpacity onPress={()=>{setshowEmoji(true)}}><FontAwesome5 name="laugh-beam" size={24} color="grey"   /></TouchableOpacity>}
             <TextInput
             placeholder="Type a message"
              style={styles.textInput} multiline
             value={message}
             onChangeText={setMessage}
              />
-            <Entypo name="attachment" size={24} color="grey" style={styles.icons} />
-           {!message&& <Fontisto name="camera" size={24} color="grey" style={styles.icons} />
+             
+
+            <Entypo name="attachment" size={24} color="grey"  style={styles.icons} />
+           {!message&&    <TouchableOpacity onPress={onPressCamera}><Fontisto name="camera" size={24} color="grey" style={styles.icons} /></TouchableOpacity> 
           }
         </View>
         <TouchableOpacity onPress={onPress}><View style={styles.buttonContainer}>

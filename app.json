@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "megahoot-messanger",
-    "slug": "megahoot-messanger",
+    "name": "MegaHoot",
+    "slug": "MegaHoot",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -25,10 +25,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.messenger.megahoot"
     },
     "web": {
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/logo.png"
     }
   }
 }
