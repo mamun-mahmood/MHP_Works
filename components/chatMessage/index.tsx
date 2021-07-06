@@ -32,7 +32,8 @@ console.log(props.message,"sky")
           },
         ]}
       >
-        {!isMyMessage() && <Text style={styles.name}>{message.message.userName}</Text>}
+        {!isMyMessage() && <Text style={styles.name}>{message.userName}</Text>}
+        {isMyMessage() && <Text style={styles.name}>You</Text>}
         <Text style={styles.message}>{message.message.text}</Text>
         <Text style={styles.time}>{moment(message.message.date).fromNow()}</Text>
       </View>

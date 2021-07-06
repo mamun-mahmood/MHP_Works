@@ -11,7 +11,7 @@ import { useState } from 'react'
 
 const io = require('socket.io-client')
 
-const SOCKET_URI = "http://192.168.29.82:8002"
+const SOCKET_URI = "https://socketapi.megahoot.net/"
 var socket;
 
 const ChatRoomScreen =()=>{
@@ -30,7 +30,7 @@ const ChatRoomScreen =()=>{
   const onReconnection=()=> {
      if (user) {
       socket.emit('sign-in', user)
-       console.warn('Connection Established.', 'Reconnected!')
+       console.log('Connection Established.', 'Reconnected!')
      }
    }
  
@@ -67,7 +67,7 @@ const ChatRoomScreen =()=>{
    }
  
   const onClientDisconnected=()=> {
-    console.warn(
+    console.log(
        'Connection Lost from server please check your connection.',
        'Error!'
      )
@@ -113,7 +113,7 @@ const ChatRoomScreen =()=>{
 <View style={{justifyContent:'space-between',height:'100%'}}>
  
   <FlatList data={MChatMessage}
-renderItem={({ item }) => <ChatMessage message={item}   keyExtractor={(item)=>item.veroKey} />} inverted />
+renderItem={({ item }) => <ChatMessage message={item}   keyExtractor={(item)=>item.veroKey} />}  inverted contentContainerStyle={{ flexDirection: 'column-reverse' }} />
  
       <InputBox onMessageSend={createMessage} />
 </View>

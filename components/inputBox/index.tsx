@@ -8,7 +8,7 @@ const InputBox = (props) => {
 
     const [message,setMessage]=useState('');
 const onMicroPhonePress=()=>{
-console.warn('MicroPhone Press')
+console.log('MicroPhone Press')
 }
 const onSendPress=()=>{
     // console.warn('send Press')  

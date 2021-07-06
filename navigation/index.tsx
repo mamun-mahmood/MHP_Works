@@ -107,16 +107,7 @@ function RootNavigator() {
        <Stack.Screen
         name="Contacts"
         component={ContactScreen}
-        options={({ route }) => ({
-          title: "Contacts",
-          headerRight: () => 
-          <View style={{flexDirection:'row',marginRight:10}}>
-          
-            <AntDesign name="plus" size={28} color="white" />
-            
-
-          </View>,
-        })}
+     
        
       />
        <Stack.Screen
