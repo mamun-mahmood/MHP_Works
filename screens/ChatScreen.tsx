@@ -9,47 +9,57 @@ import InputBox from "../components/inputBox";
 import NewMessageButton from "../components/NewMessageButton";
 import { useState } from "react";
 import { useEffect } from "react";
+import * as SecureStore from 'expo-secure-store';
 import { useFocusEffect } from '@react-navigation/native';
 export default function ChatScreen() {
   const [users,setUsers]=useState([]);
   const [myToken,setMyToken]=useState({});
+  const fetUsers=async (name,privateKey)=>{
+   
+    console.log(myToken,name)
+    try{
+       const userData= await axios.post('https://api.megahoot.net/api/contact/contact-list/',{
+         veroKey:privateKey,
+         name:name
+       })
 
-  async function getToken() {
-    try {
-      let userData = await AsyncStorage.getItem("userData");
-      let data = JSON.parse(userData);
+       const contactParse = JSON.parse(userData.data.data.contact)
+      //  contactParse.forEach((contact) => users.push(contact))
+   
+       console.log(userData.data.data,users)
+      setUsers(contactParse)
+    // global.contacts=userData.data.data
+    // console.log(global.contacts)
      
-      setMyToken({privateKey:data.result.privateKey,name:data.result.name})
-      console.log(myToken.privateKey,"token by local");
-    } catch (error) {
-      console.log("Something went wrong", error);
+    } catch (e){
+      console.log(e)
     }
   }
+  const handleGetToken = async (key) => {
+  
+    const tokenFromPersistentState = await SecureStore.getItemAsync(
+     key,
+    );
+    if (tokenFromPersistentState) {
+      let data = JSON.parse(tokenFromPersistentState)
+      console.log(data.firstName)
+      let name=data.firstName+" "+data.lastName
+      let privateKey= data.privateKey
+     setMyToken(data)
+     global.privateKey=privateKey;
+     global.name=name;
+     fetUsers(name,privateKey);
+    }
+  };
 
   useFocusEffect(
-    React.useCallback(() => {
-      getToken()
-      const fetUsers=async ()=>{
-        try{
-           const userData= await axios.post('https://api.megahoot.net/api/contact/contact-list/',{
-             veroKey:global.privateKey,
-             name:global.name
-           })
-
-           const contactParse = JSON.parse(userData.data.data.contact)
-          //  contactParse.forEach((contact) => users.push(contact))
-       
-           console.log(userData.data.data,users)
-          setUsers(contactParse)
-        global.contacts=userData.data.data
-        console.log(global.contacts)
-         
-        } catch (e){
-          console.log(e)
-        }
-      }
-      fetUsers();
-    }, [global.privateKey])
+   React.useCallback(() => {
+      handleGetToken('userAuthToken')
+  
+  
+     
+     
+    }, [])
   );
 
   // useEffect(()=>{
@@ -79,7 +89,7 @@ export default function ChatScreen() {
   
   return (
     <View style={styles.container}>
-       {global.privateKey? <FlatList style={{width:'100%'}}
+       {myToken.privateKey? <FlatList style={{width:'100%'}}
         data={users}
         renderItem={({ item }) => <ChatListItem chatRoom={item} />}
         keyExtractor={(item)=>item.veroKey}

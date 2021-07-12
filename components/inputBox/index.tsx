@@ -9,10 +9,15 @@ const InputBox = (props) => {
   
     const [message,setMessage]=useState('');
     const [showEmoji,setshowEmoji]=useState(false);
-const onMicroPhonePress=()=>{
-console.log('MicroPhone Press')
-props.microPhoneClicked()
+const onMicroPhonePressIn=()=>{
+
+props.microPhoneClickedIn()
 }
+const onMicroPhonePressOut=()=>{
+  console.log('MicroPhone Press')
+  props.microPhoneClickedOut()
+  }
+
 const onSendPress=()=>{
     // console.warn('send Press')  
     props.onMessageSend(message)
@@ -20,7 +25,7 @@ const onSendPress=()=>{
 } 
 const onPress=()=>{
         if(!message){
-onMicroPhonePress()
+console.log('presed micro phone')
         }else{
 onSendPress()
         }
@@ -28,6 +33,10 @@ onSendPress()
 
     const onPressCamera=()=>{
       props.cameraPicker()
+    }
+
+    const onPressFile=()=>{
+      props.onPressFile()
     }
   return (
     <View style={styles.container}>
@@ -44,12 +53,17 @@ onEmojiSelected={emoji => { props.onMessageSend(emoji);setshowEmoji(false)}}
             onChangeText={setMessage}
              />
              
-
-            <Entypo name="attachment" size={24} color="grey"  style={styles.icons} />
-           {!message&&    <TouchableOpacity onPress={onPressCamera}><Fontisto name="camera" size={24} color="grey" style={styles.icons} /></TouchableOpacity> 
+             <TouchableOpacity 
+            onPress={onPressFile}>
+               <Entypo name="attachment" size={24} color="grey"  style={styles.icons} /></TouchableOpacity> 
+           
+           {!message&&   
+            <TouchableOpacity 
+            onPress={onPressCamera}>
+              <Fontisto name="camera" size={24} color="grey" style={styles.icons} /></TouchableOpacity> 
           }
         </View>
-        <TouchableOpacity onPress={onPress}><View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={onPress}  ><View style={styles.buttonContainer}>
             {!message?<MaterialCommunityIcons name="microphone" size={28} color="white" />
        :   <MaterialIcons name="send" size={28} color="white"  />
     }

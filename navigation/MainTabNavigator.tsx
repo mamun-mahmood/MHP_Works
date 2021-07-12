@@ -23,7 +23,7 @@ export default function MainTabNavigator() {
 
   return (
     <MainTab.Navigator
-      initialRouteName="Account"
+      initialRouteName="Chats"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].background,
       style:{
         backgroundColor:Colors[colorScheme].tint

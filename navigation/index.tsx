@@ -24,6 +24,8 @@ import styles from "../components/ChatListItem/style";
 import ContactScreen from "../screens/ContactScreen";
 import SignIn from "../screens/SignIn";
 import CameraScreen from "../CameraScreen";
+import NewMessageButton from "../components/NewMessageButton";
+import NewContactDot from "../components/NewMessageButton/newContactDot/newContactdot";
 
 
 export default function Navigation({
@@ -76,11 +78,12 @@ function RootNavigator() {
               }}
             >
               <Octicons name="search" size={22} color={"white"} />
-              <MaterialCommunityIcons
+              {/* <MaterialCommunityIcons
                 name="dots-vertical"
                 size={22}
                 color={"white"}
-              />
+              /> */}
+              <NewContactDot />
             </View>
           ),
         }}
@@ -92,6 +95,7 @@ function RootNavigator() {
           title: route.params.name,
           headerRight: () => 
           <View style={{flexDirection:'row',width:100,justifyContent:'space-between',marginRight:10}}>
+            
             <FontAwesome5 name="video" size={22} color={'white'} />
             <MaterialIcons name="call" size={22} color={'white'} />
              <MaterialCommunityIcons name="dots-vertical" size={22} color={'white'} />
