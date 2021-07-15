@@ -17,6 +17,10 @@ const onMicroPhonePressOut=()=>{
   console.log('MicroPhone Press')
   props.microPhoneClickedOut()
   }
+const startTyping=(data)=>{
+  setMessage(data)
+  props.onStartTyping()
+}
 
 const onSendPress=()=>{
     // console.warn('send Press')  
@@ -50,7 +54,9 @@ onEmojiSelected={emoji => { props.onMessageSend(emoji);setshowEmoji(false)}}
             placeholder="Type a message"
              style={styles.textInput} multiline
             value={message}
-            onChangeText={setMessage}
+            onChangeText={(e)=>{startTyping(e)}}
+          
+            
              />
              
              <TouchableOpacity 

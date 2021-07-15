@@ -10,16 +10,16 @@ import { Audio } from 'expo-av';
 import { useState } from 'react'
 import * as ImagePicker from 'expo-image-picker';
 import * as DocumentPicker from 'expo-document-picker';
-
+import * as SQLite from 'expo-sqlite'
+const db = SQLite.openDatabase('db.testDb')
 import * as SecureStore from 'expo-secure-store';
 import { useFocusEffect } from '@react-navigation/native'
-const io = require('socket.io-client');
-// const ss =  require('socket.io-stream');
-// const fs = require('fs');
-const SOCKET_URI = "https://socketapi.megahoot.net/"
-var socket;
+import styles from '../components/ChatListItem/style'
 
-const ChatRoomScreen =(prop)=>{
+import socket, { startSocket } from '../socket';
+
+const ChatRoomScreen =()=>{
+
   const route = useRoute();
   const [sound, setSound] = useState();
   const [userChatData,setUserChatData]=useState([{veroKey:route.params.id,name:route.params.name}])
@@ -28,29 +28,38 @@ const ChatRoomScreen =(prop)=>{
   const [MChatMessage,setMChatMessage]=useState([])
   const [image, setImage] = useState(null);
   const [recording, setRecording] = useState();
+  const [setDBchat, setsetDBchat] = useState();
+const [userTyping,setuserTyping]=useState(false)
 
-  // async function playSound() {
-  //   console.log('Loading Sound');
-  //   const { sound } = await Audio.Sound.createAsync(
-  //      require('../assets/hello.mp3')
-  //   );
-  //   setSound(sound);
-  //   }
+
+async function playSound() {
+  console.log('Loading Sound');
+  const { sound } = await Audio.Sound.createAsync(
+     require('../assets/hello.mp3')
+  );
+  setSound(sound);
+
+  console.log('Playing Sound');
+  await sound.playAsync(); }
+  
+
+  
 
   const handleDeleteToken = async (key,messageData) => {
     console.log(messageData)
     await SecureStore.deleteItemAsync(key).then;
-    handleSetChat(key,messageData)
+   
   };
   const handleSetToken = async (key,value) => {
     SecureStore.setItemAsync(key, value).then;
-   console.log(value)
+  //  console.log(value)
   };
   const handleSetChat = async (key,value) => {
+    await SecureStore.deleteItemAsync(key).then
     let chat=MChatMessage;
     chat.push(value)
     let data = JSON.stringify(chat)
-    console.log(data,"sky this is me")
+ console.log(data,"sky this is me")
     SecureStore.setItemAsync(key, data).then;
    console.log(data)
   };
@@ -61,11 +70,11 @@ const ChatRoomScreen =(prop)=>{
      key,
     );
     if (tokenFromPersistentState) {
-      console.log(tokenFromPersistentState)
-     let mydata = JSON.parse(tokenFromPersistentState)
+      // console.log(tokenFromPersistentState)
+     let mydata = JSON.parse(tokenFromPersistentState);
      
     
-     console.log(mydata)
+    //  console.log(mydata)
     
    
     (mydata? setMChatMessage(mydata): console.log('no sky'))
@@ -88,8 +97,10 @@ const ChatRoomScreen =(prop)=>{
     setUser({name:name,id:privateKey})
     global.name=name;
     global.id=privateKey
-    initSocketConnection({name:name, id:privateKey})
-    handleGetChat(route.params.id)
+   
+    //  handleGetChat(route.params.id)
+  
+    // fetchData(privateKey)
     }
   };
   const handleGetToken = async (key) => {
@@ -105,7 +116,7 @@ const ChatRoomScreen =(prop)=>{
       let privateKey= data.privateKey
     // setUser({name:name,id:privateKey})
     // initSocketConnection({name:name, id:privateKey})
-    handleGetChat(route.params.id)
+    // handleGetChat(route.params.id)
     }
   };
  
@@ -118,10 +129,7 @@ const ChatRoomScreen =(prop)=>{
  
  
   const onReconnection=()=> {
-     if (user) {
-      socket.emit('sign-in', user)
-       console.log('Connection Established.', 'Reconnected!')
-     }
+    console.log('Connection Established.', 'Reconnected!')
    }
  
  const onMessageRecieved=(message)=> {
@@ -130,16 +138,28 @@ const ChatRoomScreen =(prop)=>{
      let targetId
 
     //  setMChatMessage(old=>[...old,messageData])
- 
-     if (message.from ===global.id) {
+ if(message.to==global.id && message.from==route.params.id){
+    if (message.from ===global.id) {
        messageData.position = 'right'
        targetId = message.to
+       
       // setMChatMessage(old=>[...old,messageData])
      } else {
+      
        messageData.position = 'left'
        targetId = message.from
-       setMChatMessage(old=>[...old,messageData])
-       handleSetChat(route.params.id,messageData)
+       if(messageData.message.type=="typing"){
+setuserTyping(true)
+       }else{
+         setuserTyping(false)
+          setMChatMessage(old=>[...old,messageData])
+          // newItem(messageData)
+          // handleSetChat(route.params.id,messageData)
+          playSound()
+       }
+ }
+    
+      
       
       //  playSound()
      }
@@ -164,14 +184,13 @@ const ChatRoomScreen =(prop)=>{
        'Connection Lost from server please check your connection.',
        'Error!'
      )
-     
+   
+    startSocket()
+     setupSocketListeners()
    }
  
-  const initSocketConnection=(data)=> {
- 
-   socket = io(SOCKET_URI)
-     console.log(data)
-     socket.emit('sign-in', data)
+  const initSocketConnection=()=> {
+    // startSocket()
      setupSocketListeners()
    }
  const createMessage=(text)=> {
@@ -183,17 +202,36 @@ const ChatRoomScreen =(prop)=>{
         date: +new Date(),
         className: 'message',
       },
-      from: user.id,
-      userName:user.name
+      from:global.id,
+      userName:global.name
     }
+     
 
-  
+   socket.emit('message', message)
    setMChatMessage(old => [...old,message])
   
-  socket.emit('message', message)
  
-  console.log(MChatMessage)
-  handleSetChat(route.params.id,message)
+
+  // newItem(message)
+  // console.log(MChatMessage)
+//  handleSetChat(route.params.id,message)
+  }
+
+  const startTyping=()=>{
+    let message = {
+      to:route.params.id,
+      message: {
+        type: 'typing',
+        text: 'typing',
+        date: +new Date(),
+        className: 'message',
+      },
+      
+      from:  global.id,
+      userName:global.name
+    }
+    // socket.emit('message', message)
+    
   }
 
   async function startRecording() {
@@ -239,14 +277,14 @@ const ChatRoomScreen =(prop)=>{
 //   const emojiClickHandler=()=>{
 // console.log('emoji')
 //   }
- 
+
 const pickImage = async () => {
   let result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.All,
     allowsEditing: true,
       quality: 1,
-      base64:true,
       aspect: [9, 16],
+      base64:true,
   });
 
   console.log(result);
@@ -256,13 +294,14 @@ const pickImage = async () => {
     let message = {
       to:route.params.id,
       message: result,
-      from: user.id,
-      userName:user.name
+      from: global.id,
+      userName:global.name
     }
    setMChatMessage(old => [...old,message])
   socket.emit('message', message)
   }
 };
+
   const cameraPickerHandler = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -294,8 +333,8 @@ const pickImage = async () => {
             from: user.id,
             userName:user.name
           }
-         setMChatMessage(old => [...old,message])
-        socket.emit('message', message)
+        //  setMChatMessage(old => [...old,message])
+        // socket.emit('message', message)
     }
    
 
@@ -323,11 +362,14 @@ const pickImage = async () => {
     // }
   };
 
+  
+
 
   useFocusEffect(
     React.useCallback(() => {
-      handleGetTokenFirst('userAuthToken')
-      
+      handleGetTokenFirst('userAuthToken');
+    
+      initSocketConnection()
       
      }, [])
    );
@@ -346,21 +388,28 @@ const pickImage = async () => {
       })();
     }, []);
 
+    useEffect(() => {
+      return sound
+        ? () => {
+            console.log('Unloading Sound');
+            sound.unloadAsync(); }
+        : undefined;
+    }, [sound]);
 
-
+  
  
   
 
     return (
       
        
-<View style={{justifyContent:'space-between',height:'100%'}}>
- 
+<View  style={{justifyContent:'space-between',height:'100%'}}>
+ {userTyping?<View ><Text style={styles.username}>Typing...</Text></View>:null}
   <FlatList data={MChatMessage}
-renderItem={({ item }) => <ChatMessage privateKey={user.id} message={item}   keyExtractor={(item)=>item.veroKey} />}  inverted contentContainerStyle={{ flexDirection: 'column-reverse' }} />
+renderItem={({ item }) => <ChatMessage hisid={route.params.id} privateKey={user.id} message={item} key={item.veroKey}  keyExtractor={(item)=>item.veroKey}   />}  keyExtractor={(item)=>item.veroKey} inverted contentContainerStyle={{ flexDirection: 'column-reverse' }} />
 
  
-      <InputBox onPressFile={pickImage} onMessageSend={createMessage} microPhoneClickedIn={startRecording} microPhoneClickedOut={stopRecording} cameraPicker={cameraPickerHandler} />
+      <InputBox onStartTyping={startTyping} onPressFile={pickImage} onMessageSend={createMessage} microPhoneClickedIn={startRecording} microPhoneClickedOut={stopRecording} cameraPicker={cameraPickerHandler} />
 </View>
 
 )

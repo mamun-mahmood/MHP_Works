@@ -15,7 +15,7 @@ const ContactListItem = (props: ContactListItemProps) => {
  
 
   const onClick =()=>{
-  console.warn("clicked ")
+  console.log("clicked ")
   }
   return (
     <TouchableWithoutFeedback onPress={onClick}> 

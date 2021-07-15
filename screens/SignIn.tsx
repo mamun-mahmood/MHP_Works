@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Button, Image,SafeAreaView,AsyncStorage } from "react-native";
+import { View, Text, TextInput, Button, Image,SafeAreaView,AsyncStorage, FlatList } from "react-native";
 import styles from "../components/ContactListItem/style";
 import Colors from "../constants/Colors";
 import { AntDesign } from '@expo/vector-icons';
@@ -53,6 +53,7 @@ export default function SignIn() {
     if (tokenFromPersistentState) {
       const mydata = JSON.parse(tokenFromPersistentState)
      setUser(mydata)
+    
     }
   };
   const signInHandler = () => {
@@ -92,7 +93,14 @@ handleGetToken('userAuthToken')
   
   };
   const logOut = () => {
-    setIsLoggedIn(!isLoggedIn)
+  
+   const handlelogout = async (key) => {
+    const tokenFromPersistentState = await SecureStore.deleteItemAsync(
+     key,
+    );
+    setUser(null)
+  };
+  handlelogout('userAuthToken')
    };
 
   //  useEffect(() => {
@@ -155,8 +163,9 @@ handleGetToken('userAuthToken')
         </View>
       ) : (
           
-        <View style={{flex:1,width:'100%'}}>
-            {User.privateKey? <View style={{flexDirection:'row',padding:10,margin:10}} >
+        <View style={{flex:1,width:'100%',justifyContent:'space-evenly'}}>
+            {User.privateKey?
+             <View style={{flexDirection:'row',padding:10,margin:10,marginTop:-30}} >
                 <Image source={{ uri: User.ProfilePic }} style={styles.avatar} />
                 <View style={styles.midContainer} >
                     <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}><Text style={styles.username}>{User.firstName?`${User.firstName} ${User.lastName}`:null}</Text>
@@ -168,9 +177,40 @@ handleGetToken('userAuthToken')
                 <AntDesign name="logout" size={24} color={Colors.light.tint}/>   
              </TouchableWithoutFeedback>
            </View>
+         
             </View>
+         
            :null}
+         
+           {User.privateKey?<View>
+             <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Account</Text></View>
            
+           </View>:null}
+           {User.privateKey?<View>
+             <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Chats</Text></View>
+           
+           </View>:null}
+           {User.privateKey?<View>
+             <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Appearance</Text></View>
+           
+           </View>:null}
+           {User.privateKey?<View>
+             <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Linked devices</Text></View>
+           
+           </View>:null}
+           {User.privateKey?<View>
+             <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Data and Storage</Text></View>
+           
+           </View>:null}
+           {User.privateKey?<View>
+             <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Disappear Message</Text></View>
+           
+           </View>:null}
+           {User.privateKey?<View>
+             <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Invite</Text></View>
+           
+           </View>:null}
+         
         </View>
       )}
     </View>

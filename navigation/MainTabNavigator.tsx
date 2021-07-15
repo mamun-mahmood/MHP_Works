@@ -15,7 +15,9 @@ import TabTwoScreen from '../screens/TabTwoScreen';
 import { MainTabParamList, ChatScreeneParamList, TabTwoParamList } from '../types';
 import { Fontisto } from '@expo/vector-icons';
 import SignIn from '../screens/SignIn';
-import CameraScreen from '../CameraScreen';
+import ContactScreen from '../screens/ContactScreen';
+
+import VeroHive from '../screens/veroHive';
 const MainTab = createMaterialTopTabNavigator<MainTabParamList>();
 
 export default function MainTabNavigator() {
@@ -38,11 +40,10 @@ export default function MainTabNavigator() {
       showIcon:true}}>
 
       <MainTab.Screen
-        name="Camera"
-        component={CameraScreen}
+        name="Contacts"
+        component={ContactScreen}
         options={{
-          tabBarIcon: ({ color }) => <Fontisto name="camera" color={color} size={18} />,
-             tabBarLabel:()=>null
+         
         }}
       />
       <MainTab.Screen
@@ -52,17 +53,23 @@ export default function MainTabNavigator() {
    }}
       />
         <MainTab.Screen
-        name="Calls"
-        component={TabTwoNavigator}
+        name="VeroHive"
+        component={VeroHive}
         options={{
  }}
       />
-        <MainTab.Screen
+       <MainTab.Screen
+        name="SoapBox"
+        component={VeroHive}
+        options={{
+ }}
+      />
+        {/* <MainTab.Screen
         name="Account"
         component={SignIn}
         options={{
    }}
-      />
+      /> */}
     </MainTab.Navigator>
   );
 }
@@ -97,7 +104,7 @@ function TabTwoNavigator() {
       <TabTwoStack.Screen
         name="TabTwoScreen"
         component={TabTwoScreen}
-        options={{ headerTitle: 'Calls' }}
+        options={{ headerTitle: 'VeroHive Secure Mettings' }}
       />
     </TabTwoStack.Navigator>
   );

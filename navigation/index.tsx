@@ -11,7 +11,7 @@ import {
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
 import { Octicons, MaterialCommunityIcons ,MaterialIcons,FontAwesome5,AntDesign} from "@expo/vector-icons";
-import { Image, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import { ColorSchemeName } from "react-native";
 import Colors from "../constants/Colors";
 
@@ -26,6 +26,8 @@ import SignIn from "../screens/SignIn";
 import CameraScreen from "../CameraScreen";
 import NewMessageButton from "../components/NewMessageButton";
 import NewContactDot from "../components/NewMessageButton/newContactDot/newContactdot";
+import ProfileSetting from "../components/Profile";
+import Searchbar from "../components/searchBar/Searchbar";
 
 
 export default function Navigation({
@@ -68,16 +70,20 @@ function RootNavigator() {
         component={MainTabNavigator}
         options={{
           title: "MegaHoot",
+          headerLeft:()=>(
+            <View><ProfileSetting /></View>
+          ),
           headerRight: () => (
             <View
               style={{
                 flexDirection: "row",
-                width: 60,
+                width: 30,
                 justifyContent: "space-between",
                 marginRight: 10,
               }}
             >
-              <Octicons name="search" size={22} color={"white"} />
+              {/* <Octicons name="search" size={22} color={"white"} /> */}
+              {/* <Searchbar /> */}
               {/* <MaterialCommunityIcons
                 name="dots-vertical"
                 size={22}
@@ -93,9 +99,10 @@ function RootNavigator() {
         component={ChatRoomScreen}
         options={({ route }) => ({
           title: route.params.name,
+         
           headerRight: () => 
           <View style={{flexDirection:'row',width:100,justifyContent:'space-between',marginRight:10}}>
-            
+  
             <FontAwesome5 name="video" size={22} color={'white'} />
             <MaterialIcons name="call" size={22} color={'white'} />
              <MaterialCommunityIcons name="dots-vertical" size={22} color={'white'} />
@@ -111,6 +118,12 @@ function RootNavigator() {
        <Stack.Screen
         name="Contacts"
         component={ContactScreen}
+     
+       
+      />
+        <Stack.Screen
+        name="Settings"
+        component={SignIn}
      
        
       />

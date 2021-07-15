@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, FlatList,View,Text,AsyncStorage} from "react-native";
+import { StyleSheet, FlatList,View,Text,AsyncStorage, TextInput, ActivityIndicator, TouchableOpacity} from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import ChatListItem from "../components/ChatListItem";
@@ -11,9 +11,21 @@ import { useState } from "react";
 import { useEffect } from "react";
 import * as SecureStore from 'expo-secure-store';
 import { useFocusEffect } from '@react-navigation/native';
+import filter from 'lodash.filter';
+import Searchbar from "../components/searchBar/Searchbar";
+import Colors from "../constants/Colors";
+import { useNavigation } from "@react-navigation/core";
+import socket, { startSocket } from '../socket';
+
 export default function ChatScreen() {
   const [users,setUsers]=useState([]);
   const [myToken,setMyToken]=useState({});
+  const [user,setUser]=useState()
+  const [query, setQuery] = useState('');
+const [fullData, setFullData] = useState([]);
+const [isLoading, setIsLoading] = useState(false);
+const [data, setData] = useState([]);
+const [error, setError] = useState(null);
   const fetUsers=async (name,privateKey)=>{
    
     console.log(myToken,name)
@@ -28,6 +40,8 @@ export default function ChatScreen() {
    
        console.log(userData.data.data,users)
       setUsers(contactParse)
+      setData(contactParse)
+      setFullData(contactParse)
     // global.contacts=userData.data.data
     // console.log(global.contacts)
      
@@ -35,6 +49,10 @@ export default function ChatScreen() {
       console.log(e)
     }
   }
+
+
+
+  const navigation =useNavigation();
   const handleGetToken = async (key) => {
   
     const tokenFromPersistentState = await SecureStore.getItemAsync(
@@ -48,7 +66,9 @@ export default function ChatScreen() {
      setMyToken(data)
      global.privateKey=privateKey;
      global.name=name;
+     setUser({name:name,id:privateKey})
      fetUsers(name,privateKey);
+     
     }
   };
 
@@ -57,10 +77,106 @@ export default function ChatScreen() {
       handleGetToken('userAuthToken')
   
   
-     
+      initSocketConnection()
      
     }, [])
   );
+  const setupSocketListeners=()=> {
+    socket.on('message', onMessageRecieved)
+    socket.on('reconnect', onReconnection)
+    socket.on('disconnect', onClientDisconnected)
+    }
+  
+  //   const handleSetChat = async (key,value) => {
+  //     var MChatMessage=[]
+     
+  //     const tokenFromPersistentStatem = await SecureStore.getItemAsync(
+  //       key,
+  //      );
+  //      if (tokenFromPersistentStatem) {
+  //        console.log(tokenFromPersistentStatem)
+  //       let mydatam = JSON.parse(tokenFromPersistentStatem)
+        
+       
+  //       console.log(mydatam)
+       
+      
+  //      (mydatam? MChatMessage.push(mydatam): console.log('no sky'))
+
+
+  //     let chat=MChatMessage;
+  //     chat.push(value)
+  //     let data = JSON.stringify(chat)
+  //     console.log(data,"sky this is me")
+  //     SecureStore.setItemAsync(key, data).then;
+  //    console.log(data)
+  //   };
+  // }
+   const onReconnection=()=> {
+    console.log('Connection Established.', 'Reconnected!')
+    }
+  
+  const onMessageRecieved=(message)=> {
+    
+      let messageData = message
+      let targetId
+ 
+     //  setMChatMessage(old=>[...old,messageData])
+  
+     if(message.to==global.id){
+    
+      
+        if (message.from ===global.id) {
+        messageData.position = 'right'
+        targetId = message.to
+        
+       // setMChatMessage(old=>[...old,messageData])
+      } else {
+        messageData.position = 'left'
+        targetId = message.from
+        // handleSetChat(message.from,messageData)
+   
+       
+       //  playSound()
+      }
+        
+       
+       }
+
+
+  
+     //  let targetIndex = userChatData.findIndex((u) => u.veroKey === targetId)
+     // // alert(targetIndex)
+     //  if (!userChatData[targetIndex].messages) {
+     //    userChatData[targetIndex].messages = []
+     //  }
+     //  if (targetIndex !== selectedUserIndex) {
+     //    if (!userChatData[targetIndex].unread) {
+     //      userChatData[targetIndex].unread = 0
+     //    }
+     //    userChatData[targetIndex].unread++
+     //  }
+     //  userChatData[targetIndex].messages.push(messageData)
+ 
+  
+    }
+  
+   const onClientDisconnected=()=> {
+     console.log(
+        'Connection Lost from server please check your connection.',
+        'Error!'
+      )
+    //  socket.connect()
+      
+    }
+  
+   const initSocketConnection=()=> {
+  
+  
+    // startSocket()
+      setupSocketListeners()
+    }
+
 
   // useEffect(()=>{
   //             const fetUsers=async ()=>{
@@ -86,16 +202,82 @@ export default function ChatScreen() {
               
   // },[navigation])
 
+
+  const handleSearch = text => {
+    const formattedQuery = text.toLowerCase();
+    const filteredData = filter(fullData, user => {
+      return contains(user, formattedQuery);
+    });
+    setUsers(filteredData);
+    setQuery(text);
+  };
+  const contains = (user, query) => {
+     const { name, veroKey } = user;
   
+    if (name.includes(query) || veroKey.includes(query)) {
+      return true;
+    }
+  
+    return false;
+  };
+  
+  function renderHeader() {
+
+    
+
+    return (
+      <View
+        style={{
+          backgroundColor: '#fff',
+          padding: 10,
+          marginVertical: 10,
+          borderRadius: 20,
+        }}
+      >
+        <TextInput
+          autoCapitalize="none"
+          autoCorrect={false}
+          clearButtonMode="always"
+        
+        value={query}
+        onChangeText={queryText => handleSearch(queryText)}
+        
+          placeholder="Search"
+          style={{ backgroundColor: '#fff', paddingHorizontal: 20 }}
+        />
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#5500dc" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text style={{ fontSize: 18}}>
+          Error fetching data... Check your network connection!
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-       {myToken.privateKey? <FlatList style={{width:'100%'}}
+       {myToken.privateKey? <FlatList ListHeaderComponent={renderHeader} style={{width:'100%'}}
         data={users}
-        renderItem={({ item }) => <ChatListItem chatRoom={item} />}
+        renderItem={({ item }) => <ChatListItem socket={socket} chatRoom={item}  />}
         keyExtractor={(item)=>item.veroKey}
-     />:<Text>Please Login To Continue</Text>}
+     />:<View style={{backgroundColor:Colors.light.tint,padding:10,borderRadius:10}}><TouchableOpacity onPress={()=>{  navigation.navigate('SignIn')}}>
+       <Text style={{color:Colors.light.background}}>Please Login To Continue</Text>
+       </TouchableOpacity></View>}
      
-     <NewMessageButton />
+     {/* <NewMessageButton /> */}
   
     </View>
   );

@@ -32,7 +32,7 @@ console.log(props.message,"sky")
   
   return (
     <View style={styles.container}>
-      <View
+      {(message.to==props.hisid || message.from==props.hisid)? <View
         style={[
           styles.messageBox,
           {
@@ -51,7 +51,9 @@ console.log(props.message,"sky")
                 `data:image/png;base64,${message.message.base64}`}}></Image>:<Text style={styles.message}>{message.message.text}</Text>}
        {/* {message.message.audioUri? ()=>playSound(message.message.audioUri) :null} */}
         <Text style={styles.time}>{moment(message.message.date).fromNow()}</Text>
-      </View>
+      </View>:null}
+      
+     
     </View>
   );
 };

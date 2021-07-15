@@ -39,7 +39,8 @@ const TabTwoScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-        <Text style={styles.titleText}>
+      <Text style={styles.titleText}>VeroHive Secure Mettings</Text>
+        {/* <Text style={styles.titleText}>
          Make a Phone Call
         </Text>
         <Text style={styles.titleTextsmall}>Enter Conatct Number to Call</Text>
@@ -55,8 +56,10 @@ const TabTwoScreen = () => {
           style={styles.buttonStyle}
           onPress={triggerCall}>
           <Text style={styles.buttonTextStyle}>Make a Call</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
+   
+   
     </SafeAreaView>
   );
 };
