@@ -12,6 +12,7 @@ import {
 
 import { useRoute } from "@react-navigation/core";
 // import chatRoomData from '../data/Chats'
+
 import ChatMessage from "../components/chatMessage";
 import { View } from "react-native";
 import InputBox from "../components/inputBox";
@@ -30,6 +31,7 @@ import { color } from "react-native-reanimated";
 import { CDateTimePicker } from "../components/Timer/datetimePicker";
 import DelayTimer from "../components/Timer";
 import Colors from "../constants/Colors";
+import axios from "axios";
 
 const ChatRoomScreen = () => {
   const route = useRoute();
@@ -162,7 +164,7 @@ const ChatRoomScreen = () => {
           setMChatMessage((old) => [...old, messageData]);
           // newItem(messageData)
           // handleSetChat(route.params.id,messageData)
-          playYouSound;
+          // playYouSound;
         }
       }
 
@@ -286,30 +288,75 @@ const ChatRoomScreen = () => {
   //   const emojiClickHandler=()=>{
   // console.log('emoji')
   //   }
-
+  const createFormData = (photo, body = {}) => {
+    const data = new FormData();
+  
+    data.append('photo', {
+      name: 'sky',
+      type: photo.type,
+      uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
+    });
+  
+    Object.keys(body).forEach((key) => {
+      data.append(key, body[key]);
+    });
+  
+    return data;
+  };
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 1,
       aspect: [9, 16],
-      base64: true,
+      base64:true
+      
     });
 
-    console.log(result);
+    // console.log(result);
 
     if (!result.cancelled) {
       setImage(result.uri);
+
+      let apiUrl = 'https://test.megahoot.net/upload';
+    let uri=result.uri
+      let uriParts = uri.split('.');
+      let fileType = uriParts[uriParts.length - 1];
+    
+      let formData = new FormData();
+      formData.append('photo', {
+        uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`,
+      });
+    
+      let options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+    
+    let uploadResponse= await fetch(apiUrl, options)
+     let uploadResult = await uploadResponse.json()
+
+      console.log(uploadResult.location)
       let message = {
         to: route.params.id,
-        message: result,
-        from: global.id,
-        userName: global.name,
+        message: {type:"image",uri:uploadResult.location},
+        from: user.id,
+        userName: user.name,
       };
-      setMChatMessage((old) => [...old, message]);
+    setMChatMessage(old => [...old,message])
       socket.emit("message", message);
+
+}
+
+ 
     }
-  };
+
 
   const cameraPickerHandler = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -424,12 +471,12 @@ const ChatRoomScreen = () => {
       ) : null}
       <FlatList
         data={MChatMessage}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <ChatMessage
             hisid={route.params.id}
             privateKey={user.id}
             message={item}
-            keyExtractor={(item) => item}
           />
         )}
         inverted

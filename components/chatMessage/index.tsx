@@ -45,10 +45,9 @@ console.log(props.message,"sky")
         {!isMyMessage() && <Text style={styles.name}>{message.userName}</Text>}
         {isMyMessage() && <Text style={styles.name}>You</Text>}
   
-        {message.message.base64? <Image
-              style={{ width: 300, height: 480 }}
-              source={{uri: 
-                `data:image/png;base64,${message.message.base64}`}}></Image>:<Text style={styles.message}>{message.message.text}</Text>}
+        {message.message.type=="image"? <Image
+              style={{ width: 320, height: 480 }}
+              source={{uri:message.message.uri}}></Image>:<Text style={styles.message}>{message.message.text}</Text>}
        {/* {message.message.audioUri? ()=>playSound(message.message.audioUri) :null} */}
         <Text style={styles.time}>{moment(message.message.date).fromNow()}</Text>
       </View>:null}
