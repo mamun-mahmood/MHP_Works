@@ -3,7 +3,7 @@ import { Platform, Text } from "react-native";
 import { View ,TextInput,KeyboardAvoidingView,TouchableOpacity,SafeAreaView } from "react-native";
 import styles from './style'
 import {MaterialCommunityIcons,
-    FontAwesome5,Entypo,Fontisto,MaterialIcons} from '@expo/vector-icons'
+    FontAwesome5,Entypo,Fontisto,MaterialIcons, Ionicons} from '@expo/vector-icons'
     import EmojiSelector from 'react-native-emoji-selector'
 const InputBox = (props) => {
   
@@ -42,6 +42,10 @@ onSendPress()
     const onPressFile=()=>{
       props.onPressFile()
     }
+
+    const onFlamePresses=()=>{
+      props.onFlamePresses()
+    }
   return (
     <View style={styles.container}>
         <View style={styles.mainContainer}>
@@ -58,7 +62,11 @@ onEmojiSelected={emoji => { props.onMessageSend(emoji);setshowEmoji(false)}}
           
             
              />
-             
+
+               {message? <TouchableOpacity 
+            onPress={onFlamePresses}>
+               <Ionicons name="flame" size={24} color="orange" />
+              </TouchableOpacity> :null}
              <TouchableOpacity 
             onPress={onPressFile}>
                <Entypo name="attachment" size={24} color="grey"  style={styles.icons} /></TouchableOpacity> 
@@ -68,13 +76,16 @@ onEmojiSelected={emoji => { props.onMessageSend(emoji);setshowEmoji(false)}}
             onPress={onPressCamera}>
               <Fontisto name="camera" size={24} color="grey" style={styles.icons} /></TouchableOpacity> 
           }
+             
         </View>
         <TouchableOpacity onPress={onPress}  ><View style={styles.buttonContainer}>
             {!message?<MaterialCommunityIcons name="microphone" size={28} color="white" />
        :   <MaterialIcons name="send" size={28} color="white"  />
     }
+
+   
           </View></TouchableOpacity>
-        
+     
      
     </View>
    

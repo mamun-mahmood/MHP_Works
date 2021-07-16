@@ -10,6 +10,8 @@ import Navigation from './navigation';
 import socket, { startSocket } from './socket';
 import * as BackgroundFetch from "expo-background-fetch";
 import * as TaskManager from "expo-task-manager";
+import { notificationCustom } from './notifications';
+import { AppState } from 'react-native';
 const db = SQLite.openDatabase('db.testDb') // returns Database object
 
 // function myTask() {
@@ -46,7 +48,7 @@ export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-
+  notificationCustom()
 // const createDb=()=>{
 //   db.transaction(tx => {
 //     tx.executeSql(
@@ -56,10 +58,17 @@ export default function App() {
 // }
 
 
+AppState.addEventListener('change',()=>{
+  startSocket()
+
+})
+
+
 
 useEffect(() => {
 // createDb()
 startSocket()
+
 
 },[])
   if (!isLoadingComplete) {
