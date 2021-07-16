@@ -28,29 +28,29 @@ const [LastMessageTime,setLastMessageTime]=useState('')
   }
 
   
-  const handleGetChat = async () => {
+//   const handleGetChat = async () => {
 
- const verokey=chatRoom.veroKey
+//  const verokey=chatRoom.veroKey
 
-    const tokenFromPersistentState = await SecureStore.getItemAsync(
-     verokey,
-    );
-    if (tokenFromPersistentState) {
-      console.log(tokenFromPersistentState)
-     let mydata = JSON.parse(tokenFromPersistentState)
+//     const tokenFromPersistentState = await SecureStore.getItemAsync(
+//      verokey,
+//     );
+//     if (tokenFromPersistentState) {
+//       console.log(tokenFromPersistentState)
+//      let mydata = JSON.parse(tokenFromPersistentState)
      
     
-     console.log(mydata,"56sky")
+//      console.log(mydata,"56sky")
     
    
-    (mydata? setLastMessage(mydata[mydata.length-1].message): console.log('no sky'))
-    // (mydata? setLastMessageTime(mydata[mydata.length-1].message.date): console.log('no sky'))
-      // setMChatMessage(old=>[...old,data])
+//     (mydata? setLastMessage(mydata[mydata.length-1].message): console.log('no sky'))
+//     // (mydata? setLastMessageTime(mydata[mydata.length-1].message.date): console.log('no sky'))
+//       // setMChatMessage(old=>[...old,data])
    
-    }
+//     }
 
    
-  };
+//   };
 
 
   // const handleGetChat = (id) => {
@@ -73,10 +73,10 @@ const [LastMessageTime,setLastMessageTime]=useState('')
   // }
 
 
-  useEffect(() => {
+  // useEffect(() => {
       
-    handleGetChat()
-   }, [])
+  //   handleGetChat()
+  //  }, [])
   return (
     <TouchableWithoutFeedback onPress={onClick}> 
     

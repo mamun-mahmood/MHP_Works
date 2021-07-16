@@ -14,6 +14,7 @@ export function startSocket() {
   }
 }
 
+
 export function stopSocket() {
   if (socket.connected) {
     socket.disconnect();

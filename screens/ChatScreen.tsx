@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, FlatList,View,Text,AsyncStorage, TextInput, ActivityIndicator, TouchableOpacity} from "react-native";
+import { StyleSheet, FlatList,View,Text,AsyncStorage, TextInput, ActivityIndicator, TouchableOpacity, Button} from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import ChatListItem from "../components/ChatListItem";
@@ -7,7 +7,7 @@ import axios from 'axios';
 import ChatRooms from "../data/ChatRooms";
 import InputBox from "../components/inputBox";
 import NewMessageButton from "../components/NewMessageButton";
-import { useState } from "react";
+import { useState ,useRef} from "react";
 import { useEffect } from "react";
 import * as SecureStore from 'expo-secure-store';
 import { useFocusEffect } from '@react-navigation/native';
@@ -16,6 +16,19 @@ import Searchbar from "../components/searchBar/Searchbar";
 import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/core";
 import socket, { startSocket } from '../socket';
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
+import ChatMessage from "../components/chatMessage";
+
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 
 export default function ChatScreen() {
   const [users,setUsers]=useState([]);
@@ -26,6 +39,11 @@ const [fullData, setFullData] = useState([]);
 const [isLoading, setIsLoading] = useState(false);
 const [data, setData] = useState([]);
 const [error, setError] = useState(null);
+const[chatMessage,setChatMessage]=useState()
+const [expoPushToken, setExpoPushToken] = useState('');
+const [notification, setNotification] = useState(false);
+const notificationListener = useRef();
+const responseListener = useRef();
   const fetUsers=async (name,privateKey)=>{
    
     console.log(myToken,name)
@@ -82,7 +100,7 @@ const [error, setError] = useState(null);
     }, [])
   );
   const setupSocketListeners=()=> {
-    socket.on('message', onMessageRecieved)
+    socket.on('message',onMessageRecieved)
     socket.on('reconnect', onReconnection)
     socket.on('disconnect', onClientDisconnected)
     }
@@ -116,16 +134,17 @@ const [error, setError] = useState(null);
     console.log('Connection Established.', 'Reconnected!')
     }
   
+ 
+
   const onMessageRecieved=(message)=> {
-    
       let messageData = message
       let targetId
- 
+    
      //  setMChatMessage(old=>[...old,messageData])
   
      if(message.to==global.id){
     
-      
+   
         if (message.from ===global.id) {
         messageData.position = 'right'
         targetId = message.to
@@ -135,9 +154,10 @@ const [error, setError] = useState(null);
         messageData.position = 'left'
         targetId = message.from
         // handleSetChat(message.from,messageData)
-   
+        setChatMessage(messageData)
        
-       //  playSound()
+        sendPushNotification(messageData)
+
       }
         
        
@@ -201,7 +221,24 @@ const [error, setError] = useState(null);
   //             fetUsers();
               
   // },[navigation])
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(token => {setExpoPushToken(token);global.tokennotification=token});
 
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   const handleSearch = text => {
     const formattedQuery = text.toLowerCase();
@@ -276,7 +313,12 @@ const [error, setError] = useState(null);
      />:<View style={{backgroundColor:Colors.light.tint,padding:10,borderRadius:10}}><TouchableOpacity onPress={()=>{  navigation.navigate('SignIn')}}>
        <Text style={{color:Colors.light.background}}>Please Login To Continue</Text>
        </TouchableOpacity></View>}
-     
+       {/* <Button
+        title="Press to Send Notification"
+        onPress={async () => {
+          await sendPushNotification(expoPushToken);
+        }}
+      /> */}
      {/* <NewMessageButton /> */}
   
     </View>
@@ -299,3 +341,56 @@ const styles = StyleSheet.create({
     width: "80%",
   },
 });
+
+async function sendPushNotification(data) {
+ console.log('teting notify expo token',global.tokennotification)
+  const message = {
+    to: global.tokennotification,
+    sound: 'default',
+    title: `Message from ${data.userName}`,
+    body: data.message.text,
+    data: { someData: 'goes here' },
+  };
+
+  await fetch('https://exp.host/--/api/v2/push/send', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Accept-encoding': 'gzip, deflate',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(message),
+  });
+}
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Constants.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+      
+    });
+  }
+
+  return token;
+}

@@ -49,20 +49,17 @@ export default function MainTabNavigator() {
       <MainTab.Screen
         name="Chats"
         component={ChatScreen}
-        options={{
-   }}
+      
       />
         <MainTab.Screen
         name="VeroHive"
         component={VeroHive}
-        options={{
- }}
+  
       />
        <MainTab.Screen
         name="SoapBox"
         component={VeroHive}
-        options={{
- }}
+  
       />
         {/* <MainTab.Screen
         name="Account"

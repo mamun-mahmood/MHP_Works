@@ -32,17 +32,30 @@ const ChatRoomScreen =()=>{
 const [userTyping,setuserTyping]=useState(false)
 
 
-async function playSound() {
-  console.log('Loading Sound');
-  const { sound } = await Audio.Sound.createAsync(
-     require('../assets/hello.mp3')
-  );
-  setSound(sound);
+// async function playSound() {
+//   console.log('Loading Sound');
+//   const { sound } = await Audio.Sound.createAsync(
+//      require('../assets/hello.mp3')
+//   );
+//   setSound(sound);
 
-  console.log('Playing Sound');
-  await sound.playAsync(); }
+//   console.log('Playing Sound');
+//   await sound.playAsync(); }
   
-
+ const playYouSound = async () => {
+    let youSoundObject = new Audio.Sound();
+    try {
+      const { sound } = await Audio.Sound.createAsync(
+        require('../assets/hello.mp3')
+     );
+        await youSoundObject.loadAsync(sound);
+        await youSoundObject.playAsync();
+    } catch (error) {
+        await youSoundObject.unloadAsync(); // Unload any sound loaded
+        youSoundObject.setOnPlaybackStatusUpdate(null); // Unset all playback status loaded
+       playYouSound();
+    }
+}
   
 
   const handleDeleteToken = async (key,messageData) => {
@@ -155,7 +168,7 @@ setuserTyping(true)
           setMChatMessage(old=>[...old,messageData])
           // newItem(messageData)
           // handleSetChat(route.params.id,messageData)
-          playSound()
+          playYouSound
        }
  }
     
@@ -388,13 +401,13 @@ const pickImage = async () => {
       })();
     }, []);
 
-    useEffect(() => {
-      return sound
-        ? () => {
-            console.log('Unloading Sound');
-            sound.unloadAsync(); }
-        : undefined;
-    }, [sound]);
+    // useEffect(() => {
+    //   return sound
+    //     ? () => {
+    //         console.log('Unloading Sound');
+    //         sound.unloadAsync(); }
+    //     : undefined;
+    // }, [sound]);
 
   
  
@@ -406,7 +419,8 @@ const pickImage = async () => {
 <View  style={{justifyContent:'space-between',height:'100%'}}>
  {userTyping?<View ><Text style={styles.username}>Typing...</Text></View>:null}
   <FlatList data={MChatMessage}
-renderItem={({ item }) => <ChatMessage hisid={route.params.id} privateKey={user.id} message={item} key={item.veroKey}  keyExtractor={(item)=>item.veroKey}   />}  keyExtractor={(item)=>item.veroKey} inverted contentContainerStyle={{ flexDirection: 'column-reverse' }} />
+renderItem={({ item }) => <ChatMessage hisid={route.params.id} privateKey={user.id} message={item} 
+ keyExtractor={(item)=>item}   />}  inverted contentContainerStyle={{ flexDirection: 'column-reverse' }} />
 
  
       <InputBox onStartTyping={startTyping} onPressFile={pickImage} onMessageSend={createMessage} microPhoneClickedIn={startRecording} microPhoneClickedOut={stopRecording} cameraPicker={cameraPickerHandler} />

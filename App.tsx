@@ -8,7 +8,40 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import socket, { startSocket } from './socket';
+import * as BackgroundFetch from "expo-background-fetch";
+import * as TaskManager from "expo-task-manager";
 const db = SQLite.openDatabase('db.testDb') // returns Database object
+
+// function myTask() {
+//   try {
+//     // fetch data here...
+//     const backendData = "Simulated fetch " + Math.random();
+//     console.log("myTask() ", backendData);
+//    startSocket()
+//     return backendData
+//       ? BackgroundFetch.Result.NewData
+//       : BackgroundFetch.Result.NoData;
+//   } catch (err) {
+//     return BackgroundFetch.Result.Failed;
+//   }
+// }
+// async function initBackgroundFetch(taskName,
+//                                    taskFn,
+//                                    interval = 60 * 15) {
+//   try {
+//     if (!TaskManager.isTaskDefined(taskName)) {
+//       TaskManager.defineTask(taskName, taskFn);
+//     }
+//     const options = {
+//       minimumInterval: interval // in seconds
+//     };
+//   await BackgroundFetch.registerTaskAsync(taskName, options);
+//   } catch (err) {
+//     console.log("registerTaskAsync() failed:", err);
+//   }
+// }
+// initBackgroundFetch('myTaskName', myTask, 5);
+
 export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
