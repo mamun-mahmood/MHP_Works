@@ -5,6 +5,7 @@ import { Message } from "../../types";
 import styles from "./style";
 import { Audio } from 'expo-av';
 import { useState } from 'react'
+import AudioPlayer from "../audioPlayer";
 
 // export type ChatMessageProps = {
 //   message: Message;
@@ -19,8 +20,9 @@ import { useState } from 'react'
 
 //   console.log('Playing Sound');
 //   await sound.playAsync(); }
-const ChatMessage = (props) => {
 
+const ChatMessage = (props) => {
+  const [startImageLoading, setStartImageLaoding] = useState(false)
 console.log(props.message,"sky")
   const { message } = props;
 
@@ -28,6 +30,13 @@ console.log(props.message,"sky")
    return message.from ===props.privateKey;
    
   };
+
+  const startLoading=()=>{
+setStartImageLaoding(true)
+  }
+  const stopLoading=()=>{
+    setStartImageLaoding(false)
+  }
 
   
   return (
@@ -44,11 +53,13 @@ console.log(props.message,"sky")
       >
         {!isMyMessage() && <Text style={styles.name}>{message.userName}</Text>}
         {isMyMessage() && <Text style={styles.name}>You</Text>}
-  
-        {message.message.type=="image"? <Image
+        {message.message.type=="audio"?<AudioPlayer uri={message.message.uri} />:null}
+        {message.message.type=="emoji"?<Text style={{fontSize:50}}>{message.message.text}</Text>:null}
+        {message.message.type=="image"? <Image onLoadStart={startLoading} onLoadEnd={stopLoading}
               style={{ width: 320, height: 480 }}
-              source={{uri:message.message.uri}}></Image>:<Text style={styles.message}>{message.message.text}</Text>}
-       {/* {message.message.audioUri? ()=>playSound(message.message.audioUri) :null} */}
+              source={{uri:message.message.uri}}></Image>:<Text style={styles.message}>{message.message.type=="text"?message.message.text:null}</Text>}
+   
+      
         <Text style={styles.time}>{moment(message.message.date).fromNow()}</Text>
       </View>:null}
       

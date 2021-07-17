@@ -25,6 +25,7 @@ const db = SQLite.openDatabase("db.testDb");
 import * as SecureStore from "expo-secure-store";
 import { useFocusEffect } from "@react-navigation/native";
 import styles from "../components/ChatListItem/style";
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import socket, { startSocket } from "../socket";
 import { color } from "react-native-reanimated";
@@ -47,6 +48,8 @@ const ChatRoomScreen = () => {
   const [setDBchat, setsetDBchat] = useState();
   const [userTyping, setuserTyping] = useState(false);
   const [isTimerButton, setisTimerButton] = useState(false);
+  const [UploadLoading, setUploadLoading] = useState(false);
+  
   const [isTimerTime, setisTimerTime] = useState();
   // async function playSound() {
   //   console.log('Loading Sound');
@@ -220,6 +223,28 @@ const ChatRoomScreen = () => {
     //  handleSetChat(route.params.id,message)
   };
 
+  const createMessageEmoji = (text) => {
+    let message = {
+      to: route.params.id,
+      message: {
+        type: "emoji",
+        text: text,
+        date: +new Date(),
+        className: "message",
+      },
+      from: global.id,
+      userName: global.name,
+      TimerTime: isTimerTime,
+    };
+
+   
+    setMChatMessage((old) => [...old, message]);
+    socket.emit("message", message);
+    // newItem(message)
+    // console.log(MChatMessage)
+    //  handleSetChat(route.params.id,message)
+  };
+
   const onFlamePresses = () => {
     setisTimerButton(!isTimerButton);
   };
@@ -270,19 +295,65 @@ const ChatRoomScreen = () => {
     setRecording(undefined);
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
+
+
+    
     console.log("Recording stopped and stored at", uri);
-    let message = {
-      to: route.params.id,
-      message: { audioUri: uri },
-      from: user.id,
-      userName: user.name,
-    };
-    setMChatMessage((old) => [...old, message]);
-    socket.emit("message", message);
+    if (uri) {
+      setImage(uri);
+      setUploadLoading(true)
+      let apiUrl = 'https://socketapi.megahoot.net/uploadAudio';
+  
+      let uriParts = uri.split('.');
+      let fileType = uriParts[uriParts.length - 1];
+    
+      let formData = new FormData();
+      formData.append('audio', {
+        uri,
+        name: `audio.${fileType}`,
+        type: `audio/${fileType}`,
+      });
+    
+      let options = {
+        method: 'POST',
+        body: formData,
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+    
+    let uploadResponse= await fetch(apiUrl, options)
+     let uploadResult = await uploadResponse.json()
+
+      console.log(uploadResult.location)
+      let message = {
+        to: route.params.id,
+        message: {type:"audio",uri:uploadResult.location},
+        from: user.id,
+        userName: user.name,
+      };
+    setMChatMessage(old => [...old,message])
+      socket.emit("message", message);
+      setUploadLoading(false)
+}
+    // let message = {
+    //   to: route.params.id,
+    //   message: { audioUri: uri },
+    //   from: user.id,
+    //   userName: user.name,
+    // };
+    // setMChatMessage((old) => [...old, message]);
+    // socket.emit("message", message);
   }
 
-  const microPhoneHandler = () => {
-    startRecording();
+  const microphoneLongPressStart = () => {
+    console.log('microphoneLongPressStart')
+   startRecording();
+  };
+  const microphoneLongPressOut = () => {
+    console.log('microphoneLongPressOut')
+stopRecording()
   };
 
   //   const emojiClickHandler=()=>{
@@ -317,8 +388,9 @@ const ChatRoomScreen = () => {
 
     if (!result.cancelled) {
       setImage(result.uri);
+      setUploadLoading(true)
 
-      let apiUrl = 'https://test.megahoot.net/upload';
+      let apiUrl = 'https://socketapi.megahoot.net/upload';
     let uri=result.uri
       let uriParts = uri.split('.');
       let fileType = uriParts[uriParts.length - 1];
@@ -351,6 +423,7 @@ const ChatRoomScreen = () => {
       };
     setMChatMessage(old => [...old,message])
       socket.emit("message", message);
+      setUploadLoading(false)
 
 }
 
@@ -380,15 +453,41 @@ const ChatRoomScreen = () => {
 
     if (!result.cancelled) {
       setImage(result.uri);
-      console.log(result.uri);
-      let message = {
-        to: route.params.id,
-        message: result,
-        from: user.id,
-        userName: user.name,
-      };
-      //  setMChatMessage(old => [...old,message])
-      socket.emit("message", message);
+      setUploadLoading(true)
+      let apiUrl = 'https://socketapi.megahoot.net/upload';
+      let uri=result.uri
+        let uriParts = uri.split('.');
+        let fileType = uriParts[uriParts.length - 1];
+      
+        let formData = new FormData();
+        formData.append('photo', {
+          uri,
+          name: `photo.${fileType}`,
+          type: `image/${fileType}`,
+        });
+      
+        let options = {
+          method: 'POST',
+          body: formData,
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+          },
+        };
+      
+      let uploadResponse= await fetch(apiUrl, options)
+       let uploadResult = await uploadResponse.json()
+  
+        console.log(uploadResult.location)
+        let message = {
+          to: route.params.id,
+          message: {type:"image",uri:uploadResult.location},
+          from: user.id,
+          userName: user.name,
+        };
+      setMChatMessage(old => [...old,message])
+        socket.emit("message", message);
+        setUploadLoading(false)
     }
 
     // let result = await ImagePicker.launchImageLibraryAsync({
@@ -502,14 +601,23 @@ const ChatRoomScreen = () => {
           </View>
         </TouchableOpacity>
       ) : null}
+      {UploadLoading?  <Spinner
+          visible={UploadLoading}
+          textContent={'Loading...'}
+          textStyle={styles.spinnerTextStyle}
+        />:null}
       <InputBox
         onFlamePresses={onFlamePresses}
         onStartTyping={startTyping}
         onPressFile={pickImage}
         onMessageSend={createMessage}
+        onMessageSendEmoji={createMessageEmoji}
         microPhoneClickedIn={startRecording}
         microPhoneClickedOut={stopRecording}
         cameraPicker={cameraPickerHandler}
+        microphoneLongPressStart={microphoneLongPressStart}
+        microphoneLongPressOut={microphoneLongPressOut}
+        
       />
     </View>
   );

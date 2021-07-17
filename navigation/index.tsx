@@ -28,6 +28,8 @@ import NewMessageButton from "../components/NewMessageButton";
 import NewContactDot from "../components/NewMessageButton/newContactDot/newContactdot";
 import ProfileSetting from "../components/Profile";
 import Searchbar from "../components/searchBar/Searchbar";
+import CallScreen from "../screens/callScreen";
+import VideoButton from "../components/VideoCallBox";
 
 
 export default function Navigation({
@@ -103,7 +105,7 @@ function RootNavigator() {
           headerRight: () => 
           <View style={{flexDirection:'row',width:100,justifyContent:'space-between',marginRight:10}}>
   
-            <FontAwesome5 name="video" size={22} color={'white'} />
+            <VideoButton />
             <MaterialIcons name="call" size={22} color={'white'} />
              <MaterialCommunityIcons name="dots-vertical" size={22} color={'white'} />
 
@@ -137,6 +139,12 @@ function RootNavigator() {
         component={CameraScreen}
        
       />
+       <Stack.Screen
+        name="CallScreen"
+        component={CallScreen}
+        options={{ title: "Calling" }}
+      />
+      
     </Stack.Navigator>
   );
 }

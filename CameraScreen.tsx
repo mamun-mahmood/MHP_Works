@@ -7,59 +7,59 @@ export default function CameraScreen() {
   const [type, setType] = useState(Camera.Constants.Type.back);
 
   useEffect(() => {
-    // const cameraPickerHandler = async () => {
-    //   const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    const cameraPickerHandler = async () => {
+      const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
   
-    //   if (permissionResult.granted === false) {
-    //     alert("You've refused to allow this appp to access your camera!");
-    //     return;
-    //   }
+      if (permissionResult.granted === false) {
+        alert("You've refused to allow this appp to access your camera!");
+        return;
+      }
   
-    //   // let result = await ImagePicker.launchCameraAsync();
+      // let result = await ImagePicker.launchCameraAsync();
   
   
       
-    //   let result = await ImagePicker.launchCameraAsync({
-    //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-    //     allowsEditing: true,
-    //     quality: 1,
-    //     base64:true,
-    //     aspect: [9, 16],
-    //   });
-    //   // Explore the result
-    //   console.log(result);
+      let result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        quality: 1,
+        base64:true,
+        aspect: [9, 16],
+      });
+      // Explore the result
+      console.log(result);
   
-    //   if (!result.cancelled) {
+      if (!result.cancelled) {
       
-    //     console.log('success');
+        console.log('success');
      
-    //   }
+      }
      
   
-    //   // let result = await ImagePicker.launchImageLibraryAsync({
-    //   //   mediaTypes: ImagePicker.MediaTypeOptions.All,
-    //   //   allowsEditing: true,
-    //   //   quality: 1,
-    //   //   base64:true,
-    //   //   aspect: [9, 16],
-    //   // });
+      // let result = await ImagePicker.launchImageLibraryAsync({
+      //   mediaTypes: ImagePicker.MediaTypeOptions.All,
+      //   allowsEditing: true,
+      //   quality: 1,
+      //   base64:true,
+      //   aspect: [9, 16],
+      // });
   
     
-    //   // console.log(result);
+      // console.log(result);
   
-    //   // if (!result.cancelled) {
-    //   //   setImage(result.uri);
-    //   //   let message = {
-    //   //     to:route.params.id,
-    //   //     message: result,
-    //   //     from: user.id,
-    //   //     userName:user.name
-    //   //   }
-    //   //  setMChatMessage(old => [...old,message])
-    //   // socket.emit('message', message)
-    //   // }
-    // };
-    // cameraPickerHandler()
+      // if (!result.cancelled) {
+      //   setImage(result.uri);
+      //   let message = {
+      //     to:route.params.id,
+      //     message: result,
+      //     from: user.id,
+      //     userName:user.name
+      //   }
+      //  setMChatMessage(old => [...old,message])
+      // socket.emit('message', message)
+      // }
+    };
+    cameraPickerHandler()
   }, []);
 
   if (hasPermission === null) {

@@ -9,6 +9,7 @@ const InputBox = (props) => {
   
     const [message,setMessage]=useState('');
     const [showEmoji,setshowEmoji]=useState(false);
+    const [recordingStart,setrecordingStart]=useState(false);
 const onMicroPhonePressIn=()=>{
 
 props.microPhoneClickedIn()
@@ -22,6 +23,17 @@ const startTyping=(data)=>{
   props.onStartTyping()
 }
 
+
+const microphoneLongPressStart=()=>{
+  setrecordingStart(true)
+  props.microphoneLongPressStart()
+}
+
+
+const microphoneclickagain=()=>{
+  setrecordingStart(false)
+  props.microphoneLongPressOut()
+}
 const onSendPress=()=>{
     // console.warn('send Press')  
     props.onMessageSend(message)
@@ -48,11 +60,11 @@ onSendPress()
     }
   return (
     <View style={styles.container}>
-        <View style={styles.mainContainer}>
+      {!recordingStart? <View style={styles.mainContainer}>
            
            {showEmoji? <View><EmojiSelector showTabs={false} 
 
-onEmojiSelected={emoji => { props.onMessageSend(emoji);setshowEmoji(false)}}
+onEmojiSelected={emoji => { props.onMessageSendEmoji(emoji);setshowEmoji(false)}}
 /></View>: <TouchableOpacity onPress={()=>{setshowEmoji(true)}}><FontAwesome5 name="laugh-beam" size={24} color="grey"   /></TouchableOpacity>}
             <TextInput
             placeholder="Type a message"
@@ -78,13 +90,19 @@ onEmojiSelected={emoji => { props.onMessageSend(emoji);setshowEmoji(false)}}
           }
              
         </View>
-        <TouchableOpacity onPress={onPress}  ><View style={styles.buttonContainer}>
-            {!message?<MaterialCommunityIcons name="microphone" size={28} color="white" />
-       :   <MaterialIcons name="send" size={28} color="white"  />
-    }
 
+:<View style={styles.mainContainer}><Text style={{margin:2,textAlign:'center',color:"red",fontWeight:'bold',fontSize:20}}>Audio Recording</Text></View>}
+       
+          {message? <TouchableOpacity onPress={onPress}  ><View style={styles.buttonContainer}>
+          <MaterialIcons name="send" size={28} color="white"  />
    
-          </View></TouchableOpacity>
+          </View></TouchableOpacity>:null}
+
+          {!message? <TouchableOpacity onPressIn={microphoneLongPressStart} onPressOut={microphoneclickagain}  ><View style={styles.buttonContainer}>
+          <MaterialCommunityIcons name="microphone" size={28} color="white" />
+   
+          </View></TouchableOpacity>:null}
+         
      
      
     </View>
