@@ -2,7 +2,7 @@
 const io = require('socket.io-client');
 // const ss =  require('socket.io-stream');
 // const fs = require('fs');
-const SOCKET_URI = "https://socketapi.megahoot.net/"
+const SOCKET_URI = "https://api.fortisab.com/"
 
 const socket = io(SOCKET_URI);
 

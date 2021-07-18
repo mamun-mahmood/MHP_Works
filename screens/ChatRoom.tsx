@@ -49,6 +49,7 @@ const ChatRoomScreen = () => {
   const [userTyping, setuserTyping] = useState(false);
   const [isTimerButton, setisTimerButton] = useState(false);
   const [UploadLoading, setUploadLoading] = useState(false);
+  const [chatLoading, setchatLoading] = useState(false);
   
   const [isTimerTime, setisTimerTime] = useState();
   const [messages, setMessages] = useState([]);
@@ -65,8 +66,44 @@ const ChatRoomScreen = () => {
   //         avatar: 'https://placeimg.com/140/140/any',
   //       },
   //     },
+  //     {
+  //       _id: 7757558758,
+  //       text: 'Hello developer',
+  //       createdAt: new Date(),
+  //       user: {
+  //         _id: 3,
+  //         name: 'React Native',
+  //         avatar: 'https://placeimg.com/140/140/any',
+  //       },
+  //     },
   //   ])
   // }, []);
+const getMyChat=()=>{
+   axios.post(`https://api.megahoot.net/api/users/getMyChatData`,{
+     to:route.params.id,
+     from:global.privateKey
+   }).then((res)=>{
+    //  console.log(res.data)
+     res.data.message.forEach((d)=>{
+
+      let myChatData=JSON.parse(d.chat)
+      console.log(myChatData)
+      setMessages(previousMessages => GiftedChat.append(previousMessages, myChatData))
+      
+     })
+   setchatLoading(false)
+    })
+    .catch((err)=>{
+      console.log(err)
+      setchatLoading(false)
+    })
+}
+
+  useEffect(() => {
+    setchatLoading(true)
+    //  handleDeleteToken(route.params.id)
+   getMyChat()
+  }, [])
 
   const onSend = useCallback((messages = []) => {
     
@@ -107,9 +144,9 @@ const ChatRoomScreen = () => {
     //  console.log(value)
   };
   const handleSetChat = async (key, value) => {
-    await SecureStore.deleteItemAsync(key).then;
-    let chat = MChatMessage;
+    let chat =messages;
     chat.push(value);
+    console.log(chat)
     let data = JSON.stringify(chat);
     console.log(data, "sky this is me");
     SecureStore.setItemAsync(key, data).then;
@@ -117,14 +154,15 @@ const ChatRoomScreen = () => {
   };
 
   const handleGetChat = async (key) => {
+   
     const tokenFromPersistentState = await SecureStore.getItemAsync(key);
     if (tokenFromPersistentState) {
       // console.log(tokenFromPersistentState)
       let mydata = JSON.parse(tokenFromPersistentState);
+      
+       console.log(mydata)
 
-      //  console.log(mydata)
-
-      mydata ? setMChatMessage(mydata) : console.log("no sky");
+      mydata[0] ? setMessages(mydata) : console.log("no sky");
       // setMChatMessage(old=>[...old,data])
     }
   };
@@ -188,6 +226,7 @@ const ChatRoomScreen = () => {
         } else {
           setuserTyping(false);
           setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
+          // handleSetChat(route.params.id,message.data)
           // newItem(messageData)
           // handleSetChat(route.params.id,messageData)
           // playYouSound;
@@ -234,6 +273,7 @@ const ChatRoomScreen = () => {
     return uuid;
 }
   const createMessage = (text) => {
+    let mid=create_UUID()
     let message = {
       to: route.params.id,
       message: {
@@ -246,9 +286,8 @@ const ChatRoomScreen = () => {
       from: global.id,
       userName: global.name,
       TimerTime: isTimerTime,
-      data:[
-        {
-          _id: create_UUID(),
+      data:{
+          _id:mid ,
           text: text,
           createdAt: new Date(),
           user: {
@@ -257,14 +296,14 @@ const ChatRoomScreen = () => {
            
           },
         },
-      ]
+      
     };
 
     socket.emit("message", message);
      setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
     // newItem(message)
     // console.log(MChatMessage)
-    //  handleSetChat(route.params.id,message)
+    //  handleSetChat(route.params.id,message.data)
   };
 
   const createMessageEmoji = (text) => {
@@ -383,8 +422,7 @@ const ChatRoomScreen = () => {
         from: global.id,
         userName: global.name,
         TimerTime: isTimerTime,
-        data:[
-          {
+        data:{
             _id: create_UUID(),
             audio: uploadResult.location,
             createdAt: new Date(),
@@ -394,7 +432,6 @@ const ChatRoomScreen = () => {
              
             },
           },
-        ]
       };
   
       socket.emit("message", message);
@@ -443,7 +480,6 @@ stopRecording()
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       quality: 1,
-      aspect: [9, 16],
       base64:true
       
     });
@@ -484,8 +520,7 @@ stopRecording()
         message: {type:"image",uri:uploadResult.location},
         from: user.id,
         userName: user.name,
-        data:[
-          {
+        data:{
             _id: create_UUID()+uploadResult.location,
             image: uploadResult.location,
             createdAt: new Date(),
@@ -495,7 +530,7 @@ stopRecording()
              
             },
           },
-        ]
+        
       };
      
       socket.emit("message", message);
@@ -560,8 +595,7 @@ stopRecording()
           message: {type:"image",uri:uploadResult.location},
           from: user.id,
           userName: user.name,
-          data:[
-            {
+          data:{
               _id: create_UUID()+uploadResult.location,
               image: uploadResult.location,
               createdAt: new Date(),
@@ -571,7 +605,6 @@ stopRecording()
                
               },
             },
-          ]
         };
        
         socket.emit("message", message);
@@ -721,6 +754,11 @@ stopRecording()
       {UploadLoading?  <Spinner
           visible={UploadLoading}
           textContent={'Loading...'}
+          textStyle={styles.spinnerTextStyle}
+        />:null}
+         {chatLoading?  <Spinner
+          visible={chatLoading}
+          textContent={'Loading Previous Chats...'}
           textStyle={styles.spinnerTextStyle}
         />:null}
     

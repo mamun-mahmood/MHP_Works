@@ -46,7 +46,7 @@ console.warn('pressed',global.expoPushToken,data)
     to: global.expoPushToken,
     sound: 'default',
     title: `MegaHoot`,
-    body: `${data.userName}:${data.message.text[0].text}` ,
+    body: `${data.userName}:${data.data.text}` ,
     data: { someData: 'goes here' },
   };
 
