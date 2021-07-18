@@ -30,6 +30,7 @@ import ProfileSetting from "../components/Profile";
 import Searchbar from "../components/searchBar/Searchbar";
 import CallScreen from "../screens/callScreen";
 import VideoButton from "../components/VideoCallBox";
+import SoapBox from "../screens/soapBox";
 
 
 export default function Navigation({
@@ -143,6 +144,11 @@ function RootNavigator() {
         name="CallScreen"
         component={CallScreen}
         options={{ title: "Calling" }}
+      />
+        <Stack.Screen
+        name="SoapBox"
+        component={SoapBox}
+       
       />
       
     </Stack.Navigator>

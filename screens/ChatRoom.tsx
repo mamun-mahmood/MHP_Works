@@ -51,7 +51,7 @@ const ChatRoomScreen = () => {
   const [UploadLoading, setUploadLoading] = useState(false);
   const [chatLoading, setchatLoading] = useState(false);
   
-  const [isTimerTime, setisTimerTime] = useState();
+  const [isTimerTime, setisTimerTime] = useState(false);
   const [messages, setMessages] = useState([]);
  
   // useEffect(() => {
@@ -298,7 +298,7 @@ const getMyChat=()=>{
         },
       
     };
-
+    console.log(message.TimerTime)
     socket.emit("message", message);
      setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
     // newItem(message)
@@ -322,6 +322,7 @@ const getMyChat=()=>{
 
    
     setMChatMessage((old) => [...old, message]);
+ 
     socket.emit("message", message);
     // newItem(message)
     // console.log(MChatMessage)
@@ -330,12 +331,14 @@ const getMyChat=()=>{
 
   const onFlamePresses = () => {
     setisTimerButton(!isTimerButton);
+    setisTimerTime(!isTimerTime)
   };
 
   const OnCurrentDate = (data) => {
-    setisTimerTime(data);
+    console.log(data)
+    // setisTimerTime(data);
     setisTimerButton(false);
-    console.log(data);
+    
   };
 
   const startTyping = () => {
@@ -385,7 +388,7 @@ const getMyChat=()=>{
     if (uri) {
       setImage(uri);
       setUploadLoading(true)
-      let apiUrl = 'https://socketapi.megahoot.net/uploadAudio';
+      let apiUrl = 'https://api.fortisab.com/uploadAudio';
   
       let uriParts = uri.split('.');
       let fileType = uriParts[uriParts.length - 1];
@@ -490,7 +493,7 @@ stopRecording()
       setImage(result.uri);
       setUploadLoading(true)
 
-      let apiUrl = 'https://socketapi.megahoot.net/upload';
+      let apiUrl = 'https://api.fortisab.com/upload';
     let uri=result.uri
       let uriParts = uri.split('.');
       let fileType = uriParts[uriParts.length - 1];
@@ -520,6 +523,7 @@ stopRecording()
         message: {type:"image",uri:uploadResult.location},
         from: user.id,
         userName: user.name,
+        TimerTime: isTimerTime,
         data:{
             _id: create_UUID()+uploadResult.location,
             image: uploadResult.location,
@@ -565,7 +569,7 @@ stopRecording()
     if (!result.cancelled) {
       setImage(result.uri);
       setUploadLoading(true)
-      let apiUrl = 'https://socketapi.megahoot.net/upload';
+      let apiUrl = 'https://api.fortisab.com/upload';
       let uri=result.uri
         let uriParts = uri.split('.');
         let fileType = uriParts[uriParts.length - 1];
@@ -595,6 +599,7 @@ stopRecording()
           message: {type:"image",uri:uploadResult.location},
           from: user.id,
           userName: user.name,
+          TimerTime: isTimerTime,
           data:{
               _id: create_UUID()+uploadResult.location,
               image: uploadResult.location,
@@ -735,7 +740,7 @@ stopRecording()
       {isTimerTime ? (
         <TouchableOpacity
           onPress={() => {
-            setisTimerTime(null);
+            setisTimerTime(!isTimerButton);
           }}
         >
           <View

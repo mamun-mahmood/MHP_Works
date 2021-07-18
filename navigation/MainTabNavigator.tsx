@@ -18,6 +18,7 @@ import SignIn from '../screens/SignIn';
 import ContactScreen from '../screens/ContactScreen';
 
 import VeroHive from '../screens/veroHive';
+import SoapBox from '../screens/soapBox';
 const MainTab = createMaterialTopTabNavigator<MainTabParamList>();
 
 export default function MainTabNavigator() {
@@ -58,7 +59,7 @@ export default function MainTabNavigator() {
       />
        <MainTab.Screen
         name="SoapBox"
-        component={VeroHive}
+        component={SoapBox}
   
       />
         {/* <MainTab.Screen
