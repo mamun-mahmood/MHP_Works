@@ -5,6 +5,7 @@ import { Video, AVPlaybackStatus, Audio } from 'expo-av';
 export default function AudioPlayer(props) {
     
    const {uri}=props
+
   const video = React.useRef(null);
   const [status, setStatus] = React.useState({});
   const [audioUri, setaudioUri] = React.useState(props.uri);
@@ -38,7 +39,6 @@ export default function AudioPlayer(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     backgroundColor: '#ecf0f1',
   },

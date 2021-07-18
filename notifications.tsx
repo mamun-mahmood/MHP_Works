@@ -41,12 +41,12 @@ export function notificationCustom() {
 
 // Can use this function below, OR use Expo's Push Notification Tool-> https://expo.io/notifications
 export async function sendPushNotification(data) {
-console.warn('pressed',global.expoPushToken)
+console.warn('pressed',global.expoPushToken,data)
   const message = {
     to: global.expoPushToken,
     sound: 'default',
     title: `MegaHoot`,
-    body: `${data.userName}:${data.message.text}` ,
+    body: `${data.userName}:${data.message.text[0].text}` ,
     data: { someData: 'goes here' },
   };
 

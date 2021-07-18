@@ -84,6 +84,7 @@ const responseListener = useRef();
      setMyToken(data)
      global.privateKey=privateKey;
      global.name=name;
+     global.imageUri=data.ProfilePic
      setUser({name:name,id:privateKey})
      fetUsers(name,privateKey);
      

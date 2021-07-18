@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect ,useCallback} from "react";
 import {
   Text,
   FlatList,
@@ -12,7 +12,7 @@ import {
 
 import { useRoute } from "@react-navigation/core";
 // import chatRoomData from '../data/Chats'
-
+import AudioPlayer from "../components/audioPlayer";
 import ChatMessage from "../components/chatMessage";
 import { View } from "react-native";
 import InputBox from "../components/inputBox";
@@ -33,7 +33,7 @@ import { CDateTimePicker } from "../components/Timer/datetimePicker";
 import DelayTimer from "../components/Timer";
 import Colors from "../constants/Colors";
 import axios from "axios";
-
+import { GiftedChat } from 'react-native-gifted-chat'
 const ChatRoomScreen = () => {
   const route = useRoute();
   const [sound, setSound] = useState();
@@ -51,6 +51,28 @@ const ChatRoomScreen = () => {
   const [UploadLoading, setUploadLoading] = useState(false);
   
   const [isTimerTime, setisTimerTime] = useState();
+  const [messages, setMessages] = useState([]);
+ 
+  // useEffect(() => {
+  //   setMessages([
+  //     {
+  //       _id: route.params.id,
+  //       text: 'Hello developer',
+  //       createdAt: new Date(),
+  //       user: {
+  //         _id: 2,
+  //         name: 'React Native',
+  //         avatar: 'https://placeimg.com/140/140/any',
+  //       },
+  //     },
+  //   ])
+  // }, []);
+
+  const onSend = useCallback((messages = []) => {
+    
+    setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+    createMessage(messages)
+  }, [])
   // async function playSound() {
   //   console.log('Loading Sound');
   //   const { sound } = await Audio.Sound.createAsync(
@@ -147,6 +169,7 @@ const ChatRoomScreen = () => {
   };
 
   const onMessageRecieved = (message) => {
+    console.log(message)
     let messageData = message;
     let targetId;
 
@@ -164,7 +187,7 @@ const ChatRoomScreen = () => {
           setuserTyping(true);
         } else {
           setuserTyping(false);
-          setMChatMessage((old) => [...old, messageData]);
+          setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
           // newItem(messageData)
           // handleSetChat(route.params.id,messageData)
           // playYouSound;
@@ -201,6 +224,15 @@ const ChatRoomScreen = () => {
     // startSocket()
     setupSocketListeners();
   };
+  const create_UUID=()=>{
+    var dt = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = (dt + Math.random()*16)%16 | 0;
+        dt = Math.floor(dt/16);
+        return (c=='x' ? r :(r&0x3|0x8)).toString(16);
+    });
+    return uuid;
+}
   const createMessage = (text) => {
     let message = {
       to: route.params.id,
@@ -210,14 +242,26 @@ const ChatRoomScreen = () => {
         date: +new Date(),
         className: "message",
       },
+     
       from: global.id,
       userName: global.name,
       TimerTime: isTimerTime,
+      data:[
+        {
+          _id: create_UUID(),
+          text: text,
+          createdAt: new Date(),
+          user: {
+            _id: global.privateKey,
+            name: global.name,
+           
+          },
+        },
+      ]
     };
 
     socket.emit("message", message);
-    setMChatMessage((old) => [...old, message]);
-
+     setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
     // newItem(message)
     // console.log(MChatMessage)
     //  handleSetChat(route.params.id,message)
@@ -329,12 +373,32 @@ const ChatRoomScreen = () => {
       console.log(uploadResult.location)
       let message = {
         to: route.params.id,
-        message: {type:"audio",uri:uploadResult.location},
-        from: user.id,
-        userName: user.name,
+        message: {
+          type: "text",
+          text: uploadResult.location,
+          date: +new Date(),
+          className: "message",
+        },
+       
+        from: global.id,
+        userName: global.name,
+        TimerTime: isTimerTime,
+        data:[
+          {
+            _id: create_UUID(),
+            audio: uploadResult.location,
+            createdAt: new Date(),
+            user: {
+              _id: global.privateKey,
+              name: global.name,
+             
+            },
+          },
+        ]
       };
-    setMChatMessage(old => [...old,message])
+  
       socket.emit("message", message);
+       setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
       setUploadLoading(false)
 }
     // let message = {
@@ -420,9 +484,22 @@ stopRecording()
         message: {type:"image",uri:uploadResult.location},
         from: user.id,
         userName: user.name,
+        data:[
+          {
+            _id: create_UUID()+uploadResult.location,
+            image: uploadResult.location,
+            createdAt: new Date(),
+            user: {
+              _id: global.privateKey,
+              name: global.name,
+             
+            },
+          },
+        ]
       };
-    setMChatMessage(old => [...old,message])
+     
       socket.emit("message", message);
+     setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
       setUploadLoading(false)
 
 }
@@ -446,7 +523,6 @@ stopRecording()
       allowsEditing: true,
       quality: 1,
       base64: true,
-      aspect: [9, 16],
     });
     // Explore the result
     console.log(result);
@@ -484,9 +560,22 @@ stopRecording()
           message: {type:"image",uri:uploadResult.location},
           from: user.id,
           userName: user.name,
+          data:[
+            {
+              _id: create_UUID()+uploadResult.location,
+              image: uploadResult.location,
+              createdAt: new Date(),
+              user: {
+                _id: global.privateKey,
+                name: global.name,
+               
+              },
+            },
+          ]
         };
-      setMChatMessage(old => [...old,message])
+       
         socket.emit("message", message);
+       setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
         setUploadLoading(false)
     }
 
@@ -568,7 +657,7 @@ stopRecording()
           <Text style={styles.username}>Typing...</Text>
         </View>
       ) : null}
-      <FlatList
+      {/* <FlatList
         data={MChatMessage}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
@@ -580,7 +669,35 @@ stopRecording()
         )}
         inverted
         contentContainerStyle={{ flexDirection: "column-reverse" }}
-      />
+      /> */}
+       <GiftedChat
+      messages={messages}
+      onSend={messages => onSend(messages)}
+      infiniteScroll ={true}
+      loadEarlier={true}
+      // onLongPress={()=>{console.warn('presses')}}
+      renderUsernameOnMessage
+      user={{
+        _id: global.privateKey,
+        name:  global.name,
+        // avatar: global.imageUri
+        }}
+        renderMessageAudio={(messages)=><AudioPlayer uri={messages.currentMessage.audio} />}
+      
+        renderComposer={()=>  <InputBox
+          onFlamePresses={onFlamePresses}
+          onStartTyping={startTyping}
+          onPressFile={pickImage}
+          onMessageSend={createMessage}
+          onMessageSendEmoji={createMessageEmoji}
+          microPhoneClickedIn={startRecording}
+          microPhoneClickedOut={stopRecording}
+          cameraPicker={cameraPickerHandler}
+          microphoneLongPressStart={microphoneLongPressStart}
+          microphoneLongPressOut={microphoneLongPressOut}
+          
+        />}
+    />
 
       {isTimerTime ? (
         <TouchableOpacity
@@ -606,19 +723,7 @@ stopRecording()
           textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />:null}
-      <InputBox
-        onFlamePresses={onFlamePresses}
-        onStartTyping={startTyping}
-        onPressFile={pickImage}
-        onMessageSend={createMessage}
-        onMessageSendEmoji={createMessageEmoji}
-        microPhoneClickedIn={startRecording}
-        microPhoneClickedOut={stopRecording}
-        cameraPicker={cameraPickerHandler}
-        microphoneLongPressStart={microphoneLongPressStart}
-        microphoneLongPressOut={microphoneLongPressOut}
-        
-      />
+    
     </View>
   );
 };
