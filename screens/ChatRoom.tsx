@@ -33,7 +33,7 @@ import { CDateTimePicker } from "../components/Timer/datetimePicker";
 import DelayTimer from "../components/Timer";
 import Colors from "../constants/Colors";
 import axios from "axios";
-import { GiftedChat } from 'react-native-gifted-chat'
+import { Avatar, Bubble, GiftedChat } from 'react-native-gifted-chat';
 const ChatRoomScreen = () => {
   const route = useRoute();
   const [sound, setSound] = useState();
@@ -79,6 +79,7 @@ const ChatRoomScreen = () => {
   //   ])
   // }, []);
 const getMyChat=()=>{
+  setchatLoading(true)
    axios.post(`https://api.megahoot.net/api/users/getMyChatData`,{
      to:route.params.id,
      from:global.privateKey
@@ -98,6 +99,21 @@ const getMyChat=()=>{
       setchatLoading(false)
     })
 }
+
+
+const renderBubble=(props)=> {
+  return (
+    <Bubble
+      {...props}
+      wrapperStyle={{
+        right: {
+          backgroundColor: Colors.light.tint,
+        },
+      }}
+    />
+  );
+}
+
 
   useEffect(() => {
     setchatLoading(true)
@@ -210,7 +226,7 @@ const getMyChat=()=>{
     console.log(message)
     let messageData = message;
     let targetId;
-
+console.log('receiving m times')
     //  setMChatMessage(old=>[...old,messageData])
     if (message.to == global.id && message.from == route.params.id) {
       if (message.from === global.id) {
@@ -222,9 +238,14 @@ const getMyChat=()=>{
         messageData.position = "left";
         targetId = message.from;
         if (messageData.message.type == "typing") {
-          setuserTyping(true);
+          if(!userTyping){
+             setuserTyping(true)
+    setTimeout(() => {
+      setuserTyping(false)
+    }, 3000);
+          }
+         
         } else {
-          setuserTyping(false);
           setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
           // handleSetChat(route.params.id,message.data)
           // newItem(messageData)
@@ -256,7 +277,7 @@ const getMyChat=()=>{
     );
 
     startSocket();
-    setupSocketListeners();
+    // setupSocketListeners();
   };
 
   const initSocketConnection = () => {
@@ -293,6 +314,7 @@ const getMyChat=()=>{
           user: {
             _id: global.privateKey,
             name: global.name,
+            avatar: global.imageUri
            
           },
         },
@@ -307,23 +329,37 @@ const getMyChat=()=>{
   };
 
   const createMessageEmoji = (text) => {
+    let mid=create_UUID()
     let message = {
       to: route.params.id,
       message: {
-        type: "emoji",
+        type: "text",
         text: text,
         date: +new Date(),
         className: "message",
       },
+     
       from: global.id,
       userName: global.name,
       TimerTime: isTimerTime,
+      data:{
+          _id:mid ,
+          text: text,
+          createdAt: new Date(),
+          user: {
+            _id: global.privateKey,
+            name: global.name,
+            avatar: global.imageUri
+           
+          },
+        },
+      
     };
 
-   
-    setMChatMessage((old) => [...old, message]);
- 
     socket.emit("message", message);
+    setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
+ 
+   
     // newItem(message)
     // console.log(MChatMessage)
     //  handleSetChat(route.params.id,message)
@@ -354,7 +390,13 @@ const getMyChat=()=>{
       from: global.id,
       userName: global.name,
     };
-    // socket.emit('message', message)
+    socket.emit('message', message)
+    // setuserTyping(true)
+    // setTimeout(() => {
+    //   setuserTyping(false)
+    // }, 5000);
+   
+   
   };
 
   async function startRecording() {
@@ -669,6 +711,7 @@ stopRecording()
   // }, [sound]);
 
   return (
+    <SafeAreaView>
     <View style={{ justifyContent: "space-between", height: "100%" }}>
       {isTimerButton ? (
         <View>
@@ -690,11 +733,7 @@ stopRecording()
         </View>
       ) : null}
 
-      {userTyping ? (
-        <View>
-          <Text style={styles.username}>Typing...</Text>
-        </View>
-      ) : null}
+     
       {/* <FlatList
         data={MChatMessage}
         keyExtractor={(item, index) => index.toString()}
@@ -715,13 +754,22 @@ stopRecording()
       loadEarlier={true}
       // onLongPress={()=>{console.warn('presses')}}
       renderUsernameOnMessage
+      
+      showAvatarForEveryMessage={true}
+      showUserAvatar={true}
       user={{
         _id: global.privateKey,
         name:  global.name,
-        // avatar: global.imageUri
+        avatar: global.imageUri
         }}
+        isTyping={userTyping}
         renderMessageAudio={(messages)=><AudioPlayer uri={messages.currentMessage.audio} />}
+        loadEarlier={chatLoading}
+        isLoadingEarlier={chatLoading}
+        // renderLoadEarlier={()=>{getMyChat}}
+        renderBubble={renderBubble}
       
+       
         renderComposer={()=>  <InputBox
           onFlamePresses={onFlamePresses}
           onStartTyping={startTyping}
@@ -761,13 +809,14 @@ stopRecording()
           textContent={'Loading...'}
           textStyle={styles.spinnerTextStyle}
         />:null}
-         {chatLoading?  <Spinner
+         {/* {chatLoading?  <Spinner
           visible={chatLoading}
           textContent={'Loading Previous Chats...'}
           textStyle={styles.spinnerTextStyle}
-        />:null}
+        />:null} */}
     
     </View>
+    </SafeAreaView>
   );
 };
 

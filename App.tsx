@@ -12,7 +12,7 @@ import * as BackgroundFetch from "expo-background-fetch";
 import * as TaskManager from "expo-task-manager";
 import { notificationCustom } from './notifications';
 import { AppState } from 'react-native';
-const db = SQLite.openDatabase('db.testDb') // returns Database object
+// const db = SQLite.openDatabase('db.testDb') // returns Database object
 
 // function myTask() {
 //   try {

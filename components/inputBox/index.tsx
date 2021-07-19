@@ -21,6 +21,7 @@ const onMicroPhonePressOut=()=>{
 const startTyping=(data)=>{
   setMessage(data)
   props.onStartTyping()
+  
 }
 
 
@@ -71,7 +72,7 @@ onEmojiSelected={emoji => { props.onMessageSendEmoji(emoji);setshowEmoji(false)}
              style={styles.textInput} multiline
             value={message}
             onChangeText={(e)=>{startTyping(e)}}
-          
+       
             
              />
 

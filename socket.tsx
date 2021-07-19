@@ -4,7 +4,9 @@ const io = require('socket.io-client');
 // const fs = require('fs');
 const SOCKET_URI = "https://api.fortisab.com/"
 
-const socket = io(SOCKET_URI);
+const socket = io(SOCKET_URI,{
+  transports:["polling", "websocket"]
+});
 
 export function startSocket() {
   if (!socket.connected) {

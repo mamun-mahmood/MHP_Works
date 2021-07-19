@@ -156,7 +156,7 @@ const responseListener = useRef();
         targetId = message.from
         // handleSetChat(message.from,messageData)
         setChatMessage(messageData)
-       console.warn(AppState.currentState)
+      //  console.warn(AppState.currentState)
        if(AppState.currentState!=="active"){
          sendPushNotification(messageData)
 
