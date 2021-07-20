@@ -19,11 +19,14 @@ export default function ContactScreen() {
 const [FormVisible, setFormVisible] = useState(false)
   const [users,setUsers]=useState([]);
   const [cname,setCname]=useState('');
+  const [email,setEmail]=useState('');
   const [cveroKey,setCveroKey]=useState('');
+  const [scveroKey,setSCveroKey]=useState('');
+  const [scname,setSCname]=useState('');
 
   const addContactHandler=()=>{
     const contactveroKey = global.privateKey
-    {contactveroKey?
+    {contactveroKey &&cveroKey&&cname?
       
       axios
       .post(`https://api.megahoot.net/api/contact/add-contact`, {
@@ -49,6 +52,34 @@ const [FormVisible, setFormVisible] = useState(false)
     
   }
 
+
+  const addContactHandlerviaEmail=(name,veroKey)=>{
+    const contactveroKey = global.privateKey
+    {contactveroKey&&name&&veroKey?
+      
+      axios
+      .post(`https://api.megahoot.net/api/contact/add-contact`, {
+        contactveroKey: veroKey,
+        veroKey: contactveroKey,
+        name:name,
+        profileImage: null,
+        blocked: false,
+        Relation: '',
+        contactStatus: true,
+      })
+      .then((res) => {
+      console.info('Succesfylly added contact')
+       setFormVisible(!FormVisible)
+      
+        // this.fetchContactList()
+      })
+      .catch(function (error) {
+        console.log(error)
+        alert('Error in fetcing user')
+      })
+      :console.error('user not exist')}
+    
+  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -98,6 +129,31 @@ const [FormVisible, setFormVisible] = useState(false)
   //             }
   //             fetUsers();
   // },[])
+  const addEmailHandler=()=>{
+  
+  
+      
+      axios
+      .post(`https://api.megahoot.net/api/users/getUserByUsinternalr87v4v`, {
+        email:email
+      })
+      .then((res) => {
+      console.info(res.data.data.privateKey,res.data.data.firstName,res.data.data.lastName)
+      //  setFormVisible(!FormVisible)
+      setSCname(res.data.data.firstName+" "+res.data.data.lastName)
+      setSCveroKey(res.data.data.privateKey)
+        // this.fetchContactList()
+        addContactHandlerviaEmail(res.data.data.firstName+" "+res.data.data.lastName,res.data.data.privateKey)
+      })
+    
+      .catch(function (error) {
+        console.log(error)
+        alert('user not exist')
+      })
+    
+    
+  }
+
   return (
     <View style={styles.container}>
       {FormVisible?<View style={styles.container}>
@@ -115,6 +171,7 @@ const [FormVisible, setFormVisible] = useState(false)
             value={cveroKey}
             onChangeText={setCveroKey}
              />
+           
               <TouchableOpacity
           activeOpacity={0.7}
           style={styles.buttonStyle}
@@ -122,12 +179,28 @@ const [FormVisible, setFormVisible] = useState(false)
         >
           <Text style={styles.buttonTextStyle}>Add To Contact</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+       
+        <Text style={{fontSize:18,fontWeight:'bold',marginTop:10}}>Or Add Via Email</Text>
+               <TextInput
+            placeholder="Enter Email"
+            style={styles.textInput}
+            value={email}
+            onChangeText={setEmail}
+             />
+               <TouchableOpacity
+          activeOpacity={0.7}
+          style={styles.buttonStyle}
+          onPress={addEmailHandler}
+        >
+          <Text style={styles.buttonTextStyle}>Add To Contact</Text>
+        </TouchableOpacity>
+              <TouchableOpacity
           activeOpacity={0.7}
           style={styles.button2Style}
           onPress={()=>setFormVisible(!FormVisible)}
         >
           <Text style={styles.buttonTextStyle}>Cancel</Text>
+         
         </TouchableOpacity>
         </View>:<FlatList style={{width:'100%'}}
         data={users}

@@ -36,8 +36,8 @@ export const CDateTimePicker = (props) => {
           testID="dateTimePicker"
           value={date}
           mode={'time'}
-          is24Hour={true}
-          display="default"
+          is24Hour={false}
+          display="spinner"
           onChange={onChange}
         />
       

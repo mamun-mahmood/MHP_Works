@@ -2,14 +2,10 @@ import 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import * as SQLite from 'expo-sqlite'
-
 import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import socket, { startSocket } from './socket';
-import * as BackgroundFetch from "expo-background-fetch";
-import * as TaskManager from "expo-task-manager";
 import { notificationCustom } from './notifications';
 import { AppState } from 'react-native';
 // const db = SQLite.openDatabase('db.testDb') // returns Database object

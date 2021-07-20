@@ -44,5 +44,6 @@ export type Message={
 export type ChatRoom={
   id:string;
   users:User[];
-  lastMessage:Message
+  lastMessage:Message,
+  uri:String
 }

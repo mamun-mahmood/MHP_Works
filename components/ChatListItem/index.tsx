@@ -6,6 +6,7 @@ import moment from "moment";
 import { useNavigation } from "@react-navigation/core";
 
 import * as SecureStore from 'expo-secure-store';
+import axios from "axios";
 export type ChatListItemProps = {
   chatRoom: ChatRoom;
 };
@@ -71,12 +72,25 @@ const [LastMessageTime,setLastMessageTime]=useState('')
   //       ) // end executeSQL
   //   }) // end transaction
   // }
+  const getMyChat=()=>{
+ 
+     axios.post(`https://api.megahoot.net/api/users/getMyChatData`,{
+       to:user.veroKey,
+       from:global.privateKey
+     }).then((res)=>{
+     setLastMessage(JSON.parse(res.data.message[res.data.message.length-1].chat)) ;
+    //  console.log(JSON.parse(res.data.message[res.data.message.length-1].chat))
+      })
+      .catch((err)=>{
+        console.log(err)
+        
+      })
+  }
 
-
-  // useEffect(() => {
+  useEffect(() => {
       
-  //   handleGetChat()
-  //  }, [])
+    getMyChat()
+   }, [])
   return (
     <TouchableWithoutFeedback onPress={onClick}> 
     
@@ -93,7 +107,7 @@ const [LastMessageTime,setLastMessageTime]=useState('')
       </View>
 {LastMessage? <Text style={styles.time}>
 
-{moment(LastMessage.date).fromNow()}   
+{moment(LastMessage.createdAt).fromNow()}   
           </Text>:null}
      
     </View>

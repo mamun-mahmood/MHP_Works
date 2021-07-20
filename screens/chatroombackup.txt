@@ -4,7 +4,6 @@ import {
   SafeAreaView,
   Platform,
   TouchableOpacity,
-  Image,
 } from "react-native";
 
 import { useRoute } from "@react-navigation/core";
@@ -24,8 +23,8 @@ import socket, { startSocket } from "../socket";
 import { CDateTimePicker } from "../components/Timer/datetimePicker";
 import Colors from "../constants/Colors";
 import axios from "axios";
-import flameFireGif from '../assets/images/flame.gif'
 import { Avatar, Bubble, GiftedChat } from 'react-native-gifted-chat';
+import * as SQLite from "expo-sqlite";
 const ChatRoomScreen = () => {
   const route = useRoute();
   const [user, setUser] = useState();
@@ -36,10 +35,8 @@ const ChatRoomScreen = () => {
   const [UploadLoading, setUploadLoading] = useState(false);
   const [chatLoading, setchatLoading] = useState(false);
   const [isTimerTime, setisTimerTime] = useState(false);
-  const [messageIsBurning, setmessageIsBurning] = useState(false);
   const [messages, setMessages] = useState([]);
-  
- 
+  const [chatData, setchatData] = useState([]);
   // useEffect(() => {
   //   setMessages([
   //     {
@@ -64,28 +61,96 @@ const ChatRoomScreen = () => {
   //     },
   //   ])
   // }, []);
-const getMyChat=()=>{
-  setchatLoading(true)
-   axios.post(`https://api.megahoot.net/api/users/getMyChatData`,{
-     to:route.params.id,
-     from:global.privateKey
-   }).then((res)=>{
-    const slicedArray = res.data.message.slice(res.data.message.length-10, res.data.message.length);
-    //  console.log(res.data)
-    slicedArray.forEach((d)=>{
+  const openDatabase=()=>{
+    if (Platform.OS === "web") {
+      return {
+        transaction: () => {
+          return {
+            executeSql: () => {},
+          };
+        },
+      };
+    }
+  
+    const db = SQLite.openDatabase("db.db");
+    return db;
+  }
 
-      let myChatData=JSON.parse(d.chat)
-      console.log(myChatData)
-      setMessages(previousMessages => GiftedChat.append(previousMessages, myChatData))
+  const db = openDatabase();
+
+  // useEffect(() => {
+  //   db.transaction((tx) => {
+  //     tx.executeSql(
+  //       `select * from items ;`,
+  //       [],
+  //       (_, { rows: { _array } }) => console.log(_array)
+  //     );
+  //   });
+  // }, []);
+
+useEffect(() => {
+  db.transaction((tx) => {
+    tx.executeSql(
+      `create table if not exists chatData (id integer primary key not null,chatRoomKey text,chatData text);`
+    );
+  
+  });
+}, []);
+
+
+
+const loadChatData=()=>{
+  setchatLoading(true)
+  let querryKeyForData=global.id+route.params.id
+  db.transaction((tx) => {
+   
+    
+   tx.executeSql(
+      `select chatData from chatData where chatRoomKey = ?;`,
+      [querryKeyForData],
+      (_, { rows: { _array } }) =>  {
+        console.log(_array)
+        _array.forEach(e => {
       
-     })
-   setchatLoading(false)
-    })
-    .catch((err)=>{
-      console.log(err)
-      setchatLoading(false)
-    })
+let data=JSON.parse(e.chatData)
+          setMessages(previousMessages => GiftedChat.append(previousMessages,data ))
+        });
+        setchatLoading(false)
+      }
+     
+    );
+  
+  });
 }
+
+ useEffect(() => {
+ 
+loadChatData()
+  
+}, []);
+
+  
+// const getMyChat=()=>{
+//   setchatLoading(true)
+//    axios.post(`https://api.megahoot.net/api/users/getMyChatData`,{
+//      to:route.params.id,
+//      from:global.privateKey
+//    }).then((res)=>{
+//     //  console.log(res.data)
+//      res.data.message.forEach((d)=>{
+
+//       let myChatData=JSON.parse(d.chat)
+//       console.log(myChatData)
+//       setMessages(previousMessages => GiftedChat.append(previousMessages, myChatData))
+      
+//      })
+//    setchatLoading(false)
+//     })
+//     .catch((err)=>{
+//       console.log(err)
+//       setchatLoading(false)
+//     })
+// }
 
 
 const renderBubble=(props)=> {
@@ -102,10 +167,10 @@ const renderBubble=(props)=> {
 }
 
 
-  useEffect(() => {
-    setchatLoading(true)
-   getMyChat()
-  }, [])
+  // useEffect(() => {
+  //   setchatLoading(true)
+  //  getMyChat()
+  // }, [])
 
   const onSend = useCallback((messages = []) => {
     
@@ -237,21 +302,13 @@ console.log('receiving m times')
           // newItem(messageData)
           // handleSetChat(route.params.id,messageData)
           // playYouSound;
-          if(message.TimerTime){
-            let filterData=messages.filter(e=>e._id!==message.data._id)
-            console.log('removing')
-           setTimeout(() => {
-          
-       
-           // setMessages(previousState =>
-           //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-         setMessages(filterData)
-         setmessageIsBurning(true)
-         setTimeout(() => {
-          setmessageIsBurning(false)
-         }, 500);
-           }, 3000);
-         }
+          let querryKeyForData=global.id+route.params.id
+          let chattostore=JSON.stringify(message.data)
+          db.transaction(
+            (tx) => {
+              tx.executeSql("insert into chatData (chatRoomKey, chatData) values (?, ?)", [querryKeyForData,chattostore]);
+            
+            })
         }
       }
 
@@ -324,20 +381,13 @@ console.log('receiving m times')
     console.log(message.TimerTime)
     socket.emit("message", message);
      setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
-     if(message.TimerTime){
-       console.log('removing')
-      setTimeout(() => {
-     
-    console.log(messages.filter(e=>e._id!==message.data._id))
-      // setMessages(previousState =>
-      //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-    setMessages(messages.filter(e=>e._id!==message.data._id))
-    setmessageIsBurning(true)
-    setTimeout(() => {
-     setmessageIsBurning(false)
-    }, 500);
-      }, 3000);
-    }
+     let querryKeyForData=global.id+route.params.id
+     let chattostore=JSON.stringify(message.data)
+     db.transaction(
+       (tx) => {
+         tx.executeSql("insert into chatData (chatRoomKey, chatData) values (?, ?)", [querryKeyForData,chattostore]);
+       
+       })
     // newItem(message)                              
     // console.log(MChatMessage)                          
     //  handleSetChat(route.params.id,message.data)
@@ -373,20 +423,7 @@ console.log('receiving m times')
 
     socket.emit("message", message);
     setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
-    if(message.TimerTime){
-      console.log('removing')
-     setTimeout(() => {
-    
-   console.log(messages.filter(e=>e._id!==message.data._id))
-     // setMessages(previousState =>
-     //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-   setMessages(messages.filter(e=>e._id!==message.data._id))
-   setmessageIsBurning(true)
-   setTimeout(() => {
-    setmessageIsBurning(false)
-   }, 500);
-     }, 3000);
-   }
+ 
    
     // newItem(message)
     // console.log(MChatMessage)
@@ -510,20 +547,13 @@ console.log('receiving m times')
       socket.emit("message", message);
        setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
       setUploadLoading(false)
-      if(message.TimerTime){
-        console.log('removing')
-       setTimeout(() => {
-      
-     console.log(messages.filter(e=>e._id!==message.data._id))
-       // setMessages(previousState =>
-       //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-     setMessages(messages.filter(e=>e._id!==message.data._id))
-     setmessageIsBurning(true)
-     setTimeout(() => {
-      setmessageIsBurning(false)
-     }, 500);
-       }, 3000);
-     }
+      let querryKeyForData=global.id+route.params.id
+      let chattostore=JSON.stringify(message.data)
+      db.transaction(
+        (tx) => {
+          tx.executeSql("insert into chatData (chatRoomKey, chatData) values (?, ?)", [querryKeyForData,chattostore]);
+        
+        })
 }
     // let message = {
     //   to: route.params.id,
@@ -603,20 +633,13 @@ stopRecording()
       socket.emit("message", message);
      setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
       setUploadLoading(false)
-      if(message.TimerTime){
-        console.log('removing')
-       setTimeout(() => {
-      
-     console.log(messages.filter(e=>e._id!==message.data._id))
-       // setMessages(previousState =>
-       //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-     setMessages(messages.filter(e=>e._id!==message.data._id))
-     setmessageIsBurning(true)
-     setTimeout(() => {
-      setmessageIsBurning(false)
-     }, 500);
-       }, 3000);
-     }
+      let querryKeyForData=global.id+route.params.id
+      let chattostore=JSON.stringify(message.data)
+      db.transaction(
+        (tx) => {
+          tx.executeSql("insert into chatData (chatRoomKey, chatData) values (?, ?)", [querryKeyForData,chattostore]);
+        
+        })
 
 }
 
@@ -687,20 +710,13 @@ stopRecording()
         socket.emit("message", message);
        setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
         setUploadLoading(false)
-        if(message.TimerTime){
-          console.log('removing')
-         setTimeout(() => {
-        
-       console.log(messages.filter(e=>e._id!==message.data._id))
-         // setMessages(previousState =>
-         //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-       setMessages(messages.filter(e=>e._id!==message.data._id))
-       setmessageIsBurning(true)
-       setTimeout(() => {
-        setmessageIsBurning(false)
-       }, 500);
-         }, 3000);
-       }
+        let querryKeyForData=global.id+route.params.id
+        let chattostore=JSON.stringify(message.data)
+        db.transaction(
+          (tx) => {
+            tx.executeSql("insert into chatData (chatRoomKey, chatData) values (?, ?)", [querryKeyForData,chattostore]);
+          
+          })
     }
   };
 
@@ -726,17 +742,12 @@ stopRecording()
 
   return (
     <SafeAreaView>
-      {messageIsBurning?  <Image
-         style={{width:'100%', height: '70%',marginTop:-85}}
-         source={flameFireGif} />:null}
-     
     <View style={{ justifyContent: "space-between", height: "100%" }}>
       {isTimerButton ? (
         <View>
           <CDateTimePicker oncurrentDate={OnCurrentDate} />
         </View>
       ) : null}
-       
 
        <GiftedChat
       messages={messages}
@@ -777,8 +788,7 @@ stopRecording()
       {isTimerTime ? (
         <TouchableOpacity
           onPress={() => {
-            setisTimerTime(!isTimerTime);
-            setisTimerTime(null)
+            setisTimerTime(!isTimerButton);
           }}
         >
           <View
@@ -804,7 +814,7 @@ stopRecording()
           textContent={'Loading Previous Chats...'}
           textStyle={styles.spinnerTextStyle}
         />:null} */}
-   
+    
     </View>
     </SafeAreaView>
   );
