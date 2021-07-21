@@ -242,11 +242,11 @@ console.log('receiving m times')
             console.log('removing')
            setTimeout(() => {
           
-       
-           // setMessages(previousState =>
-           //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-         setMessages(filterData)
-         setmessageIsBurning(true)
+            setmessageIsBurning(true)
+           setMessages(previousState =>
+              (previousState.filter(e => e._id !== message.data._id)))
+        //  setMessages(filterData)
+     
          setTimeout(() => {
           setmessageIsBurning(false)
          }, 500);
@@ -323,6 +323,7 @@ console.log('receiving m times')
     };
     console.log(message.TimerTime)
     socket.emit("message", message);
+   
      setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
      if(message.TimerTime){
        console.log('removing')
@@ -331,8 +332,11 @@ console.log('receiving m times')
     console.log(messages.filter(e=>e._id!==message.data._id))
       // setMessages(previousState =>
       //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-    setMessages(messages.filter(e=>e._id!==message.data._id))
-    setmessageIsBurning(true)
+      setmessageIsBurning(true)
+      setMessages(previousState =>
+        (previousState.filter(e => e._id !== message.data._id)))
+        
+   
     setTimeout(() => {
      setmessageIsBurning(false)
     }, 500);
@@ -377,11 +381,13 @@ console.log('receiving m times')
       console.log('removing')
      setTimeout(() => {
     
-   console.log(messages.filter(e=>e._id!==message.data._id))
+  //  console.log(messages.filter(e=>e._id!==message.data._id))
      // setMessages(previousState =>
      //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-   setMessages(messages.filter(e=>e._id!==message.data._id))
-   setmessageIsBurning(true)
+     setmessageIsBurning(true)
+     setMessages(previousState =>
+      (previousState.filter(e => e._id !== message.data._id)))
+  
    setTimeout(() => {
     setmessageIsBurning(false)
    }, 500);
@@ -456,6 +462,14 @@ console.log('receiving m times')
     
     console.log("Recording stopped and stored at", uri);
     if (uri) {
+      setMessages(previousMessages => GiftedChat.append(previousMessages, {_id: create_UUID(),
+        audio: uri,
+        createdAt: new Date(),
+        user: {
+          _id: global.privateKey,
+          name: global.name,
+          avatar: global.imageUri
+        },}))
       setImage(uri);
       setUploadLoading(true)
       let apiUrl = 'https://api.fortisab.com/uploadAudio';
@@ -502,13 +516,13 @@ console.log('receiving m times')
             user: {
               _id: global.privateKey,
               name: global.name,
-             
+              avatar: global.imageUri
             },
           },
       };
   
       socket.emit("message", message);
-       setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
+      //  setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
       setUploadLoading(false)
       if(message.TimerTime){
         console.log('removing')
@@ -517,8 +531,10 @@ console.log('receiving m times')
      console.log(messages.filter(e=>e._id!==message.data._id))
        // setMessages(previousState =>
        //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-     setMessages(messages.filter(e=>e._id!==message.data._id))
-     setmessageIsBurning(true)
+       setmessageIsBurning(true)
+       setMessages(previousState =>
+        (previousState.filter(e => e._id !== message.data._id)))
+ 
      setTimeout(() => {
       setmessageIsBurning(false)
      }, 500);
@@ -552,76 +568,162 @@ stopRecording()
       base64:true
       
     });
+    if(!result.cancelled){
+      if(result.type=="image"){
+    setUploadLoading(true)
+    setMessages(previousMessages => GiftedChat.append(previousMessages, {_id: create_UUID(),
+      image: result.uri,
+      createdAt: new Date(),
+      user: {
+        _id: global.privateKey,
+        name: global.name,
+        avatar: global.imageUri
+       
+      },}))
+    let apiUrl = 'https://api.fortisab.com/upload';
+    let uri=result.uri
+    let uriParts = uri.split('.');
+    let fileType = uriParts[uriParts.length - 1];
+    let formData = new FormData();
+    formData.append('photo', {
+      uri,
+      name: `photo.${fileType}`,
+      type: `image/${fileType}`,
+    });
+  
+    let options = {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+  
+  let uploadResponse= await fetch(apiUrl, options)
+   let uploadResult = await uploadResponse.json()
 
-    if (!result.cancelled) {
-      setImage(result.uri);
-      setUploadLoading(true)
-
-      let apiUrl = 'https://api.fortisab.com/upload';
-      let uri=result.uri
-      let uriParts = uri.split('.');
-      let fileType = uriParts[uriParts.length - 1];
-      let formData = new FormData();
-      formData.append('photo', {
-        uri,
-        name: `photo.${fileType}`,
-        type: `image/${fileType}`,
-      });
-    
-      let options = {
-        method: 'POST',
-        body: formData,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
-        },
-      };
-    
-    let uploadResponse= await fetch(apiUrl, options)
-     let uploadResult = await uploadResponse.json()
-
-      console.log(uploadResult.location)
-      let message = {
-        to: route.params.id,
-        message: {type:"image",uri:uploadResult.location},
-        from: user.id,
-        userName: user.name,
-        TimerTime: isTimerTime,
-        data:{
-            _id: create_UUID()+uploadResult.location,
-            image: uploadResult.location,
-            createdAt: new Date(),
-            user: {
-              _id: global.privateKey,
-              name: global.name,
-             
-            },
+    console.log(uploadResult.location)
+    let message = {
+      to: route.params.id,
+      message: {type:"image",uri:uploadResult.location},
+      from: user.id,
+      userName: user.name,
+      TimerTime: isTimerTime,
+      data:{
+          _id: create_UUID()+uploadResult.location,
+          image: uploadResult.location,
+          createdAt: new Date(),
+          user: {
+            _id: global.privateKey,
+            name: global.name,
+            avatar: global.imageUri
           },
-        
-      };
-     
-      socket.emit("message", message);
-     setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
-      setUploadLoading(false)
-      if(message.TimerTime){
-        console.log('removing')
-       setTimeout(() => {
+        },
       
-     console.log(messages.filter(e=>e._id!==message.data._id))
-       // setMessages(previousState =>
-       //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-     setMessages(messages.filter(e=>e._id!==message.data._id))
-     setmessageIsBurning(true)
+    };
+   
+    socket.emit("message", message);
+  //  setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
+    setUploadLoading(false)
+    if(message.TimerTime){
+      console.log('removing')
      setTimeout(() => {
-      setmessageIsBurning(false)
-     }, 500);
-       }, 3000);
-     }
+    
+   console.log(messages.filter(e=>e._id!==message.data._id))
+     // setMessages(previousState =>
+     //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
+     setmessageIsBurning(true)
+     setMessages(previousState =>
+      (previousState.filter(e => e._id !== message.data._id)))
+ 
+   setTimeout(() => {
+    setmessageIsBurning(false)
+   }, 500);
+     }, 3000);
+   }
 
+
+}else{
+    setUploadLoading(true)
+    setMessages(previousMessages => GiftedChat.append(previousMessages, {_id: create_UUID(),
+      video: result.uri,
+      createdAt: new Date(),
+      user: {
+        _id: global.privateKey,
+        name: global.name,
+        avatar: global.imageUri
+      },}))
+    let apiUrl = 'https://api.fortisab.com/uploadVideo';
+    let uri=result.uri
+    let uriParts = uri.split('.');
+    let fileType = uriParts[uriParts.length - 1];
+    let formData = new FormData();
+    formData.append('video', {
+      uri,
+      name: `video.${fileType}`,
+      type: `video/${fileType}`,
+    });
+  
+    let options = {
+      method: 'POST',
+      body: formData,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+  
+  let uploadResponse= await fetch(apiUrl, options)
+   let uploadResult = await uploadResponse.json()
+
+    console.log(uploadResult.location)
+    let message = {
+      to: route.params.id,
+      message: {type:"video",uri:uploadResult.location},
+      from: user.id,
+      userName: user.name,
+      TimerTime: isTimerTime,
+      data:{
+          _id: create_UUID()+uploadResult.location,
+          video: uploadResult.location,
+          createdAt: new Date(),
+          user: {
+            _id: global.privateKey,
+            name: global.name,
+            avatar: global.imageUri
+          },
+        },
+      
+    };
+   
+    socket.emit("message", message);
+  //  setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
+    setUploadLoading(false)
+    if(message.TimerTime){
+      console.log('removing')
+     setTimeout(() => {
+    
+   console.log(messages.filter(e=>e._id!==message.data._id))
+     // setMessages(previousState =>
+     //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
+     setmessageIsBurning(true)
+     setMessages(previousState =>
+      (previousState.filter(e => e._id !== message.data._id)))
+ 
+   setTimeout(() => {
+    setmessageIsBurning(false)
+   }, 500);
+     }, 3000);
+   }
 }
+    }
+
+ 
 
  
     }
+
 
   const cameraPickerHandler = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -639,6 +741,14 @@ stopRecording()
     });
 
     if (!result.cancelled) {
+      setMessages(previousMessages => GiftedChat.append(previousMessages, {_id: create_UUID(),
+        image: result.uri,
+        createdAt: new Date(),
+        user: {
+          _id: global.privateKey,
+          name: global.name,
+          avatar: global.imageUri
+        },}))
       setImage(result.uri);
       setUploadLoading(true)
       let apiUrl = 'https://api.fortisab.com/upload';
@@ -685,7 +795,7 @@ stopRecording()
         };
        
         socket.emit("message", message);
-       setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
+      //  setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
         setUploadLoading(false)
         if(message.TimerTime){
           console.log('removing')
@@ -694,8 +804,10 @@ stopRecording()
        console.log(messages.filter(e=>e._id!==message.data._id))
          // setMessages(previousState =>
          //    ({ messages: previousState.filter(e => e._id !== message.data._id) }))
-       setMessages(messages.filter(e=>e._id!==message.data._id))
-       setmessageIsBurning(true)
+         setmessageIsBurning(true)
+         setMessages(previousState =>
+          (previousState.filter(e => e._id !== message.data._id)))
+    
        setTimeout(() => {
         setmessageIsBurning(false)
        }, 500);
@@ -726,9 +838,6 @@ stopRecording()
 
   return (
     <SafeAreaView>
-      {messageIsBurning?  <Image
-         style={{width:'100%', height: '70%',marginTop:-85}}
-         source={flameFireGif} />:null}
      
     <View style={{ justifyContent: "space-between", height: "100%" }}>
       {isTimerButton ? (
@@ -746,13 +855,16 @@ stopRecording()
       renderUsernameOnMessage
       showAvatarForEveryMessage={true}
       showUserAvatar={true}
+    
       user={{
         _id: global.privateKey,
         name:  global.name,
         avatar: global.imageUri
         }}
         isTyping={userTyping}
-        renderMessageAudio={(messages)=><AudioPlayer uri={messages.currentMessage.audio} />}
+        renderMessageAudio={(messages)=><AudioPlayer uri={messages.currentMessage.audio} type={"audio"} />}
+        renderMessageVideo={(messages)=><AudioPlayer uri={messages.currentMessage.video} type={"video"} />}
+
         loadEarlier={chatLoading}
         isLoadingEarlier={chatLoading}
         // renderLoadEarlier={()=>{getMyChat}}
@@ -772,6 +884,10 @@ stopRecording()
           microphoneLongPressOut={microphoneLongPressOut}
           
         />}
+        renderCustomView={()=>messageIsBurning?  <Image
+          style={{width:50, height:50}}
+          source={flameFireGif} />:null
+      }
     />
 
       {isTimerTime ? (

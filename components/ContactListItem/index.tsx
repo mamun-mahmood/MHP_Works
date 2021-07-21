@@ -13,10 +13,10 @@ const ContactListItem = (props: ContactListItemProps) => {
   const { user } = props;
   const navigation =useNavigation();
  
-
   const onClick =()=>{
-  console.log("clicked ")
-  }
+
+    navigation.navigate('individualContact',{id:user.veroKey,name:user.name,imageUri:user.imageUri})
+   }
   return (
     <TouchableWithoutFeedback onPress={onClick}> 
     

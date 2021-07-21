@@ -31,6 +31,7 @@ import Searchbar from "../components/searchBar/Searchbar";
 import CallScreen from "../screens/callScreen";
 import VideoButton from "../components/VideoCallBox";
 import SoapBox from "../screens/soapBox";
+import individualContact from "../screens/individualContact";
 
 
 export default function Navigation({
@@ -101,7 +102,7 @@ function RootNavigator() {
         name="ChatRoom"
         component={ChatRoomScreen}
         options={({ route }) => ({
-          title: route.params.name,
+          title: route.params.name?route.params.name:'Chat',
          
           headerRight: () => 
           <View style={{flexDirection:'row',width:100,justifyContent:'space-between',marginRight:10}}>
@@ -150,6 +151,15 @@ function RootNavigator() {
         component={SoapBox}
        
       />
+         <Stack.Screen
+           name="individualContact"
+         options={({ route }) => ({
+          title: route.params.name?route.params.name:'Contact',
+        })}
+        component={individualContact}
+       
+      />
+     
       
     </Stack.Navigator>
   );
