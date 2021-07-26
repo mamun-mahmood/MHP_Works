@@ -33,7 +33,7 @@ const [FormVisible, setFormVisible] = useState(false)
     {contactveroKey?
       
       axios
-      .post("https://api.megahoot.net/api/contact/delete", {
+      .post("https://messangerapi533cdgf6c556.amaprods.com/api/contact/delete", {
         veroKey:contactveroKey,
         userveroKey:cveroKey,
         contactveroKey:cveroKey
@@ -89,7 +89,7 @@ const clickedAt=()=>{
     {contactveroKey&&name&&veroKey?
       
       axios
-      .post(`https://api.megahoot.net/api/contact/add-contact`, {
+      .post(`https://messangerapi533cdgf6c556.amaprods.com/api/contact/add-contact`, {
         contactveroKey: veroKey,
         veroKey: contactveroKey,
         name:name,
@@ -116,7 +116,7 @@ const clickedAt=()=>{
 //     React.useCallback(() => {
 //       const fetUsers=async ()=>{
 //         try{
-//            const userData= await axios.post('https://api.megahoot.net/api/contact/contact-list/',{
+//            const userData= await axios.post('https://messangerapi533cdgf6c556.amaprods.com/api/contact/contact-list/',{
 //              veroKey:global.privateKey,
 //              name:global.name
 //            })
@@ -141,7 +141,7 @@ const clickedAt=()=>{
   // useEffect(()=>{
   //             const fetUsers=async ()=>{
   //               try{
-  //                  const userData= await axios.post('https://api.megahoot.net/api/contact/contact-list/',{
+  //                  const userData= await axios.post('https://messangerapi533cdgf6c556.amaprods.com/api/contact/contact-list/',{
   //                    veroKey:global.privateKey,
   //                    name:global.name
   //                  })
@@ -165,7 +165,7 @@ const clickedAt=()=>{
   
       
       axios
-      .post(`https://api.megahoot.net/api/users/getUserByUsinternalr87v4v`, {
+      .post(`https://messangerapi533cdgf6c556.amaprods.com/api/users/getUserByUsinternalr87v4v`, {
         email:email
       })
       .then((res) => {

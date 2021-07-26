@@ -27,7 +27,7 @@ console.log(props.message,"sky")
   const { message } = props;
 
   const isMyMessage = () => {
-   return message.from ===props.privateKey;
+   return message.from ===global.privateKey;
    
   };
 
@@ -51,16 +51,17 @@ setStartImageLaoding(true)
           },
         ]}
       >
-        {!isMyMessage() && <Text style={styles.name}>{message.userName}</Text>}
+        {!isMyMessage() && <Text style={styles.name}>{message.user.name}</Text>}
         {isMyMessage() && <Text style={styles.name}>You</Text>}
-        {message.message.type=="audio"?<AudioPlayer uri={message.message.uri} />:null}
-        {message.message.type=="emoji"?<Text style={{fontSize:50}}>{message.message.text}</Text>:null}
-        {message.message.type=="image"? <Image onLoadStart={startLoading} onLoadEnd={stopLoading}
-              style={{ width: 320, height: 480 }}
-              source={{uri:message.message.uri}}></Image>:<Text style={styles.message}>{message.message.type=="text"?message.message.text:null}</Text>}
+        {message.audio?<AudioPlayer uri={message.audio} />:null}
+       
+        {/* {message.message.type=="emoji"?<Text style={{fontSize:50}}>{message.text}</Text>:null} */}
+        {message.image? <Image onLoadStart={startLoading} onLoadEnd={stopLoading}
+              style={{ width: 300, height: 300 }}
+              source={{uri:message.image}}></Image>:<Text style={styles.message}>{message.text?message.text:null}</Text>}
    
       
-        <Text style={styles.time}>{moment(message.message.date).fromNow()}</Text>
+        <Text style={styles.time}>{moment(message.createdAt).fromNow()}</Text>
       </View>:null}
       
      

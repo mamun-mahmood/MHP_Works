@@ -5,6 +5,10 @@ import {
   Platform,
   TouchableOpacity,
   Image,
+  TextInput,
+  FlatList,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 
 import { useRoute } from "@react-navigation/core";
@@ -20,11 +24,20 @@ import * as SecureStore from "expo-secure-store";
 import { useFocusEffect } from "@react-navigation/native";
 import styles from "../components/ChatListItem/style";
 import Spinner from 'react-native-loading-spinner-overlay';
+import ImageViewer from 'react-native-image-zoom-viewer';
 import socket, { startSocket } from "../socket";
 import { CDateTimePicker } from "../components/Timer/datetimePicker";
 import Colors from "../constants/Colors";
 import axios from "axios";
 import flameFireGif from '../assets/images/flame.gif'
+import sticker1 from '../assets/stickers/sticker1.png'
+import sticker2 from '../assets/stickers/sticker2.png'
+import sticker3 from '../assets/stickers/sticker3.png'
+import sticker4 from '../assets/stickers/sticker4.png'
+import sticker5 from '../assets/stickers/sticker5.png'
+import sticker6 from '../assets/stickers/sticker6.png'
+import sticker7 from '../assets/stickers/sticker7.png'
+import sticker8 from '../assets/stickers/sticker8.png'
 import { Avatar, Bubble, GiftedChat } from 'react-native-gifted-chat';
 const ChatRoomScreen = () => {
   const route = useRoute();
@@ -38,8 +51,10 @@ const ChatRoomScreen = () => {
   const [isTimerTime, setisTimerTime] = useState(false);
   const [messageIsBurning, setmessageIsBurning] = useState(false);
   const [messages, setMessages] = useState([]);
-  
- 
+  const [timeoutTime, setTimeoutTime] = useState();
+  const [stickers,setStickers]=useState(false)
+ const [isModalView,setModalView]=useState(false)
+ const [TempimageUri,setTempimageUri]=useState('')
   // useEffect(() => {
   //   setMessages([
   //     {
@@ -66,19 +81,21 @@ const ChatRoomScreen = () => {
   // }, []);
 const getMyChat=()=>{
   setchatLoading(true)
-   axios.post(`https://api.megahoot.net/api/users/getMyChatData`,{
+   axios.post(`https://messangerapi533cdgf6c556.amaprods.com/api/users/getMyChatData`,{
      to:route.params.id,
      from:global.privateKey
    }).then((res)=>{
-    const slicedArray = res.data.message.slice(res.data.message.length-10, res.data.message.length);
-    //  console.log(res.data)
-    slicedArray.forEach((d)=>{
+    // const slicedArray = res.data.message.slice(res.data.message.length-10, res.data.message.length);
+    // //  console.log(res.data)
+    // slicedArray.forEach((d)=>{
 
-      let myChatData=JSON.parse(d.chat)
-      console.log(myChatData)
-      setMessages(previousMessages => GiftedChat.append(previousMessages, myChatData))
+    //   let myChatData=JSON.parse(d.chat)
+    //   console.log(myChatData)
+    //   setMessages(previousMessages => GiftedChat.append(previousMessages, myChatData))
       
-     })
+    //  })
+    // console.log(res.data.message)
+    setMessages(res.data.message)
    setchatLoading(false)
     })
     .catch((err)=>{
@@ -106,6 +123,32 @@ const renderBubble=(props)=> {
     setchatLoading(true)
    getMyChat()
   }, [])
+
+  const sendFilter=(uri)=>{
+    let message = {
+      to: route.params.id,
+      message: {type:"image",uri:uri},
+      from: user.id,
+      userName: user.name,
+      TimerTime: isTimerTime,
+      timeoutTime:timeoutTime,
+      data:{
+          _id: create_UUID()+uri,
+          image: uri,
+          emoji:true,
+          createdAt: new Date(),
+          user: {
+            _id: global.privateKey,
+            name: global.name,
+            avatar: global.imageUri
+          },
+        },
+      
+    };
+   
+    socket.emit("message", message);
+  setMessages(previousMessages => GiftedChat.append(previousMessages, message.data))
+  }
 
   const onSend = useCallback((messages = []) => {
     
@@ -250,7 +293,7 @@ console.log('receiving m times')
          setTimeout(() => {
           setmessageIsBurning(false)
          }, 500);
-           }, 3000);
+           }, message.timeoutTime*1000);
          }
         }
       }
@@ -294,6 +337,11 @@ console.log('receiving m times')
     });
     return uuid;
 }
+
+
+const handleStickers=()=>{
+  setStickers(!stickers)
+}
   const createMessage = (text) => {
     let mid=create_UUID()
     let message = {
@@ -308,6 +356,7 @@ console.log('receiving m times')
       from: global.id,
       userName: global.name,
       TimerTime: isTimerTime,
+      timeoutTime:timeoutTime,
       data:{
           _id:mid ,
           text: text,
@@ -339,8 +388,8 @@ console.log('receiving m times')
    
     setTimeout(() => {
      setmessageIsBurning(false)
-    }, 500);
-      }, 3000);
+    },500);
+      },  message.timeoutTime*1000);
     }
     // newItem(message)                              
     // console.log(MChatMessage)                          
@@ -361,6 +410,7 @@ console.log('receiving m times')
       from: global.id,
       userName: global.name,
       TimerTime: isTimerTime,
+      timeoutTime:timeoutTime,
       data:{
           _id:mid ,
           text: text,
@@ -391,7 +441,7 @@ console.log('receiving m times')
    setTimeout(() => {
     setmessageIsBurning(false)
    }, 500);
-     }, 3000);
+     }, message.timeoutTime*1000);
    }
    
     // newItem(message)
@@ -509,6 +559,7 @@ console.log('receiving m times')
         from: global.id,
         userName: global.name,
         TimerTime: isTimerTime,
+        timeoutTime:timeoutTime,
         data:{
             _id: create_UUID(),
             audio: uploadResult.location,
@@ -538,7 +589,7 @@ console.log('receiving m times')
      setTimeout(() => {
       setmessageIsBurning(false)
      }, 500);
-       }, 3000);
+       }, message.timeoutTime*1000);
      }
 }
     // let message = {
@@ -610,6 +661,7 @@ stopRecording()
       from: user.id,
       userName: user.name,
       TimerTime: isTimerTime,
+      timeoutTime:timeoutTime,
       data:{
           _id: create_UUID()+uploadResult.location,
           image: uploadResult.location,
@@ -640,7 +692,7 @@ stopRecording()
    setTimeout(() => {
     setmessageIsBurning(false)
    }, 500);
-     }, 3000);
+     }, message.timeoutTime*1000);
    }
 
 
@@ -684,6 +736,7 @@ stopRecording()
       from: user.id,
       userName: user.name,
       TimerTime: isTimerTime,
+      timeoutTime:timeoutTime,
       data:{
           _id: create_UUID()+uploadResult.location,
           video: uploadResult.location,
@@ -714,7 +767,7 @@ stopRecording()
    setTimeout(() => {
     setmessageIsBurning(false)
    }, 500);
-     }, 3000);
+     }, message.timeoutTime*1000);
    }
 }
     }
@@ -782,6 +835,7 @@ stopRecording()
           from: user.id,
           userName: user.name,
           TimerTime: isTimerTime,
+          timeoutTime:timeoutTime,
           data:{
               _id: create_UUID()+uploadResult.location,
               image: uploadResult.location,
@@ -811,7 +865,7 @@ stopRecording()
        setTimeout(() => {
         setmessageIsBurning(false)
        }, 500);
-         }, 3000);
+         }, message.timeoutTime*1000);
        }
     }
   };
@@ -841,11 +895,48 @@ stopRecording()
      
     <View style={{ justifyContent: "space-between", height: "100%" }}>
       {isTimerButton ? (
-        <View>
-          <CDateTimePicker oncurrentDate={OnCurrentDate} />
+        <View style={{justifyContent:'center',alignItems:'center',backgroundColor:'#d9d9d9',
+        shadowColor: "#000000",
+        shadowOpacity: 0.3,
+        shadowRadius: 2,
+        height:'100%',
+        shadowOffset: {
+          height: 1,
+          width: 1
+        }}} >
+          {/* <CDateTimePicker oncurrentDate={OnCurrentDate} /> */}
+          <Text>Enter the time in seconds</Text>
+         
+          <TextInput
+            placeholder="Timeout(sec)"
+            style={styles.textInput}
+            value={timeoutTime}
+            keyboardType = 'numeric'
+            onChangeText={setTimeoutTime}
+             />
+           {timeoutTime?<Text>You are setting timeout for {timeoutTime} seconds</Text>: <Text>Note:You must set timeout for ephemeral to work</Text>} 
+               <TouchableOpacity
+          activeOpacity={0.7}
+        style={styles.buttonStyle}
+          onPress={()=>setisTimerButton(!isTimerButton)}
+        ><Text style={styles.buttonTextStyle} >Set </Text>
+        </TouchableOpacity>
         </View>
       ) : null}
-       
+         <Modal  visible={isModalView} transparent={true} onRequestClose={() => {}} >
+           <ImageViewer  onCancel={() => {
+               setModalView(false)
+              }} 
+              imageUrls={[{ url: TempimageUri }]}
+              
+              renderHeader={() => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setModalView(false)
+                  }}
+                ><Text style={{color:'white',fontSize:18,fontWeight:'bold',textAlign:'right',marginTop:5,marginRight:10}}>X</Text></TouchableOpacity>
+              )}
+              enableSwipeDown /></Modal>
 
        <GiftedChat
       messages={messages}
@@ -862,6 +953,13 @@ stopRecording()
         avatar: global.imageUri
         }}
         isTyping={userTyping}
+        renderMessageImage={(messages)=><View><TouchableWithoutFeedback onPress={()=>{setTempimageUri(messages.currentMessage.image);setModalView(true)}} >
+          <View><Image source={{uri:messages.currentMessage.image}} 
+          style={{width:300,height:300,backgroundColor:'#ffffff',borderRadius:10}} /></View>
+        
+         </TouchableWithoutFeedback>
+     </View>}
+       
         renderMessageAudio={(messages)=><AudioPlayer uri={messages.currentMessage.audio} type={"audio"} />}
         renderMessageVideo={(messages)=><AudioPlayer uri={messages.currentMessage.video} type={"video"} />}
 
@@ -876,7 +974,7 @@ stopRecording()
           onStartTyping={startTyping}
           onPressFile={pickImage}
           onMessageSend={createMessage}
-          onMessageSendEmoji={createMessageEmoji}
+          onEmojiClick={handleStickers}
           microPhoneClickedIn={startRecording}
           microPhoneClickedOut={stopRecording}
           cameraPicker={cameraPickerHandler}
@@ -894,6 +992,7 @@ stopRecording()
         <TouchableOpacity
           onPress={() => {
             setisTimerTime(!isTimerTime);
+            setisTimerButton(false);
             setisTimerTime(null)
           }}
         >
@@ -904,9 +1003,11 @@ stopRecording()
               padding:2,
               borderRadius: 5,
               backgroundColor: 'orange',
+              flexDirection:'row'
             }}
           >
             <Text style={{color:Colors.light.background,fontSize:11,fontWeight:'bold'}}>Ephemeral  enabled</Text>
+          {timeoutTime?<Text style={{color:Colors.light.background,fontSize:11,fontWeight:'bold'}}>,And Timeout set at {timeoutTime} sec</Text>:null}  
           </View>
         </TouchableOpacity>
       ) : null}
@@ -920,7 +1021,38 @@ stopRecording()
           textContent={'Loading Previous Chats...'}
           textStyle={styles.spinnerTextStyle}
         />:null} */}
+   {stickers? <View style={{flexDirection:'row',flexWrap:'wrap'}}>
    
+    <TouchableOpacity onPress={()=>{sendFilter('https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986241951.png')}}><Image 
+    source={{uri:'https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986241951.png'}}
+     style={{width:90,height:90,margin:5}} /></TouchableOpacity> 
+
+     <TouchableOpacity onPress={()=>{sendFilter('https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986359841.png')}} ><Image 
+    source={{uri:'https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986359841.png'}}
+     style={{width:90,height:90,margin:5}} /></TouchableOpacity>
+
+       <TouchableOpacity onPress={()=>{sendFilter('https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986439740.png')}} ><Image 
+      source={{uri:'https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986439740.png'}}
+       style={{width:90,height:90,margin:5}} /></TouchableOpacity>
+
+       <TouchableOpacity onPress={()=>{sendFilter('https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986479152.png')}} ><Image 
+      source={{uri:'https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986479152.png'}} 
+      style={{width:90,height:90,margin:5}} /></TouchableOpacity>
+       <TouchableOpacity onPress={()=>{sendFilter('https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986508247.png')}} ><Image 
+      source={{uri:'https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986508247.png'}} 
+      style={{width:90,height:90,margin:5}} /></TouchableOpacity>
+      <TouchableOpacity onPress={()=>{sendFilter('https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986586508.png')}} ><Image
+       source={{uri:'https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986586508.png'}} 
+       style={{width:90,height:90,margin:5}} /></TouchableOpacity>
+      <TouchableOpacity onPress={()=>{sendFilter('https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986621087.png')}} ><Image
+       source={{uri:'https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986621087.png'}} 
+       style={{width:90,height:90,margin:5}} /></TouchableOpacity>
+      <TouchableOpacity onPress={()=>{sendFilter('https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986645947.png')}} ><Image 
+      source={{uri:'https://sky1999megabucket.s3.ap-south-1.amazonaws.com/1626986645947.png'}} 
+      style={{width:90,height:90,margin:5}} /></TouchableOpacity>
+    
+     </View>:null}
+    
     </View>
     </SafeAreaView>
   );

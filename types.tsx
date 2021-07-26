@@ -31,7 +31,8 @@ export type User={
   id:string,
   name:String,
   imageUri:String,
-  status:String
+  status:String,
+  profileImage:string
 }
 
 export type Message={

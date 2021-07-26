@@ -29,7 +29,7 @@ const [FormVisible, setFormVisible] = useState(false)
     {contactveroKey &&cveroKey&&cname?
       
       axios
-      .post(`https://api.megahoot.net/api/contact/add-contact`, {
+      .post(`https://messangerapi533cdgf6c556.amaprods.com/api/contact/add-contact`, {
         contactveroKey: cveroKey,
         veroKey: contactveroKey,
         name:cname,
@@ -53,16 +53,16 @@ const [FormVisible, setFormVisible] = useState(false)
   }
 
 
-  const addContactHandlerviaEmail=(name,veroKey)=>{
+  const addContactHandlerviaEmail=(name,veroKey,image)=>{
     const contactveroKey = global.privateKey
     {contactveroKey&&name&&veroKey?
       
       axios
-      .post(`https://api.megahoot.net/api/contact/add-contact`, {
+      .post(`https://messangerapi533cdgf6c556.amaprods.com/api/contact/add-contact`, {
         contactveroKey: veroKey,
         veroKey: contactveroKey,
         name:name,
-        profileImage: null,
+        profileImage: image,
         blocked: false,
         Relation: '',
         contactStatus: true,
@@ -85,7 +85,7 @@ const [FormVisible, setFormVisible] = useState(false)
     React.useCallback(() => {
       const fetUsers=async ()=>{
         try{
-           const userData= await axios.post('https://api.megahoot.net/api/contact/contact-list/',{
+           const userData= await axios.post('https://messangerapi533cdgf6c556.amaprods.com/api/contact/contact-list/',{
              veroKey:global.privateKey,
              name:global.name
            })
@@ -110,7 +110,7 @@ const [FormVisible, setFormVisible] = useState(false)
   // useEffect(()=>{
   //             const fetUsers=async ()=>{
   //               try{
-  //                  const userData= await axios.post('https://api.megahoot.net/api/contact/contact-list/',{
+  //                  const userData= await axios.post('https://messangerapi533cdgf6c556.amaprods.com/api/contact/contact-list/',{
   //                    veroKey:global.privateKey,
   //                    name:global.name
   //                  })
@@ -134,16 +134,17 @@ const [FormVisible, setFormVisible] = useState(false)
   
       
       axios
-      .post(`https://api.megahoot.net/api/users/getUserByUsinternalr87v4v`, {
+      .post(`https://messangerapi533cdgf6c556.amaprods.com/api/users/getUserByUsinternalr87v4v`, {
         email:email
       })
       .then((res) => {
       console.info(res.data.data.privateKey,res.data.data.firstName,res.data.data.lastName)
+      // console.log(res.data.data.ProfilePic)
       //  setFormVisible(!FormVisible)
       setSCname(res.data.data.firstName+" "+res.data.data.lastName)
       setSCveroKey(res.data.data.privateKey)
         // this.fetchContactList()
-        addContactHandlerviaEmail(res.data.data.firstName+" "+res.data.data.lastName,res.data.data.privateKey)
+        addContactHandlerviaEmail(res.data.data.firstName+" "+res.data.data.lastName,res.data.data.privateKey,res.data.data.ProfilePic)
       })
     
       .catch(function (error) {
@@ -159,7 +160,7 @@ const [FormVisible, setFormVisible] = useState(false)
       {FormVisible?<View style={styles.container}>
         
         <Text style={styles.title}>New Contact</Text>
-        <TextInput
+        {/* <TextInput
             placeholder="Enter Name"
             style={styles.textInput}
             value={cname}
@@ -172,15 +173,15 @@ const [FormVisible, setFormVisible] = useState(false)
             onChangeText={setCveroKey}
              />
            
-              <TouchableOpacity
+          <TouchableOpacity
           activeOpacity={0.7}
           style={styles.buttonStyle}
           onPress={addContactHandler}
         >
           <Text style={styles.buttonTextStyle}>Add To Contact</Text>
-        </TouchableOpacity>
-       
-        <Text style={{fontSize:18,fontWeight:'bold',marginTop:10}}>Or Add Via Email</Text>
+        </TouchableOpacity> */}
+{/*        
+        <Text style={{fontSize:18,fontWeight:'bold',marginTop:10}}>Add Via Email</Text> */}
                <TextInput
             placeholder="Enter Email"
             style={styles.textInput}

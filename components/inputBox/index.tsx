@@ -63,10 +63,7 @@ onSendPress()
     <View style={styles.container}>
       {!recordingStart? <View style={styles.mainContainer}>
            
-           {showEmoji? <View><EmojiSelector showTabs={false} 
-
-onEmojiSelected={emoji => { props.onMessageSendEmoji(emoji);setshowEmoji(false)}}
-/></View>: <TouchableOpacity onPress={()=>{setshowEmoji(true)}}><FontAwesome5 name="laugh-beam" size={24} color="grey"   /></TouchableOpacity>}
+      <TouchableOpacity onPress={()=>{props.onEmojiClick()}}><FontAwesome5 name="laugh-beam" size={24} color="grey"   /></TouchableOpacity>
             <TextInput
             placeholder="Type a message"
              style={styles.textInput} multiline

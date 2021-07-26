@@ -48,7 +48,7 @@ const responseListener = useRef();
    
     console.log(myToken,name)
     try{
-       const userData= await axios.post('https://api.megahoot.net/api/contact/contact-list/',{
+       const userData= await axios.post('https://messangerapi533cdgf6c556.amaprods.com/api/contact/contact-list/',{
          veroKey:privateKey,
          name:name
        })
@@ -94,7 +94,7 @@ const responseListener = useRef();
   useFocusEffect(
    React.useCallback(() => {
       handleGetToken('userAuthToken')
-  
+    
   
       initSocketConnection()
      
@@ -206,7 +206,7 @@ const responseListener = useRef();
   // useEffect(()=>{
   //             const fetUsers=async ()=>{
   //               try{
-  //                  const userData= await axios.post('https://api.megahoot.net/api/contact/contact-list/',{
+  //                  const userData= await axios.post('https://messangerapi533cdgf6c556.amaprods.com/api/contact/contact-list/',{
   //                    veroKey:global.privateKey,
   //                    name:global.name
   //                  })

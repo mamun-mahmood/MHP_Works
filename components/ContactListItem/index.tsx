@@ -11,18 +11,19 @@ export type ContactListItemProps = {
 
 const ContactListItem = (props: ContactListItemProps) => {
   const { user } = props;
+  console.log(user)
   const navigation =useNavigation();
  
   const onClick =()=>{
 
-    navigation.navigate('individualContact',{id:user.veroKey,name:user.name,imageUri:user.imageUri})
+    navigation.navigate('individualContact',{id:user.veroKey,name:user.name,imageUri:user.profileImage})
    }
   return (
     <TouchableWithoutFeedback onPress={onClick}> 
     
     <View style={styles.container}>
       <View style={styles.leftContainer}>
-        <Image source={{ uri: user.ProfilePic }} style={styles.avatar} />
+        <Image source={{ uri:user.profileImage}} style={styles.avatar} />
         <View style={styles.midContainer}>
           <Text style={styles.username}>{user.name}</Text>
           <Text style={styles.status}>{user.veroKey}</Text>

@@ -7,9 +7,12 @@ import { useNavigation } from "@react-navigation/core";
 
 import * as SecureStore from 'expo-secure-store';
 import axios from "axios";
+import { MaterialIcons } from '@expo/vector-icons'; 
+import { useFocusEffect } from "@react-navigation/native";
 export type ChatListItemProps = {
   chatRoom: ChatRoom;
 };
+
 
 
 
@@ -74,12 +77,14 @@ const [LastMessageTime,setLastMessageTime]=useState('')
   // }
   const getMyChat=()=>{
  
-     axios.post(`https://api.megahoot.net/api/users/getMyChatData`,{
+     axios.post(`https://messangerapi533cdgf6c556.amaprods.com/api/users/getMyChatData`,{
        to:user.veroKey,
        from:global.privateKey
      }).then((res)=>{
-     setLastMessage(JSON.parse(res.data.message[res.data.message.length-1].chat)) ;
+       console.log(res.data.message[0])
+     setLastMessage(res.data.message[0]) ;
     //  console.log(JSON.parse(res.data.message[res.data.message.length-1].chat))
+    
       })
       .catch((err)=>{
         console.log(err)
@@ -87,22 +92,28 @@ const [LastMessageTime,setLastMessageTime]=useState('')
       })
   }
 
-  useEffect(() => {
+  useFocusEffect(
+    React.useCallback(() => {
+      getMyChat()
       
-    getMyChat()
-   }, [])
+     }, [])
+   );
   return (
     <TouchableWithoutFeedback onPress={onClick}> 
     
     <View style={styles.container}>
       <View style={styles.leftContainer}>
-        <Image source={{ uri: user.ProfilePic }} style={styles.avatar} />
+        <Image source={{ uri:user.profileImage }} style={styles.avatar} />
         <View style={styles.midContainer}>
           <Text style={styles.username}>{user.name}</Text>
-          {LastMessage? <Text numberOfLines={1} style={styles.lastMessage}>
+          
+          {LastMessage && !LastMessage.image && !LastMessage.video && !LastMessage.audio? <Text numberOfLines={1} style={styles.lastMessage}>
             {LastMessage.text}
           </Text>:null}
-         
+
+          {LastMessage && LastMessage.image? <Image source={{uri:LastMessage.image}}  style={{width:20,height:20}}/>:null}
+          {LastMessage && LastMessage.video?<MaterialIcons name="local-movies" size={20} color="black" />:null}
+          {LastMessage && LastMessage.audio?<MaterialIcons name="audiotrack" size={20} color="black" />:null}
         </View>
       </View>
 {LastMessage? <Text style={styles.time}>

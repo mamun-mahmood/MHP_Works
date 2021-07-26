@@ -132,7 +132,7 @@ loadChatData()
   
 // const getMyChat=()=>{
 //   setchatLoading(true)
-//    axios.post(`https://api.megahoot.net/api/users/getMyChatData`,{
+//    axios.post(`https://messangerapi533cdgf6c556.amaprods.com/api/users/getMyChatData`,{
 //      to:route.params.id,
 //      from:global.privateKey
 //    }).then((res)=>{
