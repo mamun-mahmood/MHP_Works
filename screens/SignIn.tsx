@@ -9,13 +9,14 @@ import jwt_decode from "jwt-decode";
 import { useFocusEffect } from "@react-navigation/native";
 
 import * as SecureStore from 'expo-secure-store';
+import { notificationCustom } from "../notifications";
 export default function SignIn() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [User, setUser] = useState();
   const [myToken,setMyToken]=useState({});
-  
+  notificationCustom();
   // async function storeToken(user) {
   //   try {
   //      await AsyncStorage.setItem("userData", JSON.stringify(user));
@@ -57,18 +58,20 @@ export default function SignIn() {
     }
   };
   const signInHandler = () => {
-
+    var decoded;
    
- axios.post(` https://messangerapi533cdgf6c556.amaprods.com/api/users/login`, {
+ axios.post(`https://messangerapi533cdgf6c556.amaprods.com/api/users/login`, {
         email: Email,
         password: Password,
       })
       .then((res) => {
         const data = res.data
-        var decoded = jwt_decode(data.token);
+         decoded = jwt_decode(data.token);
       if(decoded){
         const data = JSON.stringify(decoded.result)
+        console.log(decoded.result)
 setUser(decoded.result)
+console.log(decoded.result,"user data");
 // global.privateKey=decoded.result.privateKey
 // global.name=decoded.result.firstName +" "+decoded.result.lastName
 
@@ -83,7 +86,15 @@ handleGetToken('userAuthToken')
    
     
     })
-    .then(()=>{setIsLoggedIn(true)})
+    .then(()=>{setIsLoggedIn(true);
+      // notificationCustom();
+    
+      axios.post(`https://messangerapi533cdgf6c556.amaprods.com/api/users/storeMyNtoken`,
+      {token:global.pushToken,veroKey:decoded.result.privateKey})
+      .then((res)=>{
+console.log(res.data)
+      }).catch((err)=>console.log(err))
+    })
     .catch(function (error) {
       // handle error
       alert(error.message);

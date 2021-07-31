@@ -44,7 +44,7 @@ export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
 
-  notificationCustom()
+  
 // const createDb=()=>{
 //   db.transaction(tx => {
 //     tx.executeSql(

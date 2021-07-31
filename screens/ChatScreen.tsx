@@ -96,15 +96,15 @@ const responseListener = useRef();
       handleGetToken('userAuthToken')
     
   
-      initSocketConnection()
+      // initSocketConnection()
      
     }, [])
   );
-  const setupSocketListeners=()=> {
-    socket.on('message',onMessageRecieved)
-    socket.on('reconnect', onReconnection)
-    socket.on('disconnect', onClientDisconnected)
-    }
+  // const setupSocketListeners=()=> {
+  //   socket.on('message',onMessageRecieved)
+  //   socket.on('reconnect', onReconnection)
+  //   socket.on('disconnect', onClientDisconnected)
+  //   }
   
   //   const handleSetChat = async (key,value) => {
   //     var MChatMessage=[]
@@ -137,54 +137,54 @@ const responseListener = useRef();
   
  
 
-  const onMessageRecieved=(message)=> {
-      let messageData = message
-      let targetId
+  // const onMessageRecieved=(message)=> {
+  //     let messageData = message
+  //     let targetId
     
-     //  setMChatMessage(old=>[...old,messageData])
+  //    //  setMChatMessage(old=>[...old,messageData])
   
-     if(message.to==global.id){
+  //    if(message.to==global.id){
     
    
-        if (message.from ===global.id) {
-        messageData.position = 'right'
-        targetId = message.to
+  //       if (message.from ===global.id) {
+  //       messageData.position = 'right'
+  //       targetId = message.to
         
-       // setMChatMessage(old=>[...old,messageData])
-      } else {
-        messageData.position = 'left'
-        targetId = message.from
-        // handleSetChat(message.from,messageData)
-        setChatMessage(messageData)
-      //  console.warn(AppState.currentState)
-       if(AppState.currentState!=="active"){
-         sendPushNotification(messageData)
+  //      // setMChatMessage(old=>[...old,messageData])
+  //     } else {
+  //       messageData.position = 'left'
+  //       targetId = message.from
+  //       // handleSetChat(message.from,messageData)
+  //       setChatMessage(messageData)
+  //     //  console.warn(AppState.currentState)
+  //      if(AppState.currentState!=="active"){
+  //        sendPushNotification(messageData)
 
 
-       }
+  //      }
         
-      }
+  //     }
         
        
-       }
+  //      }
 
 
   
-     //  let targetIndex = userChatData.findIndex((u) => u.veroKey === targetId)
-     // // alert(targetIndex)
-     //  if (!userChatData[targetIndex].messages) {
-     //    userChatData[targetIndex].messages = []
-     //  }
-     //  if (targetIndex !== selectedUserIndex) {
-     //    if (!userChatData[targetIndex].unread) {
-     //      userChatData[targetIndex].unread = 0
-     //    }
-     //    userChatData[targetIndex].unread++
-     //  }
-     //  userChatData[targetIndex].messages.push(messageData)
+  //    //  let targetIndex = userChatData.findIndex((u) => u.veroKey === targetId)
+  //    // // alert(targetIndex)
+  //    //  if (!userChatData[targetIndex].messages) {
+  //    //    userChatData[targetIndex].messages = []
+  //    //  }
+  //    //  if (targetIndex !== selectedUserIndex) {
+  //    //    if (!userChatData[targetIndex].unread) {
+  //    //      userChatData[targetIndex].unread = 0
+  //    //    }
+  //    //    userChatData[targetIndex].unread++
+  //    //  }
+  //    //  userChatData[targetIndex].messages.push(messageData)
  
   
-    }
+  //   }
   
    const onClientDisconnected=()=> {
      console.log(
@@ -195,12 +195,12 @@ const responseListener = useRef();
       
     }
   
-   const initSocketConnection=()=> {
+  //  const initSocketConnection=()=> {
   
   
-    // startSocket()
-      setupSocketListeners()
-    }
+  //   // startSocket()
+  //     setupSocketListeners()
+  //   }
 
 
   // useEffect(()=>{

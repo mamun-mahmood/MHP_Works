@@ -982,8 +982,8 @@ stopRecording()
           microphoneLongPressOut={microphoneLongPressOut}
           
         />}
-        renderCustomView={()=>messageIsBurning?  <Image
-          style={{width:50, height:50}}
+        renderFooter={()=>messageIsBurning?  <Image
+          style={{width:30, height:30,margin:13}}
           source={flameFireGif} />:null
       }
     />

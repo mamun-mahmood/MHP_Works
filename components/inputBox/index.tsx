@@ -65,7 +65,7 @@ onSendPress()
            
       <TouchableOpacity onPress={()=>{props.onEmojiClick()}}><FontAwesome5 name="laugh-beam" size={24} color="grey"   /></TouchableOpacity>
             <TextInput
-            placeholder="Type a message"
+            placeholder="MegaHoot Message"
              style={styles.textInput} multiline
             value={message}
             onChangeText={(e)=>{startTyping(e)}}

@@ -1,12 +1,13 @@
+import axios from 'axios';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, Button, Platform } from 'react-native';
+import { Text, View, Button, Platform, AppState } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
+    shouldShowAlert: AppState.currentState=="active"?false:true,
+    shouldPlaySound: AppState.currentState=="active"?false:true,
     shouldSetBadge: false,
   }),
 });
@@ -18,7 +19,9 @@ export function notificationCustom() {
   const responseListener = useRef();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then(token => {setExpoPushToken(token);global.expoPushToken=token});
+    registerForPushNotificationsAsync().then(token => {setExpoPushToken(token);global.pushToken=token;
+   console.log(global.pushToken,token,"sky")
+    });
 
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
