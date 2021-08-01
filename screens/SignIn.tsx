@@ -213,10 +213,7 @@ console.log(res.data)
              <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Data and Storage</Text></View>
            
            </View>:null}
-           {User.privateKey?<View>
-             <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Disappear Message</Text></View>
-           
-           </View>:null}
+         
            {User.privateKey?<View>
              <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Invite</Text></View>
            
