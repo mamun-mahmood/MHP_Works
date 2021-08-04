@@ -365,9 +365,12 @@ const ChatRoomScreen = () => {
       TimerTime: isTimerTime,
       timeoutTime: timeoutTime,
       data: {
+
         _id: mid,
         text: text,
         createdAt: new Date(),
+        sent:true,
+        received:true,
         user: {
           _id: global.privateKey,
           name: global.name,
@@ -418,6 +421,8 @@ const ChatRoomScreen = () => {
       TimerTime: isTimerTime,
       timeoutTime: timeoutTime,
       data: {
+        sent:true,
+        received:true,
         _id: mid,
         text: text,
         createdAt: new Date(),
@@ -566,6 +571,8 @@ const ChatRoomScreen = () => {
         TimerTime: isTimerTime,
         timeoutTime: timeoutTime,
         data: {
+          sent:true,
+          received:true,
           _id: create_UUID(),
           audio: uploadResult.location,
           createdAt: new Date(),
@@ -670,6 +677,8 @@ const ChatRoomScreen = () => {
           TimerTime: isTimerTime,
           timeoutTime: timeoutTime,
           data: {
+            sent:true,
+            received:true,
             _id: create_UUID() + uploadResult.location,
             image: uploadResult.location,
             createdAt: new Date(),
@@ -746,6 +755,8 @@ const ChatRoomScreen = () => {
           TimerTime: isTimerTime,
           timeoutTime: timeoutTime,
           data: {
+            sent:true,
+            received:true,
             _id: create_UUID() + uploadResult.location,
             video: uploadResult.location,
             createdAt: new Date(),
@@ -843,12 +854,15 @@ const ChatRoomScreen = () => {
         TimerTime: isTimerTime,
         timeoutTime: timeoutTime,
         data: {
+          sent:true,
+          received:true,
           _id: create_UUID() + uploadResult.location,
           image: uploadResult.location,
           createdAt: new Date(),
           user: {
             _id: global.privateKey,
             name: global.name,
+            avatar: global.imageUri,
           },
         },
       };
@@ -980,6 +994,7 @@ const ChatRoomScreen = () => {
           renderUsernameOnMessage
           showAvatarForEveryMessage={true}
           showUserAvatar={true}
+          
           user={{
             _id: global.privateKey,
             name: global.name,
