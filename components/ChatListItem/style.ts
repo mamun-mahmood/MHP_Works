@@ -9,6 +9,13 @@ avatar:{
     borderRadius:50,
     backgroundColor:Colors.light.tint
 },
+textLabel:{fontSize:30,
+    width:60,
+    textAlign:'center',
+    height:60,
+    marginRight:15,
+    borderRadius:50,
+    backgroundColor:Colors.light.tint},
 container:{
     flexDirection:'row',
    width:"100%",
