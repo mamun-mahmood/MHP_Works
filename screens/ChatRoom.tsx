@@ -39,6 +39,7 @@ import sticker6 from "../assets/stickers/sticker6.png";
 import sticker7 from "../assets/stickers/sticker7.png";
 import sticker8 from "../assets/stickers/sticker8.png";
 import { Avatar, Bubble, GiftedChat } from "react-native-gifted-chat";
+import { Ionicons } from "@expo/vector-icons";
 const ChatRoomScreen = () => {
   const route = useRoute();
   const [user, setUser] = useState();
@@ -54,7 +55,10 @@ const ChatRoomScreen = () => {
   const [timeoutTime, setTimeoutTime] = useState();
   const [stickers, setStickers] = useState(false);
   const [isModalView, setModalView] = useState(false);
+  const [seenStatus, setseenStatus] = useState(false);
+  
   const [TempimageUri, setTempimageUri] = useState("");
+
   // useEffect(() => {
   //   setMessages([
   //     {
@@ -102,6 +106,7 @@ const ChatRoomScreen = () => {
         // console.log(res.data.message)
         setMessages(res.data.message);
         setchatLoading(false);
+        socket.emit('message',{to:route.params.id,from:global.id,message:{type:'seen'}})
       })
       .catch((err) => {
         console.log(err);
@@ -259,7 +264,7 @@ const ChatRoomScreen = () => {
     console.log(message);
     let messageData = message;
     let targetId;
-    console.log("receiving m times");
+    console.log("receiving m times",messageData.message.type);
     //  setMChatMessage(old=>[...old,messageData])
     if (message.to == global.id && message.from == route.params.id) {
       if (message.from === global.id) {
@@ -277,10 +282,20 @@ const ChatRoomScreen = () => {
               setuserTyping(false);
             }, 3000);
           }
+        }else if(messageData.message.type == "seen"){
+              setseenStatus(true)
+          
+            
+          //    setMessages((previousMessages) =>
+          //    GiftedChat.append(previousMessages, mytemDataForSeenStatus)
+            
+          //  );
         } else {
           setMessages((previousMessages) =>
             GiftedChat.append(previousMessages, message.data)
+           
           );
+          socket.emit('message',{to:route.params.id,from:global.id,message:{type:'seen'}})
           // handleSetChat(route.params.id,message.data)
           // newItem(messageData)
           // handleSetChat(route.params.id,messageData)
@@ -369,7 +384,7 @@ const ChatRoomScreen = () => {
         _id: mid,
         text: text,
         createdAt: new Date(),
-        sent:true,
+        sent:seenStatus,
         received:true,
         user: {
           _id: global.privateKey,
@@ -380,7 +395,7 @@ const ChatRoomScreen = () => {
     };
     console.log(message.TimerTime);
     socket.emit("message", message);
-
+setseenStatus(false)
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, message.data)
     );
@@ -421,7 +436,7 @@ const ChatRoomScreen = () => {
       TimerTime: isTimerTime,
       timeoutTime: timeoutTime,
       data: {
-        sent:true,
+        sent:seenStatus,
         received:true,
         _id: mid,
         text: text,
@@ -571,7 +586,7 @@ const ChatRoomScreen = () => {
         TimerTime: isTimerTime,
         timeoutTime: timeoutTime,
         data: {
-          sent:true,
+          sent:seenStatus,
           received:true,
           _id: create_UUID(),
           audio: uploadResult.location,
@@ -683,7 +698,7 @@ const ChatRoomScreen = () => {
           TimerTime: isTimerTime,
           timeoutTime: timeoutTime,
           data: {
-            sent:true,
+            sent:seenStatus,
             received:true,
             _id: create_UUID() + uploadResult.location,
             image: uploadResult.location,
@@ -762,7 +777,7 @@ const ChatRoomScreen = () => {
           TimerTime: isTimerTime,
           timeoutTime: timeoutTime,
           data: {
-            sent:true,
+            sent:seenStatus,
             received:true,
             _id: create_UUID() + uploadResult.location,
             video: uploadResult.location,
@@ -861,7 +876,7 @@ const ChatRoomScreen = () => {
         TimerTime: isTimerTime,
         timeoutTime: timeoutTime,
         data: {
-          sent:true,
+          sent:seenStatus,
           received:true,
           _id: create_UUID() + uploadResult.location,
           image: uploadResult.location,
@@ -1096,6 +1111,15 @@ const ChatRoomScreen = () => {
                 source={flameFireGif}
               />
             ) : null
+
+          
+          }
+          renderFooter={() =>
+            userTyping ? (
+          <Text style={{color:Colors.light.tint,margin:10}} >Typing</Text>
+            ) : null
+
+          
           }
         />
 
