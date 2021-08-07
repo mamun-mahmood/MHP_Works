@@ -2,14 +2,16 @@ import axios from 'axios';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import React, { useState, useEffect, useRef } from 'react';
-import { Text, View, Button, Platform, AppState } from 'react-native';
+import { Text, View, Button, Platform, AppState,Vibration } from 'react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: AppState.currentState=="active"?false:true,
     shouldPlaySound: AppState.currentState=="active"?false:true,
     shouldSetBadge: false,
+    Vibration:true
   }),
+  
 });
 
 export function notificationCustom() {
@@ -26,6 +28,7 @@ export function notificationCustom() {
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
+      Vibration.vibrate()
     });
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)

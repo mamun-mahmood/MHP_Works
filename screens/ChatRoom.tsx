@@ -130,7 +130,7 @@ const ChatRoomScreen = () => {
   const sendFilter = (uri) => {
     let message = {
       to: route.params.id,
-      message: { type: "image", uri: uri },
+      message: { type: "image", uri: uri,text:'Sticker' },
       from: user.id,
       userName: user.name,
       TimerTime: isTimerTime,
@@ -561,7 +561,7 @@ const ChatRoomScreen = () => {
         to: route.params.id,
         message: {
           type: "text",
-          text: uploadResult.location,
+          text: 'Media',
           date: +new Date(),
           className: "message",
         },
@@ -670,8 +670,14 @@ const ChatRoomScreen = () => {
 
         console.log(uploadResult.location);
         let message = {
+          message: {
+            type: "image",
+            text: 'Picture',
+            uri: uploadResult.location,
+            date: +new Date(),
+            className: "message",
+          },
           to: route.params.id,
-          message: { type: "image", uri: uploadResult.location },
           from: user.id,
           userName: user.name,
           TimerTime: isTimerTime,
@@ -749,7 +755,8 @@ const ChatRoomScreen = () => {
         console.log(uploadResult.location);
         let message = {
           to: route.params.id,
-          message: { type: "video", uri: uploadResult.location },
+          
+          message: { type: "video", uri: uploadResult.location ,text:'Video'},
           from: user.id,
           userName: user.name,
           TimerTime: isTimerTime,
@@ -848,7 +855,7 @@ const ChatRoomScreen = () => {
       console.log(uploadResult.location);
       let message = {
         to: route.params.id,
-        message: { type: "image", uri: uploadResult.location },
+        message: { type: "image", uri: uploadResult.location ,text:'Picture'},
         from: user.id,
         userName: user.name,
         TimerTime: isTimerTime,
