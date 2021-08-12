@@ -72,7 +72,8 @@ onSendPress()
        
             
              />
-
+             {!message?<TouchableOpacity  onPress={props.purgeClicked}><Ionicons name="skull" size={24} color="red" /></TouchableOpacity>:null}
+            
                {message? <TouchableOpacity 
             onPress={onFlamePresses}>
                <Ionicons name="flame" size={24} color="orange" />

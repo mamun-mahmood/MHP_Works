@@ -56,7 +56,12 @@ const ChatRoomScreen = () => {
   const [stickers, setStickers] = useState(false);
   const [isModalView, setModalView] = useState(false);
   const [seenStatus, setseenStatus] = useState(false);
-
+  const [promptVisible, setpromptVisible] = useState(false);
+  const [showPromptPurge, setshowPromptPurge] = useState(false);
+  
+  const [promptMessage, setpromptMessage] = useState('');
+  
+  
   const [TempimageUri, setTempimageUri] = useState("");
 
   // useEffect(() => {
@@ -232,6 +237,18 @@ setseenStatus(true)
     }
   };
 
+  const purgeHandler=()=>{
+    setMessages((previousState) =>
+    previousState.filter((e) => e== null)
+  );
+    axios.post('https://messangerapi533cdgf6c556.amaprods.com/api/users/purgeChats',{
+      to: route.params.id,
+      from: global.id,
+
+    })
+    .then((res)=>{console.log(res.data)})
+    .catch((err)=>{console.log(err)})
+  }
   const handleDeleteToken = async (key, messageData) => {
     console.log(messageData);
     await SecureStore.deleteItemAsync(key).then;
@@ -523,6 +540,9 @@ setseenStatus(true)
   const onFlamePresses = () => {
     setisTimerButton(!isTimerButton);
     setisTimerTime(!isTimerTime);
+  };
+  const purgeClicked =()=>{
+    setshowPromptPurge(true)
   };
 
   const OnCurrentDate = (data) => {
@@ -1052,7 +1072,14 @@ setseenStatus(true)
             enableSwipeDown
           />
         </Modal>
-
+       {showPromptPurge?<View style={{justifyContent:'center',position:'absolute',width:'100%',height:100,top:'40%',zIndex:3,backgroundColor:'white'}}><Text style={{textAlign:'center'}}>Do You Want to Purge Everything?</Text><View style={{flexDirection:'row',justifyContent:'space-evenly'}}><TouchableOpacity 
+       onPress={()=>{setshowPromptPurge(false);
+      setpromptMessage('You cancelled');purgeHandler()}}><Text style={{backgroundColor:'green',color:'white',padding:5,borderRadius:5}}>Agree</Text></TouchableOpacity>
+      <TouchableOpacity onPress={()=>{setshowPromptPurge(false) ;
+        setpromptMessage('You cancelled');}}><Text style={{backgroundColor:'red',color:'white',padding:5,borderRadius:5}}>Cancel</Text></TouchableOpacity></View>
+        
+        </View>
+   :null} 
         <GiftedChat
           messages={messages}
           onSend={(messages) => onSend(messages)}
@@ -1156,6 +1183,7 @@ setseenStatus(true)
               cameraPicker={cameraPickerHandler}
               microphoneLongPressStart={microphoneLongPressStart}
               microphoneLongPressOut={microphoneLongPressOut}
+              purgeClicked={purgeClicked}
             />
           )}
           renderFooter={() =>

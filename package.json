@@ -63,6 +63,7 @@
     "react-native-mime-types": "^2.3.0",
     "react-native-peerjs": "^1.0.4",
     "react-native-phone-call": "^1.0.9",
+    "react-native-prompt": "^1.0.0",
     "react-native-reanimated": "^2.2.0",
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
