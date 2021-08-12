@@ -8,6 +8,7 @@ import Navigation from './navigation';
 import socket, { startSocket } from './socket';
 import { notificationCustom } from './notifications';
 import { AppState } from 'react-native';
+
 // const db = SQLite.openDatabase('db.testDb') // returns Database object
 
 // function myTask() {
@@ -39,6 +40,9 @@ import { AppState } from 'react-native';
 //   }
 // }
 // initBackgroundFetch('myTaskName', myTask, 5);
+
+
+
 
 export default function App() {
   const isLoadingComplete = useCachedResources();

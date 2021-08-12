@@ -56,7 +56,7 @@ const ChatRoomScreen = () => {
   const [stickers, setStickers] = useState(false);
   const [isModalView, setModalView] = useState(false);
   const [seenStatus, setseenStatus] = useState(false);
-  
+
   const [TempimageUri, setTempimageUri] = useState("");
 
   // useEffect(() => {
@@ -94,6 +94,33 @@ const ChatRoomScreen = () => {
         }
       )
       .then((res) => {
+        // console.log(res.data.message[0]);
+        axios
+          .post(
+            "https://messangerapi533cdgf6c556.amaprods.com/api/users/getLastChatForMe",
+            { RoomAddress:route.params.id+global.privateKey}
+          )
+          .then((res) => {
+            // console.log(res.data.message,"seen chat")
+            axios
+              .post(
+                "https://messangerapi533cdgf6c556.amaprods.com/api/users/getSeenStatus",
+                { id: res.data.message._id }
+              )
+              .then((res) => {
+                console.log(res.data.message);
+                if(res.data.message[0].seenStatus==1){
+setseenStatus(true)
+                }
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          })
+          .catch((err) => {
+            console.log(err, "last chat");
+          });
+
         // const slicedArray = res.data.message.slice(res.data.message.length-10, res.data.message.length);
         // //  console.log(res.data)
         // slicedArray.forEach((d)=>{
@@ -106,7 +133,22 @@ const ChatRoomScreen = () => {
         // console.log(res.data.message)
         setMessages(res.data.message);
         setchatLoading(false);
-        socket.emit('message',{to:route.params.id,from:global.id,message:{type:'seen'}})
+        axios
+          .post(
+            "https://messangerapi533cdgf6c556.amaprods.com/api/users/getLastChatForMe",
+            { RoomAddress: global.privateKey + route.params.id }
+          )
+          .then((res) => {
+            socket.emit("message", {
+              to: route.params.id,
+              from: global.id,
+              message: { type: "seen", id: res.data.message._id },
+            });
+          })
+          .catch((err) => {
+            console.log(err, "last chat");
+          });
+        console.log(res.data.message[0]);
       })
       .catch((err) => {
         console.log(err);
@@ -135,7 +177,7 @@ const ChatRoomScreen = () => {
   const sendFilter = (uri) => {
     let message = {
       to: route.params.id,
-      message: { type: "image", uri: uri,text:'Sticker' },
+      message: { type: "image", uri: uri, text: "Sticker" },
       from: user.id,
       userName: user.name,
       TimerTime: isTimerTime,
@@ -264,7 +306,7 @@ const ChatRoomScreen = () => {
     console.log(message);
     let messageData = message;
     let targetId;
-    console.log("receiving m times",messageData.message.type);
+    console.log("receiving m times", messageData.message.type);
     //  setMChatMessage(old=>[...old,messageData])
     if (message.to == global.id && message.from == route.params.id) {
       if (message.from === global.id) {
@@ -282,20 +324,24 @@ const ChatRoomScreen = () => {
               setuserTyping(false);
             }, 3000);
           }
-        }else if(messageData.message.type == "seen"){
-              setseenStatus(true)
-          
-            
+        } else if (messageData.message.type == "seen") {
+          setseenStatus(true);
+
           //    setMessages((previousMessages) =>
           //    GiftedChat.append(previousMessages, mytemDataForSeenStatus)
-            
+
           //  );
         } else {
           setMessages((previousMessages) =>
             GiftedChat.append(previousMessages, message.data)
-           
           );
-          socket.emit('message',{to:route.params.id,from:global.id,message:{type:'seen'}})
+
+          socket.emit("message", {
+            to: route.params.id,
+            from: global.id,
+            message: { type: "seen", id: message.data._id },
+          });
+          
           // handleSetChat(route.params.id,message.data)
           // newItem(messageData)
           // handleSetChat(route.params.id,messageData)
@@ -380,12 +426,11 @@ const ChatRoomScreen = () => {
       TimerTime: isTimerTime,
       timeoutTime: timeoutTime,
       data: {
-
         _id: mid,
         text: text,
         createdAt: new Date(),
-        sent:seenStatus,
-        received:true,
+        sent: seenStatus,
+        received: true,
         user: {
           _id: global.privateKey,
           name: global.name,
@@ -395,7 +440,7 @@ const ChatRoomScreen = () => {
     };
     console.log(message.TimerTime);
     socket.emit("message", message);
-setseenStatus(false)
+    setseenStatus(false);
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, message.data)
     );
@@ -436,8 +481,8 @@ setseenStatus(false)
       TimerTime: isTimerTime,
       timeoutTime: timeoutTime,
       data: {
-        sent:seenStatus,
-        received:true,
+        sent: seenStatus,
+        received: true,
         _id: mid,
         text: text,
         createdAt: new Date(),
@@ -576,7 +621,7 @@ setseenStatus(false)
         to: route.params.id,
         message: {
           type: "text",
-          text: 'Media',
+          text: "Media",
           date: +new Date(),
           className: "message",
         },
@@ -586,8 +631,8 @@ setseenStatus(false)
         TimerTime: isTimerTime,
         timeoutTime: timeoutTime,
         data: {
-          sent:seenStatus,
-          received:true,
+          sent: seenStatus,
+          received: true,
           _id: create_UUID(),
           audio: uploadResult.location,
           createdAt: new Date(),
@@ -687,7 +732,7 @@ setseenStatus(false)
         let message = {
           message: {
             type: "image",
-            text: 'Picture',
+            text: "Picture",
             uri: uploadResult.location,
             date: +new Date(),
             className: "message",
@@ -698,8 +743,8 @@ setseenStatus(false)
           TimerTime: isTimerTime,
           timeoutTime: timeoutTime,
           data: {
-            sent:seenStatus,
-            received:true,
+            sent: seenStatus,
+            received: true,
             _id: create_UUID() + uploadResult.location,
             image: uploadResult.location,
             createdAt: new Date(),
@@ -770,15 +815,15 @@ setseenStatus(false)
         console.log(uploadResult.location);
         let message = {
           to: route.params.id,
-          
-          message: { type: "video", uri: uploadResult.location ,text:'Video'},
+
+          message: { type: "video", uri: uploadResult.location, text: "Video" },
           from: user.id,
           userName: user.name,
           TimerTime: isTimerTime,
           timeoutTime: timeoutTime,
           data: {
-            sent:seenStatus,
-            received:true,
+            sent: seenStatus,
+            received: true,
             _id: create_UUID() + uploadResult.location,
             video: uploadResult.location,
             createdAt: new Date(),
@@ -870,14 +915,14 @@ setseenStatus(false)
       console.log(uploadResult.location);
       let message = {
         to: route.params.id,
-        message: { type: "image", uri: uploadResult.location ,text:'Picture'},
+        message: { type: "image", uri: uploadResult.location, text: "Picture" },
         from: user.id,
         userName: user.name,
         TimerTime: isTimerTime,
         timeoutTime: timeoutTime,
         data: {
-          sent:seenStatus,
-          received:true,
+          sent: seenStatus,
+          received: true,
           _id: create_UUID() + uploadResult.location,
           image: uploadResult.location,
           createdAt: new Date(),
@@ -1016,7 +1061,17 @@ setseenStatus(false)
           renderUsernameOnMessage
           showAvatarForEveryMessage={true}
           showUserAvatar={true}
-          
+          renderTicks={(message) =>
+            message.sent || seenStatus? (
+              <View>
+                <Text style={{ color: "green" }}>✓✓</Text>
+              </View>
+            ) : (
+              <View>
+                <Text style={{ color: "white", fontSize: 12 }}>✓✓</Text>
+              </View>
+            )
+          }
           user={{
             _id: global.privateKey,
             name: global.name,
@@ -1026,27 +1081,26 @@ setseenStatus(false)
           renderMessageImage={(messages) =>
             messages.currentMessage.emoji ? (
               <View>
-                  <View>
-                    <Image
-                      source={{ uri: messages.currentMessage.image }}
-                      style={
-                        messages.currentMessage.emoji
-                          ? {
-                              width: 100,
-                              height: 100,
-                            margin:10,
-                              borderRadius: 10,
-                            }
-                          : {
-                              width: 300,
-                              height: 300,
-                              backgroundColor: "#ffffff",
-                              borderRadius: 10,
-                            }
-                      }
-                    />
-                  </View>
-         
+                <View>
+                  <Image
+                    source={{ uri: messages.currentMessage.image }}
+                    style={
+                      messages.currentMessage.emoji
+                        ? {
+                            width: 100,
+                            height: 100,
+                            margin: 10,
+                            borderRadius: 10,
+                          }
+                        : {
+                            width: 300,
+                            height: 300,
+                            backgroundColor: "#ffffff",
+                            borderRadius: 10,
+                          }
+                    }
+                  />
+                </View>
               </View>
             ) : (
               <View>
@@ -1106,21 +1160,54 @@ setseenStatus(false)
           )}
           renderFooter={() =>
             messageIsBurning ? (
-              <Image
-                style={{ width: 30, height: 30, margin: 13 }}
-                source={flameFireGif}
-              />
-            ) : null
-
-          
+              <View style={{ display: "flex", flexDirection: "row" }}>
+                <Image
+                  style={{ width: 30, height: 30, margin: 13 }}
+                  source={flameFireGif}
+                />
+                <Image
+                  style={{ width: 30, height: 30, margin: 13 }}
+                  source={flameFireGif}
+                />
+                <Image
+                  style={{ width: 30, height: 30, margin: 13 }}
+                  source={flameFireGif}
+                />
+                <Image
+                  style={{ width: 30, height: 30, margin: 13 }}
+                  source={flameFireGif}
+                />
+                <Image
+                  style={{ width: 30, height: 30, margin: 13 }}
+                  source={flameFireGif}
+                />
+                <Image
+                  style={{ width: 30, height: 30, margin: 13 }}
+                  source={flameFireGif}
+                />
+                <Image
+                  style={{ width: 30, height: 30, margin: 13 }}
+                  source={flameFireGif}
+                />
+              </View>
+            ) : userTyping ? (
+              <Text style={{ color: Colors.light.tint, margin: 10 }}>
+                {" "}
+                Typing
+              </Text>
+            ) : (
+              <Text
+                style={{ color: Colors.light.tint, margin: 10, opacity: 0 }}
+              ></Text>
+            )
           }
-          renderFooter={() =>
-            userTyping ? (
-          <Text style={{color:Colors.light.tint,margin:10}} >Typing</Text>
-            ) : null
 
-          
-          }
+          // renderFooter={() =>
+          //   userTyping ? (
+          // <Text style={{color:Colors.light.tint,margin:10}} > Typing</Text>
+          //   ) : <Text style={{color:Colors.light.tint,margin:10,opacity:0}}></Text>
+
+          // }
         />
 
         {isTimerTime ? (
