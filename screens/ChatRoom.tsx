@@ -249,6 +249,19 @@ setseenStatus(true)
     .then((res)=>{console.log(res.data)})
     .catch((err)=>{console.log(err)})
   }
+  const deleteHandler=(id)=>{
+    setMessages((previousState) =>
+    previousState.filter((e) => e._id!==id)
+  );
+    axios.post('https://messangerapi533cdgf6c556.amaprods.com/api/users/deleteChats',{
+      id:id
+
+    })
+    .then((res)=>{console.log(res.data)})
+    .catch((err)=>{console.log(err)})
+  }
+
+  
   const handleDeleteToken = async (key, messageData) => {
     console.log(messageData);
     await SecureStore.deleteItemAsync(key).then;
@@ -1169,6 +1182,26 @@ setseenStatus(true)
           )}
           loadEarlier={chatLoading}
           isLoadingEarlier={chatLoading}
+          onLongPress={(context, message)=>{
+          
+            const options = ['Delete Message', 'Cancel'];
+            const cancelButtonIndex = options.length - 1;
+            context.actionSheet().showActionSheetWithOptions({
+                options,
+                cancelButtonIndex
+            }, (buttonIndex) => {
+                switch (buttonIndex) {
+                    case 0:
+                      // console.warn('deleting messages')
+                      deleteHandler(message._id)
+                      // console.log('deleting messages',message._id)
+                      
+                        // Your delete logic
+                        break;
+                      
+                }
+            });
+          }}
           // renderLoadEarlier={()=>{getMyChat}}
           renderBubble={renderBubble}
           renderComposer={() => (
