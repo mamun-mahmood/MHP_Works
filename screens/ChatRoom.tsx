@@ -58,6 +58,8 @@ const ChatRoomScreen = () => {
   const [seenStatus, setseenStatus] = useState(false);
   const [promptVisible, setpromptVisible] = useState(false);
   const [showPromptPurge, setshowPromptPurge] = useState(false);
+  const [showPromptDelete, setshowPromptDelete] = useState(false);
+  const [DeleteId, setDeleteId] = useState('');
   
   const [promptMessage, setpromptMessage] = useState('');
   
@@ -115,7 +117,8 @@ const ChatRoomScreen = () => {
               .then((res) => {
                 console.log(res.data.message);
                 if(res.data.message[0].seenStatus==1){
-setseenStatus(true)
+ setseenStatus(true)
+// console.log('true')
                 }
               })
               .catch((err) => {
@@ -250,6 +253,8 @@ setseenStatus(true)
     .catch((err)=>{console.log(err)})
   }
   const deleteHandler=(id)=>{
+    // setshowPromptDelete(true)
+
     setMessages((previousState) =>
     previousState.filter((e) => e._id!==id)
   );
@@ -366,12 +371,13 @@ setseenStatus(true)
             GiftedChat.append(previousMessages, message.data)
           );
 
+          
           socket.emit("message", {
             to: route.params.id,
             from: global.id,
             message: { type: "seen", id: message.data._id },
           });
-          
+         
           // handleSetChat(route.params.id,message.data)
           // newItem(messageData)
           // handleSetChat(route.params.id,messageData)
@@ -441,6 +447,7 @@ setseenStatus(true)
     setStickers(!stickers);
   };
   const createMessage = (text) => {
+    setseenStatus(false);
     let mid = create_UUID();
     let message = {
       to: route.params.id,
@@ -470,7 +477,7 @@ setseenStatus(true)
     };
     console.log(message.TimerTime);
     socket.emit("message", message);
-    setseenStatus(false);
+  
     setMessages((previousMessages) =>
       GiftedChat.append(previousMessages, message.data)
     );
@@ -1092,6 +1099,13 @@ setseenStatus(true)
         setpromptMessage('You cancelled');}}><Text style={{backgroundColor:'red',color:'white',padding:5,borderRadius:5}}>Cancel</Text></TouchableOpacity></View>
         
         </View>
+   :null}
+    {showPromptDelete?<View style={{justifyContent:'center',position:'absolute',width:'100%',height:100,top:'40%',zIndex:3,backgroundColor:'white'}}><Text style={{textAlign:'center'}}>Do You Want to Delete This Chat?</Text><View style={{flexDirection:'row',justifyContent:'space-evenly'}}><TouchableOpacity 
+       onPress={()=>{setshowPromptDelete(false);deleteHandler(DeleteId)}}><Text style={{backgroundColor:'green',color:'white',padding:5,borderRadius:5}}>Delete</Text></TouchableOpacity>
+      <TouchableOpacity onPress={()=>{setshowPromptDelete(false) ;
+      }}><Text style={{backgroundColor:'red',color:'white',padding:5,borderRadius:5}}>Cancel</Text></TouchableOpacity></View>
+        
+        </View>
    :null} 
         <GiftedChat
           messages={messages}
@@ -1193,7 +1207,9 @@ setseenStatus(true)
                 switch (buttonIndex) {
                     case 0:
                       // console.warn('deleting messages')
-                      deleteHandler(message._id)
+                      setDeleteId(message._id)
+                      setshowPromptDelete(true)
+                      // deleteHandler(message._id)
                       // console.log('deleting messages',message._id)
                       
                         // Your delete logic

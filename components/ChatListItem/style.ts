@@ -53,6 +53,7 @@ buttonStyle: {
 lastMessage:{
     fontSize:16,
     color:'grey',
+    maxWidth:200
 
 },
 buttonTextStyle: {

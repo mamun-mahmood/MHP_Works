@@ -148,7 +148,7 @@ const rgbToHex=(r, g, b)=> {
         <View style={styles.midContainer}>
           <Text style={styles.username}>{user.name}</Text>
           
-          {LastMessage && !LastMessage.image && !LastMessage.video && !LastMessage.audio? <Text numberOfLines={1} style={styles.lastMessage}>
+          {LastMessage && !LastMessage.image && !LastMessage.video && !LastMessage.audio? <Text numberOfLines = { 1 } style={styles.lastMessage}>
             {LastMessage.text}
           </Text>:null}
 

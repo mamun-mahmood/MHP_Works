@@ -40,6 +40,7 @@
     "expo-sqlite": "~9.2.1",
     "expo-status-bar": "~1.0.4",
     "expo-task-manager": "^9.2.2",
+    "expo-updates": "~0.8.0",
     "expo-web-browser": "~9.2.0",
     "jwt-decode": "^3.1.2",
     "link": "^0.1.5",
