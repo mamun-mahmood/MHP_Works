@@ -464,6 +464,8 @@ const ChatRoomScreen = () => {
       timeoutTime: timeoutTime,
       data: {
         _id: mid,
+        isEphermal:isTimerTime,
+        timeoutTime:timeoutTime,
         text: text,
         createdAt: new Date(),
         sent: seenStatus,

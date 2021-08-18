@@ -32,6 +32,9 @@ import CallScreen from "../screens/callScreen";
 import VideoButton from "../components/VideoCallBox";
 import SoapBox from "../screens/soapBox";
 import individualContact from "../screens/individualContact";
+import Register from "../screens/Register";
+import SignInKunal from "../screens/SignInScreen";
+import SignInScreen from "../screens/SignInScreen";
 
 
 export default function Navigation({
@@ -127,13 +130,24 @@ function RootNavigator() {
       />
         <Stack.Screen
         name="Settings"
-        component={SignIn}
+        component={SignInScreen}
      
+       
+      />
+        <Stack.Screen
+        name="Register"
+        component={Register}
+        options={({ route }) => ({
+          title: 'Register Now',
+        })}
        
       />
        <Stack.Screen
         name="SignIn"
-        component={SignIn}
+        component={SignInScreen}
+        options={({ route }) => ({
+          title: 'SignIn',
+        })}
        
       />
         <Stack.Screen

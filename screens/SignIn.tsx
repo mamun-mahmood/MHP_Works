@@ -6,8 +6,8 @@ import { AntDesign } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import axios from 'axios';
 import jwt_decode from "jwt-decode";
-import { useFocusEffect } from "@react-navigation/native";
-
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import * as Animatable from "react-native-animatable";
 import * as SecureStore from 'expo-secure-store';
 import { notificationCustom } from "../notifications";
 export default function SignIn() {
@@ -17,6 +17,7 @@ export default function SignIn() {
   const [User, setUser] = useState();
   const [myToken,setMyToken]=useState({});
   notificationCustom();
+  const navigation = useNavigation();
   // async function storeToken(user) {
   //   try {
   //      await AsyncStorage.setItem("userData", JSON.stringify(user));
@@ -124,7 +125,8 @@ console.log(res.data)
     }, [User])
   );
   return (
-      <SafeAreaView ><View 
+      <SafeAreaView >
+          <Animatable.View animation="fadeInUpBig"><View 
       
       style={{ justifyContent: "center",
     alignItems: "center",backgroundColor: !User?'#e8dcef':'white',height:'100%'}}>
@@ -170,6 +172,20 @@ console.log(res.data)
               color={Colors.light.tint}
               onPress={signInHandler}
             />
+             <View style={{flexDirection:'row',padding:10}}>
+            <Text>
+              Not Registered? 
+            </Text>
+            <Text style={{ fontWeight: "bold" }} 
+            //  onPress={() => Linking.openURL('http://google.com')}>{" "}
+            // onPress={()=>{  navigation.navigate('SignIn') 
+            onPress={()=>{  navigation.navigate('Register') 
+          }}
+           
+            >{" "}
+          Register
+            </Text>
+          </View>
           </View>
         </View>
       ) : (
@@ -222,6 +238,7 @@ console.log(res.data)
         </View>
       )}
     </View>
- </SafeAreaView>
+ </Animatable.View>
+</SafeAreaView>
      );
 }
