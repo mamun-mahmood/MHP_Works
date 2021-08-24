@@ -11,6 +11,12 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
     Vibration:true
   }),
+  // handleNotification: async () => ({
+  //   shouldShowAlert: true,
+  //   shouldPlaySound: true,
+  //   shouldSetBadge: true,
+  //   Vibration:true
+  // }),
   
 });
 
