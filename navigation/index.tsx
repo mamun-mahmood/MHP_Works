@@ -361,7 +361,7 @@ function RootNavigator() {
         <Stack.Screen
         name="ProfileEdit"
         component={ProfileEdit}
-      
+        options={{ title: "Edit Profile" }}
        
       />
          <Stack.Screen
