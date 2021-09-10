@@ -1,22 +1,19 @@
-// import React from "react";  
+// import React from "react";
 // import { Text, View } from "react-native";
-
 
 // const ProfileEdit = () => {
 //     return(
 //     <View>
 //         <Text>
-//             HI kunal 
+//             HI kunal
 //         </Text>
 //     </View>
 //     )
 // }
 
-
 // export default ProfileEdit;
 
-
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -24,81 +21,89 @@ import {
   ImageBackground,
   TextInput,
   StyleSheet,
-} from 'react-native';
+} from "react-native";
 
-import {useTheme} from 'react-native-paper';
+import { useTheme } from "react-native-paper";
 
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 // import FontAwesome from 'react-native-vector-icons/FontAwesome';
 // import Feather from 'react-native-vector-icons/Feather';
 
-import BottomSheet from 'reanimated-bottom-sheet';
-import Animated from 'react-native-reanimated';
+import BottomSheet from "reanimated-bottom-sheet";
+import Animated from "react-native-reanimated";
 
-import ImagePicker from 'react-native-image-crop-picker';
-import { Feather, FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import Colors from '../constants/Colors';
+import ImagePicker from "react-native-image-crop-picker";
+import {
+  Feather,
+  FontAwesome,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
+import Colors from "../constants/Colors";
+import axios from "axios";
 
 // const ProfileEdit = (props) => {
 
-    function ProfileEdit({route}) { 
+function ProfileEdit({ route }) {
+  const { userFirstName } = route.params;
+  const { userLastName } = route.params;
+  const { userPicture } = route.params;
 
-const {userFirstName} = route.params;
-const {userLastName} =  route.params;
-const {userPicture} =  route.params;
-
-console.log(userPicture);
+  console.log(userPicture);
 
   const [image, setImage] = useState(userPicture);
-//   const [image, setImage] = useState('https://w7.pngwing.com/pngs/304/305/png-transparent-man-with-formal-suit-illustration-web-development-computer-icons-avatar-business-user-profile-child-face-web-design-thumbnail.png');
-  
-// console.log(props.userPicture);
+  //   const [image, setImage] = useState('https://w7.pngwing.com/pngs/304/305/png-transparent-man-with-formal-suit-illustration-web-development-computer-icons-avatar-business-user-profile-child-face-web-design-thumbnail.png');
 
-const {colors} = useTheme();
+  // console.log(props.userPicture);
 
-//   const takePhotoFromCamera = () => {
-//     ImagePicker.openCamera({
-//       compressImageMaxWidth: 300,
-//       compressImageMaxHeight: 300,
-//       cropping: true,
-//       compressImageQuality: 0.7
-//     }).then(image => {
-//       console.log(image);
-//       setImage(image.path);
-//     //   bs.current.snapTo(1);
-//     });
-//   }
+  const { colors } = useTheme();
+
+  //   const takePhotoFromCamera = () => {
+  //     ImagePicker.openCamera({
+  //       compressImageMaxWidth: 300,
+  //       compressImageMaxHeight: 300,
+  //       cropping: true,
+  //       compressImageQuality: 0.7
+  //     }).then(image => {
+  //       console.log(image);
+  //       setImage(image.path);
+  //     //   bs.current.snapTo(1);
+  //     });
+  //   }
 
   const choosePhotoFromLibrary = () => {
     ImagePicker.openPicker({
       width: 300,
       height: 300,
       cropping: true,
-      compressImageQuality: 0.7
-    }).then(image => {
+      compressImageQuality: 0.7,
+    }).then((image) => {
       console.log(image);
       setImage(image.path);
       bs.current.snapTo(1);
     });
-  }
+  };
 
   const renderInner = () => (
     <View style={styles.panel}>
-      <View style={{alignItems: 'center'}}>
+      <View style={{ alignItems: "center" }}>
         <Text style={styles.panelTitle}>Upload Photo</Text>
         <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
       </View>
       {/* <TouchableOpacity style={styles.panelButton} onPress={takePhotoFromCamera}> */}
-      <TouchableOpacity style={styles.panelButton} >
+      <TouchableOpacity style={styles.panelButton}>
         <Text style={styles.panelButtonTitle}>Take Photo</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.panelButton} onPress={choosePhotoFromLibrary}>
+      <TouchableOpacity
+        style={styles.panelButton}
+        onPress={choosePhotoFromLibrary}
+      >
         <Text style={styles.panelButtonTitle}>Choose From Library</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.panelButton}
         // onPress={() => bs.current.snapTo(1)}>
-        >
+      >
         <Text style={styles.panelButtonTitle}>Cancel</Text>
       </TouchableOpacity>
     </View>
@@ -115,6 +120,39 @@ const {colors} = useTheme();
   const bs = React.createRef();
   const fall = new Animated.Value(1);
 
+  // const editHandler = () => {
+  //   axios
+  //   .post(`http://localhost:3000/api/users/updateuser`, {
+  //     // first_name: firstNameEntered,
+  //     // last_name: lastNameEntered,
+  //     // id: global.privateKey,
+  //     first_name: "kali",
+  //     last_name: "kali2",
+  //     id: "1111507270",
+  //   })
+  //   .then()
+  //   // console.log(global.privateKey);
+  // };
+
+  const [fName, setfName] = useState("");
+  const [lName, setlName] = useState("");
+
+
+  const editProfile = () => {
+    axios
+      .patch(`http://192.168.1.33:3000/api/users/updateuser`, {
+        first_name: fName,
+        last_name: lName,
+        id: parseInt(global.privateKey),
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => console.log(err));
+
+    // console.log(global.privateKey);
+  };
+
   return (
     <View style={styles.container}>
       <BottomSheet
@@ -126,41 +164,47 @@ const {colors} = useTheme();
         callbackNode={fall}
         enabledGestureInteraction={true}
       />
-      <Animated.View style={{margin: 20,
-        opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
-    }}>
-        <View style={{alignItems: 'center'}}>
+      <Animated.View
+        style={{
+          margin: 20,
+          opacity: Animated.add(0.1, Animated.multiply(fall, 1.0)),
+        }}
+      >
+        <View style={{ alignItems: "center" }}>
           <TouchableOpacity onPress={() => bs.current.snapTo(0)}>
             <View
               style={{
                 height: 100,
                 width: 100,
                 borderRadius: 15,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
               <ImageBackground
                 source={{
                   uri: image,
                 }}
-                style={{height: 150, width: 150, marginTop: 30}}
-                imageStyle={{borderRadius: 100}}>
+                style={{ height: 150, width: 150, marginTop: 30 }}
+                imageStyle={{ borderRadius: 100 }}
+              >
                 <View
                   style={{
                     flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
                   <MaterialIcons
                     name="camera"
                     size={25}
                     color="#fff"
                     style={{
                       opacity: 0.7,
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      alignItems: "center",
+                      justifyContent: "center",
                       borderWidth: 1,
-                      borderColor: '#fff',
+                      borderColor: "#fff",
                       borderRadius: 50,
                     }}
                   />
@@ -168,7 +212,7 @@ const {colors} = useTheme();
               </ImageBackground>
             </View>
           </TouchableOpacity>
-          <Text style={{marginTop: 80, fontSize: 18, fontWeight: 'bold'}}>
+          <Text style={{ marginTop: 80, fontSize: 18, fontWeight: "bold" }}>
             {userFirstName} {userLastName}
           </Text>
         </View>
@@ -185,6 +229,8 @@ const {colors} = useTheme();
                 color: colors.text,
               },
             ]}
+            value={fName}
+            onChangeText={setfName}
           />
         </View>
         <View style={styles.action}>
@@ -199,6 +245,8 @@ const {colors} = useTheme();
                 color: colors.text,
               },
             ]}
+            value={lName}
+            onChangeText={setlName}
           />
         </View>
         <View style={styles.action}>
@@ -259,13 +307,17 @@ const {colors} = useTheme();
             ]}
           />
         </View> */}
-        <TouchableOpacity style={styles.commandButton} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.commandButton}
+          // onPress={() => {}}
+          onPress={editProfile}
+        >
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
       </Animated.View>
     </View>
   );
-};
+}
 
 export default ProfileEdit;
 
@@ -274,17 +326,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   commandButton: {
-
     padding: 15,
     borderRadius: 10,
     // backgroundColor: '#FF6347',
     backgroundColor: Colors.light.tint,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 30,
   },
   panel: {
     padding: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     paddingTop: 20,
     // borderTopLeftRadius: 20,
     // borderTopRightRadius: 20,
@@ -294,9 +345,9 @@ const styles = StyleSheet.create({
     // shadowOpacity: 0.4,
   },
   header: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#333333',
-    shadowOffset: {width: -1, height: -3},
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#333333",
+    shadowOffset: { width: -1, height: -3 },
     shadowRadius: 2,
     shadowOpacity: 0.4,
     // elevation: 5,
@@ -305,13 +356,13 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
   },
   panelHeader: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   panelHandle: {
     width: 40,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#00000040',
+    backgroundColor: "#00000040",
     marginBottom: 10,
   },
   panelTitle: {
@@ -320,7 +371,7 @@ const styles = StyleSheet.create({
   },
   panelSubtitle: {
     fontSize: 14,
-    color: 'gray',
+    color: "gray",
     height: 30,
     marginBottom: 10,
   },
@@ -328,33 +379,33 @@ const styles = StyleSheet.create({
     padding: 13,
     borderRadius: 10,
     backgroundColor: Colors.light.tint,
-        alignItems: 'center',
+    alignItems: "center",
     marginVertical: 7,
   },
   panelButtonTitle: {
     fontSize: 17,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
   },
   action: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 20,
     marginBottom: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#f2f2f2',
+    borderBottomColor: "#f2f2f2",
     paddingBottom: 5,
   },
   actionError: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#FF0000',
+    borderBottomColor: "#FF0000",
     paddingBottom: 5,
   },
   textInput: {
     flex: 1,
-    marginTop: Platform.OS === 'ios' ? 0 : -12,
+    marginTop: Platform.OS === "ios" ? 0 : -12,
     paddingLeft: 10,
-    color: '#05375a',
+    color: "#05375a",
   },
 });

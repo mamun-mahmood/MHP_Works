@@ -1,25 +1,36 @@
 import * as React from "react";
-import { StyleSheet,AppState, FlatList,View,Text,AsyncStorage, TextInput, ActivityIndicator, TouchableOpacity, Button} from "react-native";
+import {
+  StyleSheet,
+  AppState,
+  FlatList,
+  View,
+  Text,
+  AsyncStorage,
+  TextInput,
+  ActivityIndicator,
+  TouchableOpacity,
+  Button,
+} from "react-native";
 
 import EditScreenInfo from "../components/EditScreenInfo";
 import ChatListItem from "../components/ChatListItem";
-import axios from 'axios';
+import axios from "axios";
 import ChatRooms from "../data/ChatRooms";
 import InputBox from "../components/inputBox";
 import NewMessageButton from "../components/NewMessageButton";
-import { useState ,useRef} from "react";
+import { useState, useRef } from "react";
 import { useEffect } from "react";
-import * as SecureStore from 'expo-secure-store';
-import { useFocusEffect } from '@react-navigation/native';
-import filter from 'lodash.filter';
+import * as SecureStore from "expo-secure-store";
+import { useFocusEffect } from "@react-navigation/native";
+import filter from "lodash.filter";
 import Searchbar from "../components/searchBar/Searchbar";
 import Colors from "../constants/Colors";
 import { useNavigation } from "@react-navigation/core";
-import socket, { startSocket } from '../socket';
-import Constants from 'expo-constants';
-import * as Notifications from 'expo-notifications';
+import socket, { startSocket } from "../socket";
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
 import ChatMessage from "../components/chatMessage";
-import{sendPushNotification} from '../notifications'
+import { sendPushNotification } from "../notifications";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -29,75 +40,67 @@ Notifications.setNotificationHandler({
   }),
 });
 
-
 export default function ChatScreen() {
-  const [users,setUsers]=useState([]);
-  const [myToken,setMyToken]=useState({});
-  const [user,setUser]=useState()
-  const [query, setQuery] = useState('');
-const [fullData, setFullData] = useState([]);
-const [isLoading, setIsLoading] = useState(false);
-const [data, setData] = useState([]);
-const [error, setError] = useState(null);
-const[chatMessage,setChatMessage]=useState()
-const [expoPushToken, setExpoPushToken] = useState('');
-const [notification, setNotification] = useState(false);
-const notificationListener = useRef();
-const responseListener = useRef();
-  const fetUsers=async (name,privateKey)=>{
-   
-    console.log(myToken,name)
-    try{
-       const userData= await axios.post('https://messangerapi533cdgf6c556.amaprods.com/api/contact/contact-list/',{
-         veroKey:privateKey,
-         name:name
-       })
+  const [users, setUsers] = useState([]);
+  const [myToken, setMyToken] = useState({});
+  const [user, setUser] = useState();
+  const [query, setQuery] = useState("");
+  const [fullData, setFullData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
+  const [chatMessage, setChatMessage] = useState();
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  const fetUsers = async (name, privateKey) => {
+    console.log(myToken, name);
+    try {
+      const userData = await axios.post(
+        "https://messangerapi533cdgf6c556.amaprods.com/api/contact/contact-list/",
+        {
+          veroKey: privateKey,
+          name: name,
+        }
+      );
 
-       const contactParse = JSON.parse(userData.data.data.contact)
+      const contactParse = JSON.parse(userData.data.data.contact);
       //  contactParse.forEach((contact) => users.push(contact))
-   
-       console.log(userData.data.data,users)
-      setUsers(contactParse)
-      setData(contactParse)
-      setFullData(contactParse)
-    // global.contacts=userData.data.data
-    // console.log(global.contacts)
-     
-    } catch (e){
-      console.log(e)
+
+      console.log(userData.data.data, users);
+      setUsers(contactParse);
+      setData(contactParse);
+      setFullData(contactParse);
+      // global.contacts=userData.data.data
+      // console.log(global.contacts)
+    } catch (e) {
+      console.log(e);
     }
-  }
+  };
 
-
-
-  const navigation =useNavigation();
+  const navigation = useNavigation();
   const handleGetToken = async (key) => {
-  
-    const tokenFromPersistentState = await SecureStore.getItemAsync(
-     key,
-    );
+    const tokenFromPersistentState = await SecureStore.getItemAsync(key);
     if (tokenFromPersistentState) {
-      let data = JSON.parse(tokenFromPersistentState)
-      console.log(data.firstName)
-      let name=data.firstName+" "+data.lastName
-      let privateKey= data.privateKey
-     setMyToken(data)
-     global.privateKey=privateKey;
-     global.name=name;
-     global.imageUri=data.ProfilePic
-     setUser({name:name,id:privateKey})
-     fetUsers(name,privateKey);
-     
+      let data = JSON.parse(tokenFromPersistentState);
+      console.log(data.firstName);
+      let name = data.firstName + " " + data.lastName;
+      let privateKey = data.privateKey;
+      setMyToken(data);
+      global.privateKey = privateKey;
+      global.name = name;
+      global.imageUri = data.ProfilePic;
+      setUser({ name: name, id: privateKey });
+      fetUsers(name, privateKey);
     }
   };
 
   useFocusEffect(
-   React.useCallback(() => {
-      handleGetToken('userAuthToken')
-    
-  
+    React.useCallback(() => {
+      handleGetToken("userAuthToken");
+
       // initSocketConnection()
-     
     }, [])
   );
   // const setupSocketListeners=()=> {
@@ -105,23 +108,20 @@ const responseListener = useRef();
   //   socket.on('reconnect', onReconnection)
   //   socket.on('disconnect', onClientDisconnected)
   //   }
-  
+
   //   const handleSetChat = async (key,value) => {
   //     var MChatMessage=[]
-     
+
   //     const tokenFromPersistentStatem = await SecureStore.getItemAsync(
   //       key,
   //      );
   //      if (tokenFromPersistentStatem) {
   //        console.log(tokenFromPersistentStatem)
   //       let mydatam = JSON.parse(tokenFromPersistentStatem)
-        
-       
-  //       console.log(mydatam)
-       
-      
-  //      (mydatam? MChatMessage.push(mydatam): console.log('no sky'))
 
+  //       console.log(mydatam)
+
+  //      (mydatam? MChatMessage.push(mydatam): console.log('no sky'))
 
   //     let chat=MChatMessage;
   //     chat.push(value)
@@ -131,25 +131,22 @@ const responseListener = useRef();
   //    console.log(data)
   //   };
   // }
-   const onReconnection=()=> {
-    console.log('Connection Established.', 'Reconnected!')
-    }
-  
- 
+  const onReconnection = () => {
+    console.log("Connection Established.", "Reconnected!");
+  };
 
   // const onMessageRecieved=(message)=> {
   //     let messageData = message
   //     let targetId
-    
+
   //    //  setMChatMessage(old=>[...old,messageData])
-  
+
   //    if(message.to==global.id){
-    
-   
+
   //       if (message.from ===global.id) {
   //       messageData.position = 'right'
   //       targetId = message.to
-        
+
   //      // setMChatMessage(old=>[...old,messageData])
   //     } else {
   //       messageData.position = 'left'
@@ -160,16 +157,12 @@ const responseListener = useRef();
   //      if(AppState.currentState!=="active"){
   //        sendPushNotification(messageData)
 
-
   //      }
-        
+
   //     }
-        
-       
+
   //      }
 
-
-  
   //    //  let targetIndex = userChatData.findIndex((u) => u.veroKey === targetId)
   //    // // alert(targetIndex)
   //    //  if (!userChatData[targetIndex].messages) {
@@ -182,26 +175,22 @@ const responseListener = useRef();
   //    //    userChatData[targetIndex].unread++
   //    //  }
   //    //  userChatData[targetIndex].messages.push(messageData)
- 
-  
+
   //   }
-  
-   const onClientDisconnected=()=> {
-     console.log(
-        'Connection Lost from server please check your connection.',
-        'Error!'
-      )
+
+  const onClientDisconnected = () => {
+    console.log(
+      "Connection Lost from server please check your connection.",
+      "Error!"
+    );
     //  socket.connect()
-      
-    }
-  
+  };
+
   //  const initSocketConnection=()=> {
-  
-  
+
   //   // startSocket()
   //     setupSocketListeners()
   //   }
-
 
   // useEffect(()=>{
   //             const fetUsers=async ()=>{
@@ -213,18 +202,18 @@ const responseListener = useRef();
 
   //                  const contactParse = JSON.parse(userData.data.data.contact)
   //                 //  contactParse.forEach((contact) => users.push(contact))
-               
+
   //                  console.log(userData.data.data,users)
   //                 setUsers(contactParse)
   //               global.contacts=userData.data.data
   //               console.log(global.contacts)
-                 
+
   //               } catch (e){
   //                 console.log(e)
   //               }
   //             }
   //             fetUsers();
-              
+
   // },[navigation])
   // useEffect(() => {
   //   registerForPushNotificationsAsync().then(token => {setExpoPushToken(token);global.tokennotification=token});
@@ -245,32 +234,30 @@ const responseListener = useRef();
   //   };
   // }, []);
 
-  const handleSearch = text => {
+  const handleSearch = (text) => {
     const formattedQuery = text.toLowerCase();
-    const filteredData = filter(fullData, user => {
+    const filteredData = filter(fullData, (user) => {
       return contains(user, formattedQuery);
     });
     setUsers(filteredData);
     setQuery(text);
   };
   const contains = (user, query) => {
-     const { name, veroKey } = user;
-  
+    const { name, veroKey } = user;
+
     if (name.includes(query) || veroKey.includes(query)) {
       return true;
     }
-  
+
     return false;
   };
-  
+
   function renderHeader() {
-
-    
-
     return (
       <View
         style={{
-          backgroundColor: '#fff',
+          backgroundColor: "#fff",
+          // backgroundColor: 'black',
           padding: 10,
           marginVertical: 10,
           borderRadius: 20,
@@ -280,12 +267,10 @@ const responseListener = useRef();
           autoCapitalize="none"
           autoCorrect={false}
           clearButtonMode="always"
-        
-        value={query}
-        onChangeText={queryText => handleSearch(queryText)}
-        
+          value={query}
+          onChangeText={(queryText) => handleSearch(queryText)}
           placeholder="Search"
-          style={{ backgroundColor: '#fff', paddingHorizontal: 20 }}
+          style={{ backgroundColor: "#fff", paddingHorizontal: 20 }}
         />
       </View>
     );
@@ -293,7 +278,7 @@ const responseListener = useRef();
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color="#5500dc" />
       </View>
     );
@@ -301,8 +286,8 @@ const responseListener = useRef();
 
   if (error) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontSize: 18}}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text style={{ fontSize: 18 }}>
           Error fetching data... Check your network connection!
         </Text>
       </View>
@@ -311,21 +296,51 @@ const responseListener = useRef();
 
   return (
     <View style={styles.container}>
-       {myToken.privateKey? <FlatList ListHeaderComponent={renderHeader} style={{width:'100%'}}
-        data={users}
-        renderItem={({ item }) => <ChatListItem socket={socket} chatRoom={item}  />}
-        keyExtractor={(item)=>item.veroKey}
-     />:<View style={{backgroundColor:Colors.light.tint,padding:10,borderRadius:10}}><TouchableOpacity onPress={()=>{  navigation.navigate('SignIn')}}>
-       <Text style={{color:Colors.light.background}}>Please Login To Continue</Text>
-       </TouchableOpacity></View>}
-       {/* <Button
+      {myToken.privateKey ? (
+        <FlatList
+          ListHeaderComponent={renderHeader}
+          style={{ width: "100%" }}
+          data={users}
+
+
+          //kunal want this for sorting
+          renderItem={({ item }) => ( <View> 
+            <ChatListItem socket={socket} chatRoom={item} />
+            {/* <ChatListItem socket={socket} chatRoom={item} /> */}
+
+            </View>
+          )}
+          keyExtractor={(item) => item.veroKey}
+        />
+
+
+
+      ) : (
+        <View
+          style={{
+            backgroundColor: Colors.light.tint,
+            padding: 10,
+            borderRadius: 10,
+          }}
+        >
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("SignIn");
+            }}
+          >
+            <Text style={{ color: Colors.light.background }}>
+              Please Login To Continue
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {/* <Button
         title="Press to Send Notification"
         onPress={async () => {
           await sendPushNotification(expoPushToken);
         }}
       /> */}
-     {/* <NewMessageButton /> */}
-  
+      {/* <NewMessageButton /> */}
     </View>
   );
 }
@@ -393,7 +408,7 @@ const styles = StyleSheet.create({
 //       importance: Notifications.AndroidImportance.MAX,
 //       vibrationPattern: [0, 250, 250, 250],
 //       lightColor: '#FF231F7C',
-      
+
 //     });
 //   }
 
