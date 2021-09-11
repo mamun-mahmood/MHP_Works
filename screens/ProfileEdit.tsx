@@ -13,7 +13,7 @@
 
 // export default ProfileEdit;
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -21,6 +21,9 @@ import {
   ImageBackground,
   TextInput,
   StyleSheet,
+  Platform,
+  Button,
+  Image,
 } from "react-native";
 
 import { useTheme } from "react-native-paper";
@@ -31,8 +34,9 @@ import { useTheme } from "react-native-paper";
 
 import BottomSheet from "reanimated-bottom-sheet";
 import Animated from "react-native-reanimated";
+import * as ImagePicker from "expo-image-picker";
+// import ImagePickerRN from "react-native-image-crop-picker";
 
-import ImagePicker from "react-native-image-crop-picker";
 import {
   Feather,
   FontAwesome,
@@ -52,37 +56,111 @@ function ProfileEdit({ route }) {
   console.log(userPicture);
 
   const [image, setImage] = useState(userPicture);
-  //   const [image, setImage] = useState('https://w7.pngwing.com/pngs/304/305/png-transparent-man-with-formal-suit-illustration-web-development-computer-icons-avatar-business-user-profile-child-face-web-design-thumbnail.png');
+  // const [image, setImage] = useState(null);
 
-  // console.log(props.userPicture);
+  const cameraPickerHandler = async () => {
+    console.log("pressed");
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("You've refused to allow this appp to access your camera!");
+      return;
+    }
+
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+      // base64: true,
+    });
+
+    if (!result.cancelled) {
+      console.log("working");
+      setImage(result.uri);
+      console.log(result);
+
+//kunal changes /
+      // let apiUrl = 'http://192.168.1.33:3000/UploadPhoto';
+      let apiUrl = 'http://192.168.1.33:3000/uploadImage';
+      let uri = result.uri;
+      let uriParts = uri.split('.');
+      let fileType = uriParts[uriParts.length - 1];
+    
+      let formData = new FormData();
+      formData.append('photo', {
+        
+        uri,
+        name: `photo.${fileType}`,
+        type: `image/${fileType}`
+      });
+    
+      let options = {
+        method: 'POST',
+        body: formData,
+            headers: {
+          Accept: 'application/json',
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+    
+      return fetch(apiUrl, options);
+//kunal changes \
+
+
+    }
+  };
+
+  
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+      base64: true,
+    });
+    if (!result.cancelled) {
+      if (result.type == "image") {
+        console.log("working");
+        setImage(result.uri);
+        console.log(result.uri);
+      }
+    }
+  };
+
+
+  // const [image, setImage] = useState('https://w7.pngwing.com/pngs/304/305/png-transparent-man-with-formal-suit-illustration-web-development-computer-icons-avatar-business-user-profile-child-face-web-design-thumbnail.png');
+
 
   const { colors } = useTheme();
 
-  //   const takePhotoFromCamera = () => {
-  //     ImagePicker.openCamera({
-  //       compressImageMaxWidth: 300,
-  //       compressImageMaxHeight: 300,
-  //       cropping: true,
-  //       compressImageQuality: 0.7
-  //     }).then(image => {
-  //       console.log(image);
-  //       setImage(image.path);
-  //     //   bs.current.snapTo(1);
-  //     });
-  //   }
+  // const takePhotoFromCamera = () => {
+  //   ImagePicker.openCamera({
+  //     compressImageMaxWidth: 300,
+  //     compressImageMaxHeight: 300,
+  //     cropping: true,
+  //     compressImageQuality: 0.7
+  //   }).then(image => {
+  //     console.log(image);
+  //     setImage(image.path);
+  //   //   bs.current.snapTo(1);
+  //   });
+  // }
 
-  const choosePhotoFromLibrary = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 300,
-      cropping: true,
-      compressImageQuality: 0.7,
-    }).then((image) => {
-      console.log(image);
-      setImage(image.path);
-      bs.current.snapTo(1);
-    });
-  };
+  // const choosePhotoFromLibrary = () => {
+  // ImagePicker.openPicker({
+  //   width: 300,
+  //   height: 300,
+  //   cropping: true,
+  //   compressImageQuality: 0.7,
+  // }).then((image) => {
+  //   console.log(image);
+  //   setImage(image.path);
+  //   bs.current.snapTo(1);
+  // });
+  //   console.log("hi");
+
+  // };
 
   const renderInner = () => (
     <View style={styles.panel}>
@@ -91,12 +169,14 @@ function ProfileEdit({ route }) {
         <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
       </View>
       {/* <TouchableOpacity style={styles.panelButton} onPress={takePhotoFromCamera}> */}
-      <TouchableOpacity style={styles.panelButton}>
+      <TouchableOpacity
+        style={styles.panelButton}
+      >
         <Text style={styles.panelButtonTitle}>Take Photo</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.panelButton}
-        onPress={choosePhotoFromLibrary}
+        onPress={cameraPickerHandler}
       >
         <Text style={styles.panelButtonTitle}>Choose From Library</Text>
       </TouchableOpacity>
@@ -120,23 +200,9 @@ function ProfileEdit({ route }) {
   const bs = React.createRef();
   const fall = new Animated.Value(1);
 
-  // const editHandler = () => {
-  //   axios
-  //   .post(`http://localhost:3000/api/users/updateuser`, {
-  //     // first_name: firstNameEntered,
-  //     // last_name: lastNameEntered,
-  //     // id: global.privateKey,
-  //     first_name: "kali",
-  //     last_name: "kali2",
-  //     id: "1111507270",
-  //   })
-  //   .then()
-  //   // console.log(global.privateKey);
-  // };
-
+ 
   const [fName, setfName] = useState("");
   const [lName, setlName] = useState("");
-
 
   const editProfile = () => {
     axios
@@ -147,6 +213,7 @@ function ProfileEdit({ route }) {
       })
       .then((res) => {
         console.log(res);
+        alert("Name updated");
       })
       .catch((err) => console.log(err));
 
@@ -155,6 +222,7 @@ function ProfileEdit({ route }) {
 
   return (
     <View style={styles.container}>
+      
       <BottomSheet
         ref={bs}
         snapPoints={[330, 0]}
@@ -171,7 +239,9 @@ function ProfileEdit({ route }) {
         }}
       >
         <View style={{ alignItems: "center" }}>
-          <TouchableOpacity onPress={() => bs.current.snapTo(0)}>
+          {/* <TouchableOpacity onPress={() => bs.current.snapTo(0)}> */}
+          {/* <TouchableOpacity onPress={pickImage}> */}
+          <TouchableOpacity onPress={pickImage}>
             <View
               style={{
                 height: 100,
@@ -210,12 +280,24 @@ function ProfileEdit({ route }) {
                   />
                 </View>
               </ImageBackground>
+              {/* <View>
+              <Button title="chooseimage" onPress={PickImage}>{image && <Image source={{uri:image}} style={{width:200, height:200}}/>}</Button>
+              </View> */}
             </View>
           </TouchableOpacity>
           <Text style={{ marginTop: 80, fontSize: 18, fontWeight: "bold" }}>
             {userFirstName} {userLastName}
           </Text>
+          
+          <TouchableOpacity
+            style={styles.panelButton}
+            onPress={cameraPickerHandler}
+          >
+            <Text style={styles.panelButtonTitle}>Take Photo</Text>
+          </TouchableOpacity>
         </View>
+
+        
 
         <View style={styles.action}>
           <FontAwesome name="user-o" color={colors.text} size={20} />
@@ -264,7 +346,8 @@ function ProfileEdit({ route }) {
             ]}
           />
         </View>
-        <View style={styles.action}>
+
+        {/* <View style={styles.action}>
           <FontAwesome name="envelope-o" color={colors.text} size={20} />
           <TextInput
             placeholder="Email"
@@ -292,7 +375,7 @@ function ProfileEdit({ route }) {
               },
             ]}
           />
-        </View>
+        </View> */}
         {/* <View style={styles.action}>
           <MaterialIcons name="map-marker-outline" color={colors.text} size={20} />
           <TextInput
@@ -315,6 +398,8 @@ function ProfileEdit({ route }) {
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
       </Animated.View>
+     
+
     </View>
   );
 }
@@ -409,3 +494,5 @@ const styles = StyleSheet.create({
     color: "#05375a",
   },
 });
+
+
