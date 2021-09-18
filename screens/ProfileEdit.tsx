@@ -35,6 +35,7 @@ import { useTheme } from "react-native-paper";
 import BottomSheet from "reanimated-bottom-sheet";
 import Animated from "react-native-reanimated";
 import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 // import ImagePickerRN from "react-native-image-crop-picker";
 
 import {
@@ -79,58 +80,106 @@ function ProfileEdit({ route }) {
       setImage(result.uri);
       console.log(result);
 
-//kunal changes /
+      //kunal changes /
       // let apiUrl = 'http://192.168.1.33:3000/UploadPhoto';
-      let apiUrl = 'http://192.168.1.33:3000/uploadImage';
+      let apiUrl = "http://192.168.1.33:3000/uploadImage";
       let uri = result.uri;
-      let uriParts = uri.split('.');
+      let uriParts = uri.split(".");
       let fileType = uriParts[uriParts.length - 1];
-    
+
       let formData = new FormData();
-      formData.append('photo', {
-        
+      formData.append("filename", photo);
+      formData.append("photo", {
         uri,
         name: `photo.${fileType}`,
-        type: `image/${fileType}`
+        type: `image/${fileType}`,
       });
-    
+
       let options = {
-        method: 'POST',
+        method: "POST",
         body: formData,
-            headers: {
-          Accept: 'application/json',
-          'Content-Type': 'multipart/form-data',
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
         },
       };
-    
+
       return fetch(apiUrl, options);
-//kunal changes \
-
-
+      //kunal changes \
     }
   };
 
-  
-
+  // const pickImage = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     quality: 1,
+  //     base64: true,
+  //   });
+  //   if (!result.cancelled) {
+  //     if (result.type == "image") {
+  //       console.log("working");
+  //       setImage(result.uri);
+  //       console.log(result.uri);
+  //     }
+  //   }
+  // };
+  const [doc, setDoc] = useState();
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      quality: 1,
-      base64: true,
-    });
-    if (!result.cancelled) {
-      if (result.type == "image") {
-        console.log("working");
-        setImage(result.uri);
-        console.log(result.uri);
+    let result = await DocumentPicker.getDocumentAsync({
+      type: "*/*",
+      copyToCacheDirectory: true,
+    }).then((response) => {
+      if (response.type == "success") {
+        let { name, size, uri } = response;
+      
+        let nameParts = name.split(".");
+        let fileType = nameParts[nameParts.length - 1];
+        var fileToUpload = {
+          name: name,
+          size: size,
+          uri: "file://" + uri,
+          type: "application/" + fileType,
+          // type: "application/" ,
+        };
+        console.log(fileToUpload, "...............file");
+        setDoc(fileToUpload);
+        
       }
-    }
+    });
+    // console.log(result);
+    setImage(doc.uri);
+    console.log("Doc: " + doc.uri);
   };
 
+  const postDocument = () => {
+    const url = "http://192.168.1.33:3000/uploadImage";
+    const fileUri = doc.uri;
+    const formData = new FormData();
+    formData.append("document", doc);
+    const options = {
+      method: "POST",
+      body: formData,
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    console.log(formData);
+    setImage(doc.uri);
+    let errCount=0;
+    fetch(url, options).catch((error) => {console.log(error); 
+    if(error){alert("Profile picture not updated")}
+    errCount=1;
+  }).then(()=>alert("Profile picture updated"))
+
+  // alert("Profile uploaded")
+    // if(errCount===1){alert("Not uploaded")}
+    // else {alert("Profile uploaded")}
+    
+  };
 
   // const [image, setImage] = useState('https://w7.pngwing.com/pngs/304/305/png-transparent-man-with-formal-suit-illustration-web-development-computer-icons-avatar-business-user-profile-child-face-web-design-thumbnail.png');
-
 
   const { colors } = useTheme();
 
@@ -169,9 +218,7 @@ function ProfileEdit({ route }) {
         <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
       </View>
       {/* <TouchableOpacity style={styles.panelButton} onPress={takePhotoFromCamera}> */}
-      <TouchableOpacity
-        style={styles.panelButton}
-      >
+      <TouchableOpacity style={styles.panelButton}>
         <Text style={styles.panelButtonTitle}>Take Photo</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -200,7 +247,6 @@ function ProfileEdit({ route }) {
   const bs = React.createRef();
   const fall = new Animated.Value(1);
 
- 
   const [fName, setfName] = useState("");
   const [lName, setlName] = useState("");
 
@@ -222,7 +268,6 @@ function ProfileEdit({ route }) {
 
   return (
     <View style={styles.container}>
-      
       <BottomSheet
         ref={bs}
         snapPoints={[330, 0]}
@@ -285,19 +330,31 @@ function ProfileEdit({ route }) {
               </View> */}
             </View>
           </TouchableOpacity>
+          {/* <View
+                  style={{
+                    flex: 1,
+                  }}
+                >
+          <TouchableOpacity
+          style={styles.commandButton}
+          // onPress={() => {}}
+          onPress={postDocument}
+        >
+          <Text style={styles.panelButtonTitle}>upload</Text>
+        </TouchableOpacity>
+        </View> */}
+
           <Text style={{ marginTop: 80, fontSize: 18, fontWeight: "bold" }}>
             {userFirstName} {userLastName}
           </Text>
-          
-          <TouchableOpacity
+
+          {/* <TouchableOpacity
             style={styles.panelButton}
             onPress={cameraPickerHandler}
           >
             <Text style={styles.panelButtonTitle}>Take Photo</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
-
-        
 
         <View style={styles.action}>
           <FontAwesome name="user-o" color={colors.text} size={20} />
@@ -397,9 +454,18 @@ function ProfileEdit({ route }) {
         >
           <Text style={styles.panelButtonTitle}>Submit</Text>
         </TouchableOpacity>
-      </Animated.View>
-     
+        <TouchableOpacity
+          style={styles.commandButton}
+          // onPress={() => {}}
+          onPress={postDocument}
+        >
+          <Text style={styles.panelButtonTitle}>Confirm Picture</Text>
+        </TouchableOpacity>
+       
+      
+        
 
+      </Animated.View>
     </View>
   );
 }
@@ -494,5 +560,3 @@ const styles = StyleSheet.create({
     color: "#05375a",
   },
 });
-
-

@@ -19,6 +19,7 @@ import ContactScreen from '../screens/ContactScreen';
 
 import VeroHive from '../screens/veroHive';
 import SoapBox from '../screens/soapBox';
+import Kali from '../screens/imagePicker';
 const MainTab = createMaterialTopTabNavigator<MainTabParamList>();
 
 export default function MainTabNavigator() {
@@ -62,6 +63,15 @@ export default function MainTabNavigator() {
         component={SoapBox}
   
       />
+       {/* <MainTab.Screen
+        name="SoapBoxx"
+        component={Kali}
+  
+      /> */}
+     
+
+
+
         {/* <MainTab.Screen
         name="Account"
         component={SignIn}
