@@ -6,67 +6,59 @@ import { View } from "../../components/Themed";
 import Colors from "../../constants/Colors";
 import ChatCard from "./ChatCard";
 import { Ionicons } from "@expo/vector-icons";
+import ChatLists from "./ChatLists";
+import { useState } from "react";
 
 const ChatHiveIndex = () => {
+  const [tab, setTab] = useState("ChatLists");
   return (
     <View style={styles.container}>
-      <View style={styles.chatHolder}>
-        <MonoText style={styles.text}>Chats</MonoText>
-        <TouchableOpacity>
-          <View>
-            <Octicons name="search" size={22} color={"white"} />
-          </View>
-        </TouchableOpacity>
-      </View>
-      {/* chat listing */}
-      <ScrollView>
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-      </ScrollView>
+      {tab === "ChatLists" && <ChatLists />}
       {/* Bottom bar for page navigation */}
       <View style={styles.bottomBar}>
         <TouchableOpacity>
-          <Ionicons name="call-outline" size={30} color="white" />
+          <Ionicons
+            style={tab === "Calls" && styles.activeBorder}
+            name="call-outline"
+            size={30}
+            color="white"
+          />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Ionicons name="people-outline" size={30} color="white" />
-        </TouchableOpacity>
-        {/* <View style={{  top: "-75%", left: "43%" }}>
-          <TouchableOpacity>
-            <View
-              style={{
-                backgroundColor: "black", 
-                borderRadius: 50,
-                // padding: 10,
-                borderWidth: 0.5,
-                borderColor: "grey",
-              }}
-            >
-              <AntDesign name="plus" size={50} color="white" />
-            </View>
-          </TouchableOpacity>
-        </View> */}
-        <TouchableOpacity>
-          <Ionicons name="chatbox-outline" size={30} color="white" />
+          <Ionicons
+            style={tab === "Contacts" && styles.activeBorder}
+            name="people-outline"
+            size={30}
+            color="white"
+          />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Feather name="settings" size={30} color="white" />
+          <View
+            style={{
+              backgroundColor: "black",
+              borderRadius: 50,
+              borderWidth: 0.5,
+              borderColor: "grey",
+            }}
+          >
+            <AntDesign name="plus" size={50} color="white" />
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Ionicons
+            style={tab === "ChatLists" && styles.activeBorder}
+            name="chatbox-outline"
+            size={30}
+            color="white"
+          />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Feather
+            style={tab === "Setting" && styles.activeBorder}
+            name="settings"
+            size={30}
+            color="white"
+          />
         </TouchableOpacity>
       </View>
     </View>
@@ -98,11 +90,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    paddingBottom: 20,
-    paddingTop: 20,
+    paddingBottom: 10,
+    paddingTop: 10,
     borderTopWidth: 0.5,
     borderColor: "grey",
-    // height: 50,
+    position: "absolute",
+    width: "100%",
+    bottom: 0,
+  },
+  activeBorder: {
+    borderWidth: 2,
+    borderBottomColor: "grey",
   },
 });
 export default ChatHiveIndex;
