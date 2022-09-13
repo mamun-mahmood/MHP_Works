@@ -60,13 +60,15 @@ export default function App() {
     startSocket();
   });
 
-  // useEffect(() => {
-  //   Updates.checkForUpdateAsync()
-  //     .then((res) => {
-  //       res.isAvailable ? setUpdateAvailable(true) : null;
-  //     })
-  //     .catch((err) => console.log(err));
-  // }, []);
+  useEffect(() => {
+    Updates.checkForUpdateAsync()
+      .then((res) => {
+        res.isAvailable ? setUpdateAvailable(true) : null;
+      })
+      .catch((err) => console.log(err));
+
+   
+  }, []);
 
   useEffect(() => {
     // createDb()
@@ -79,54 +81,12 @@ export default function App() {
       <SafeAreaProvider>
         <Navigation colorScheme={colorScheme} />
         {updateAvailable ? (
-          <View
-            style={{
-              minHeight: "10%",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "white",
-            }}
-          >
+          <View style={{ minHeight: "10%" ,flexDirection:'column',justifyContent:'center',alignItems:'center',backgroundColor:'white'}}>
             <Text>Latest Update Available</Text>
-            <View
-              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  Updates.fetchUpdateAsync().then((res) => {
-                    res.isNew ? Updates.reloadAsync() : null;
-                  });
-                }}
-              >
-                <Text
-                  style={{
-                    backgroundColor: "#2C88F7",
-                    color: "white",
-                    margin: 10,
-                    padding: 5,
-                    borderRadius: 5,
-                  }}
-                >
-                  Update
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setUpdateAvailable(!updateAvailable)}
-              >
-                <Text
-                  style={{
-                    backgroundColor: "red",
-                    color: "white",
-                    margin: 10,
-                    padding: 5,
-                    borderRadius: 5,
-                  }}
-                >
-                  Cancel
-                </Text>
-              </TouchableOpacity>
-            </View>
+            <View style={{flexDirection:'row',justifyContent:'space-evenly'}}><TouchableOpacity onPress={()=>{ Updates.fetchUpdateAsync().then((res) => {
+      res.isNew?Updates.reloadAsync():null
+    });}}><Text style={{backgroundColor:'#2C88F7',color:'white',margin:10,padding:5,borderRadius:5}}>Update</Text></TouchableOpacity><TouchableOpacity onPress={()=>setUpdateAvailable(!updateAvailable)}><Text style={{backgroundColor:'red',color:'white',margin:10,padding:5,borderRadius:5}}>Cancel</Text></TouchableOpacity></View>
+          
           </View>
         ) : null}
         <StatusBar />
