@@ -361,7 +361,33 @@ function RootNavigator() {
        <Stack.Screen
         name="ChatPage"
         component={ChatPage}
-        options={{ title: "User Name" }}
+        options={{
+          title: "User Name",
+          // headerLeft: () => (
+          //   <View>
+          //     <ProfileSetting />
+          //   </View>
+          // ),
+          headerRight: () => (
+            <View
+              style={{
+                flexDirection: "row",
+                width: 30,
+                justifyContent: "space-between",
+                marginRight: 10,
+              }}
+            >
+              {/* <Octicons name="search" size={22} color={"white"} /> */}
+              {/* <Searchbar /> */}
+              {/* <MaterialCommunityIcons
+                name="dots-vertical"
+                size={22}
+                color={"white"}
+              /> */}
+              <NewContactDot />
+            </View>
+          ),
+        }}
       />
     </Stack.Navigator>
   );
