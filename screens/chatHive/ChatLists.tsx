@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { AntDesign, Feather, Octicons } from "@expo/vector-icons";
 import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import Searchbar from "../../components/searchBar/Searchbar";
@@ -8,6 +8,45 @@ import Colors from "../../constants/Colors";
 import ChatCard from "./ChatCard";
 
 const ChatLists = () => {
+  const [chats, setChats] = useState([
+    {
+  
+    },
+    {
+  
+    },
+    {
+  
+    },
+    {
+  
+    },
+    {
+  
+    },
+    {
+  
+    },
+    {
+  
+    },
+    {
+  
+    },
+    {
+  
+    },
+    {
+  
+    },
+    {
+  
+    },
+    {
+  
+    },
+    
+  ])
   return (
     <>
       <View style={styles.chatHolder}>
@@ -20,24 +59,7 @@ const ChatLists = () => {
       </View>
       {/* chat listing */}
       <ScrollView>
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
-        <ChatCard />
+        {chats.map((e, index) => <ChatCard key={index} index={index} />)}
       </ScrollView>
     </>
   );

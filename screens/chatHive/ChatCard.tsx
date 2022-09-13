@@ -5,7 +5,7 @@ import { Avatar } from "react-native-paper";
 import { MonoText } from "../../components/StyledText";
 import { View } from "../../components/Themed";
 
-const ChatCard = () => {
+const ChatCard = ({index}) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
@@ -18,12 +18,12 @@ const ChatCard = () => {
           <Avatar.Image size={50} source={{}} />
         </View>
         <View style={{ marginLeft: -30, flex: 1 }}>
-          <MonoText style={styles.text1}>User Name</MonoText>
-          <MonoText style={styles.text2}>Messagess</MonoText>
+          <MonoText style={styles.text1}>User {index+1}</MonoText>
+          <MonoText style={styles.text2}>Messages {index+1}</MonoText>
         </View>
         <View style={{ display: "flex", alignItems: "center" }}>
-          <MonoText style={{ fontSize: 10 }}>Timestamp</MonoText>
-          <MonoText style={{ fontSize: 10 }}>4</MonoText>
+          <MonoText style={{ fontSize: 12 }}>Timestamp</MonoText>
+          <MonoText style={{ fontSize: 10 }}>Sent</MonoText>
         </View>
       </View>
     </TouchableOpacity>
