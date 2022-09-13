@@ -1,6 +1,11 @@
 import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
 import { useState } from "react";
-import { StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { MonoText } from "../../components/StyledText";
 import { View } from "../../components/Themed";
 
@@ -30,15 +35,49 @@ const ChatPage = () => {
       message: "Same here, haha",
       sentBy: "me",
     },
+    {
+      message: "Hi, how are you?",
+      sentBy: "me",
+    },
+    {
+      message: "Heym I'm finejsdhsajdjsgdjsdgg!",
+      sentBy: "user",
+    },
+    {
+      message: "How are you, btw?",
+      sentBy: "user",
+    },
+    {
+      message: "I'm good. Wyd!",
+      sentBy: "me",
+    },
+    {
+      message: "Doing nothing",
+      sentBy: "user",
+    },
+    {
+      message: "Same here, haha",
+      sentBy: "me",
+    },
   ]);
   return (
     <View style={styles.container}>
-      {messages.map((e) => (
-        <View style={[e.sentBy === "me" ? styles.textRight : styles.textLeft, {marginTop: 10}]}>
-          <MonoText  >{e.message}</MonoText>
-          <MonoText style={{textAlign: 'right', fontSize: 8}} >5.00</MonoText>
-        </View>
-      ))}
+      <ScrollView style={{marginBottom: 60}} >
+        {messages.map((e, index) => (
+          <View
+            key={index}
+            style={[
+              e.sentBy === "me" ? styles.textRight : styles.textLeft,
+              { marginTop: 10 },
+            ]}
+          >
+            <MonoText>{e.message}</MonoText>
+            <MonoText style={{ textAlign: "right", fontSize: 10 }}>
+              5.00 Sent
+            </MonoText>
+          </View>
+        ))}
+      </ScrollView>
       <View style={styles.messageSender}>
         <TouchableOpacity>
           <View
@@ -79,6 +118,7 @@ const ChatPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 10,
   },
   messageSender: {
     display: "flex",
@@ -94,24 +134,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
   },
-//   myMessage: {
-//     padding: 10,
-//     borderRadius: 10,
-//     marginTop: 10,
-//   },
   textRight: {
     backgroundColor: "grey",
     width: "70%",
     marginLeft: "30%",
     padding: 5,
-    borderRadius: 10
+    borderRadius: 10,
   },
   textLeft: {
     backgroundColor: "#A983B2",
     width: "70%",
     padding: 5,
-    borderRadius: 10
-
-  }
+    borderRadius: 10,
+  },
 });
 export default ChatPage;
