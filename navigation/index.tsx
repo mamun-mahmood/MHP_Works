@@ -223,7 +223,7 @@ import Register from "../screens/Register";
 import SignInKunal from "../screens/SignInScreen";
 import SignInScreen from "../screens/SignInScreen";
 import ProfileEdit from "../screens/ProfileEdit";
-import ChatHiveIndex from "../screens/chatHive";
+import ChatPage from "../screens/chatHive/ChatPage";
 
 export default function Navigation({
   colorScheme,
@@ -359,9 +359,9 @@ function RootNavigator() {
         component={individualContact}
       />
        <Stack.Screen
-        name="ChatHiveIndex"
-        component={ChatHiveIndex}
-        options={{ title: "Oops!" }}
+        name="ChatPage"
+        component={ChatPage}
+        options={{ title: "User Name" }}
       />
     </Stack.Navigator>
   );
