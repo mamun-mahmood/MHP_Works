@@ -37,7 +37,6 @@
 // import SignInScreen from "../screens/SignInScreen";
 // import ProfileEdit from "../screens/ProfileEdit";
 
-
 // export default function Navigation({
 //   colorScheme,
 // }: {
@@ -107,10 +106,10 @@
 //         component={ChatRoomScreen}
 //         options={({ route }) => ({
 //           title: route.params.name?route.params.name:'Chat',
-         
-//           headerRight: () => 
+
+//           headerRight: () =>
 //           <View style={{flexDirection:'row',width:100,justifyContent:'space-between',marginRight:10}}>
-  
+
 //             <VideoButton />
 //             <MaterialIcons name="call" size={22} color={'white'} />
 //              <MaterialCommunityIcons name="dots-vertical" size={22} color={'white'} />
@@ -126,14 +125,12 @@
 //        <Stack.Screen
 //         name="Contacts"
 //         component={ContactScreen}
-     
-       
+
 //       />
 //         <Stack.Screen
 //         name="Settings"
 //         component={SignInScreen}
-     
-       
+
 //       />
 //         <Stack.Screen
 //         name="Register"
@@ -141,7 +138,7 @@
 //         options={({ route }) => ({
 //           title: 'Register Now',
 //         })}
-       
+
 //       />
 //        <Stack.Screen
 //         name="SignIn"
@@ -149,12 +146,12 @@
 //         options={({ route }) => ({
 //           title: 'SignIn',
 //         })}
-       
+
 //       />
 //         <Stack.Screen
 //         name="Camera"
 //         component={CameraScreen}
-       
+
 //       />
 //        <Stack.Screen
 //         name="CallScreen"
@@ -164,40 +161,43 @@
 //         <Stack.Screen
 //         name="SoapBox"
 //         component={SoapBox}
-       
+
 //       />
-       
+
 //          <Stack.Screen
 //            name="individualContact"
 //          options={({ route }) => ({
 //           title: route.params.name?route.params.name:'Contact',
 //         })}
 //         component={individualContact}
-       
+
 //       />
-     
-      
+
 //     </Stack.Navigator>
 //   );
 // }
 
 //Kunal khanna
 
-
-
 /**
  * If you are not familiar with React Navigation, check out the "Fundamentals" guide:
  * https://reactnavigation.org/docs/getting-started
  *
  */
- import {
+import {
   NavigationContainer,
   DefaultTheme,
   DarkTheme,
 } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as React from "react";
-import { Octicons, MaterialCommunityIcons ,MaterialIcons,FontAwesome5,AntDesign} from "@expo/vector-icons";
+import {
+  Octicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  FontAwesome5,
+  AntDesign,
+} from "@expo/vector-icons";
 import { Image, Text, View } from "react-native";
 import { ColorSchemeName } from "react-native";
 import Colors from "../constants/Colors";
@@ -223,7 +223,7 @@ import Register from "../screens/Register";
 import SignInKunal from "../screens/SignInScreen";
 import SignInScreen from "../screens/SignInScreen";
 import ProfileEdit from "../screens/ProfileEdit";
-
+import ChatHiveIndex from "../screens/chatHive";
 
 export default function Navigation({
   colorScheme,
@@ -265,8 +265,10 @@ function RootNavigator() {
         component={MainTabNavigator}
         options={{
           title: "MegaHoot",
-          headerLeft:()=>(
-            <View><ProfileSetting /></View>
+          headerLeft: () => (
+            <View>
+              <ProfileSetting />
+            </View>
           ),
           headerRight: () => (
             <View
@@ -287,26 +289,32 @@ function RootNavigator() {
               <NewContactDot />
             </View>
           ),
-
-
-
-
         }}
       />
       <Stack.Screen
         name="ChatRoom"
         component={ChatRoomScreen}
         options={({ route }) => ({
-          title: route.params.name?route.params.name:'Chat',
-         
-          headerRight: () => 
-          <View style={{flexDirection:'row',width:100,justifyContent:'space-between',marginRight:10}}>
-  
-            <VideoButton />
-            <MaterialIcons name="call" size={22} color={'white'} />
-             <MaterialCommunityIcons name="dots-vertical" size={22} color={'white'} />
+          title: route.params.name ? route.params.name : "Chat",
 
-          </View>,
+          headerRight: () => (
+            <View
+              style={{
+                flexDirection: "row",
+                width: 100,
+                justifyContent: "space-between",
+                marginRight: 10,
+              }}
+            >
+              <VideoButton />
+              <MaterialIcons name="call" size={22} color={"white"} />
+              <MaterialCommunityIcons
+                name="dots-vertical"
+                size={22}
+                color={"white"}
+              />
+            </View>
+          ),
         })}
       />
       <Stack.Screen
@@ -314,67 +322,47 @@ function RootNavigator() {
         component={NotFoundScreen}
         options={{ title: "Oops!" }}
       />
-       <Stack.Screen
-        name="Contacts"
-        component={ContactScreen}
-     
-       
-      />
-        <Stack.Screen
-        name="Settings"
-        component={SignInScreen}
-     
-       
-      />
-        <Stack.Screen
+      <Stack.Screen name="Contacts" component={ContactScreen} />
+      <Stack.Screen name="Settings" component={SignInScreen} />
+      <Stack.Screen
         name="Register"
         component={Register}
         options={({ route }) => ({
-          title: 'Register Now',
+          title: "Register Now",
         })}
-       
       />
-       <Stack.Screen
+      <Stack.Screen
         name="SignIn"
         component={SignInScreen}
         options={({ route }) => ({
-          title: 'SignIn',
+          title: "SignIn",
         })}
-       
       />
-        <Stack.Screen
-        name="Camera"
-        component={CameraScreen}
-       
-      />
-       <Stack.Screen
+      <Stack.Screen name="Camera" component={CameraScreen} />
+      <Stack.Screen
         name="CallScreen"
         component={CallScreen}
         options={{ title: "Calling" }}
       />
-        <Stack.Screen
-        name="SoapBox"
-        component={SoapBox}
-       
-      />
+      <Stack.Screen name="SoapBox" component={SoapBox} />
 
-        <Stack.Screen
+      <Stack.Screen
         name="ProfileEdit"
         component={ProfileEdit}
         options={{ title: "Edit Profile" }}
-       
       />
-         <Stack.Screen
-           name="individualContact"
-         options={({ route }) => ({
-          title: route.params.name?route.params.name:'Contact',
+      <Stack.Screen
+        name="individualContact"
+        options={({ route }) => ({
+          title: route.params.name ? route.params.name : "Contact",
         })}
         component={individualContact}
-       
       />
-
-       
-      
+       <Stack.Screen
+        name="ChatHiveIndex"
+        component={ChatHiveIndex}
+        options={{ title: "Oops!" }}
+      />
     </Stack.Navigator>
   );
 }

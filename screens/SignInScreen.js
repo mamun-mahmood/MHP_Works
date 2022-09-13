@@ -634,7 +634,7 @@ const SignInScreen = () => {
       })
       .catch(function (error) {
         // handle error
-        alert(error.message);
+        alert(error);
       });
   };
   const logOut = () => {

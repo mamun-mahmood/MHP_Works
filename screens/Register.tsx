@@ -347,7 +347,7 @@ const  isValidEmail = (text) => {
                   },
                 ]}
               >
-                Sign Up
+                Sign Upsd
               </Text>
               {/* </LinearGradient> */}
             </TouchableOpacity>
