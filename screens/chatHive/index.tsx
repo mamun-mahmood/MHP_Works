@@ -15,7 +15,7 @@ const ChatHiveIndex = () => {
     <View style={styles.container}>
       {tab === "ChatLists" && <ChatLists />}
       {/* Bottom bar for page navigation */}
-      <View style={styles.bottomBar}>
+      {/* <View style={styles.bottomBar}>
         <TouchableOpacity>
           <Ionicons
             style={tab === "Calls" && styles.activeBorder}
@@ -60,7 +60,7 @@ const ChatHiveIndex = () => {
             color="white"
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

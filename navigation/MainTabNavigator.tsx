@@ -21,13 +21,13 @@ import VeroHive from '../screens/veroHive';
 import SoapBox from '../screens/soapBox';
 import Kali from '../screens/imagePicker';
 const MainTab = createMaterialTopTabNavigator<MainTabParamList>();
-
+ 
 export default function MainTabNavigator() {
   const colorScheme = useColorScheme();
 
-  return (
+  return ( 
     <MainTab.Navigator
-      initialRouteName="Chats"
+      initialRouteName="My Chats"
       tabBarOptions={{ activeTintColor: Colors[colorScheme].background,
       style:{
         backgroundColor:Colors[colorScheme].tint
@@ -49,12 +49,12 @@ export default function MainTabNavigator() {
         }}
       />
       <MainTab.Screen
-        name="Chats"
+        name="My Chats"
         component={ChatScreen}
       
       />
         <MainTab.Screen
-        name="VeroHive"
+        name="Promos"
         component={VeroHive}
   
       />
