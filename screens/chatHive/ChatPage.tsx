@@ -59,6 +59,10 @@ const ChatPage = () => {
       message: "Same here, haha",
       sentBy: "me",
     },
+    {
+      message: "Ok",
+      sentBy: "me",
+    },
   ]);
   return (
     <View style={styles.container}>
@@ -133,17 +137,18 @@ const styles = StyleSheet.create({
     marginLeft: "5%",
     borderRadius: 10,
     padding: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.32)"
   },
   textRight: {
-    backgroundColor: "grey",
-    width: "70%",
+    backgroundColor: "#A983B2",
+    maxWidth: "70%",
     marginLeft: "30%",
     padding: 5,
     borderRadius: 10,
   },
   textLeft: {
-    backgroundColor: "#A983B2",
-    width: "70%",
+    backgroundColor: "rgba(0, 0, 0, 0.32)",
+    maxWidth: "70%",
     padding: 5,
     borderRadius: 10,
   },

@@ -224,6 +224,7 @@ import SignInKunal from "../screens/SignInScreen";
 import SignInScreen from "../screens/SignInScreen";
 import ProfileEdit from "../screens/ProfileEdit";
 import ChatPage from "../screens/chatHive/ChatPage";
+import { Avatar } from "react-native-paper";
 
 export default function Navigation({
   colorScheme,
@@ -358,16 +359,16 @@ function RootNavigator() {
         })}
         component={individualContact}
       />
-       <Stack.Screen
+      <Stack.Screen
         name="ChatPage"
         component={ChatPage}
         options={{
           title: "User Name",
-          // headerLeft: () => (
-          //   <View>
-          //     <ProfileSetting />
-          //   </View>
-          // ),
+          headerLeft: () => (
+            <View style={{marginLeft: 10}}>
+              <Avatar.Image size={40} source={{}} />
+            </View>
+          ),
           headerRight: () => (
             <View
               style={{

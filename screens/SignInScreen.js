@@ -4,7 +4,6 @@
 // import React, { useState } from "react";
 // import jwt_decode from "jwt-decode";
 
-
 // import * as SecureStore from 'expo-secure-store';
 // import {
 //   View,
@@ -27,8 +26,6 @@
 // import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 // import Navigation from "../navigation";
 
-
-
 // const SignInScreen = () => {
 
 // const navigation = useNavigation();
@@ -38,18 +35,18 @@
 //     const [User, setUser] = useState();
 //     const [myToken,setMyToken]=useState({});
 //     notificationCustom();
-  
+
 //   useFocusEffect(
 //       React.useCallback(() => {
 //         // getToken()
-       
+
 //       }, [])
 //     );
 //     const handleSetToken = async (key,value) => {
 //       SecureStore.setItemAsync(key, value).then;
 //       setMyToken(value);
 //     };
-  
+
 //     const handleGetToken = async (key) => {
 //       const tokenFromPersistentState = await SecureStore.getItemAsync(
 //        key,
@@ -57,12 +54,12 @@
 //       if (tokenFromPersistentState) {
 //         const mydata = JSON.parse(tokenFromPersistentState)
 //        setUser(mydata)
-      
+
 //       }
 //     };
 //     const signInHandler = () => {
 //       var decoded;
-     
+
 //    axios.post(`https://messangerapi533cdgf6c556.amaprods.com/api/users/login`, {
 //           email: Email,
 //           password: Password,
@@ -77,21 +74,20 @@
 //   console.log(decoded.result,"user data");
 //   // global.privateKey=decoded.result.privateKey
 //   // global.name=decoded.result.firstName +" "+decoded.result.lastName
-  
+
 //   handleSetToken('userAuthToken',data)
 //   handleGetToken('userAuthToken')
-  
-//         } 
-         
+
+//         }
+
 //         // handle success
 //       //  alert(JSON.stringify(decoded.result))
 //       //   saveData('userData',JSON.stringify(decoded.result.id))
-     
-      
+
 //       })
 //       .then(()=>{setIsLoggedIn(true);
 //         // notificationCustom();
-      
+
 //         axios.post(`https://messangerapi533cdgf6c556.amaprods.com/api/users/storeMyNtoken`,
 //         {token:global.pushToken,veroKey:decoded.result.privateKey})
 //         .then((res)=>{
@@ -102,12 +98,10 @@
 //         // handle error
 //         alert(error.message);
 //       });
-  
-       
-    
+
 //     };
 //     const logOut = () => {
-    
+
 //      const handlelogout = async (key) => {
 //       const tokenFromPersistentState = await SecureStore.deleteItemAsync(
 //        key,
@@ -116,17 +110,16 @@
 //     };
 //     handlelogout('userAuthToken')
 //      };
-  
+
 //     //  useEffect(() => {
 //     //   handleGetToken('userAuthToken')
 //     //  }, [])
-  
+
 //      useFocusEffect(
 //       React.useCallback(() => {
 //         handleGetToken('userAuthToken')
 //       }, [User])
 //     );
-
 
 //   const [data, setData] = React.useState({
 
@@ -163,7 +156,6 @@
 // //   const inputFirstname = (val) => {
 // //     if (val.length !== 0) check_textInputChange
 // //   }
-  
 
 //   const handlePasswordChange = (val) => {
 //     setData({
@@ -201,14 +193,9 @@
 //     }
 
 //    }
-   
-
-  
-
-
 
 //   return (
-      
+
 //     <View style={styles.container}>
 //         {!User ?(
 //     <View style={styles.container}>
@@ -242,14 +229,13 @@
 //             value={Email}
 //             onChangeText={setEmail}
 //             />
-             
+
 //             {/* {data.check_textInputChange ? (
 //               <Animatable.View animation="bounceIn">
 //                 <Feather name="check-circle" color="green" size={18} />
 //               </Animatable.View>
 //             ) : null} */}
 //           </View>
-
 
 //           <Text
 //             style={[
@@ -281,7 +267,6 @@
 //             </TouchableOpacity>
 //           </View>
 
-          
 //           <View style={styles.textPrivate}>
 //             <Text style={styles.color_textPrivate}>
 //               By signing in you agree to our
@@ -309,7 +294,7 @@
 //                 style={[
 //                   styles.textSign,
 //                   {
-//                     color: "#fff", 
+//                     color: "#fff",
 //                   },
 //                 ]}
 //               >
@@ -322,8 +307,8 @@
 //             //   onPress={() => navigation.goBack()}
 //             //   onPress={() => verifyForm()}
 
-//             onPress={signInHandler}    
-        
+//             onPress={signInHandler}
+
 //               style={[
 //                 styles.signUp,
 //                 {
@@ -346,19 +331,18 @@
 //                 Sign In
 //               </Text>
 //             </TouchableOpacity>
-            
-            
+
 //           </View>
 //           <View style={styles.textPrivate}>
 //             <Text style={styles.color_textPrivate}>
-//               Not Registered? 
+//               Not Registered?
 //             </Text>
-//             <Text style={[styles.color_textPrivate, { fontWeight: "bold" }]} 
+//             <Text style={[styles.color_textPrivate, { fontWeight: "bold" }]}
 //             //  onPress={() => Linking.openURL('http://google.com')}>{" "}
-//             // onPress={()=>{  navigation.navigate('SignIn') 
-//             onPress={()=>{  navigation.navigate('Register') 
+//             // onPress={()=>{  navigation.navigate('SignIn')
+//             onPress={()=>{  navigation.navigate('Register')
 //           }}
-           
+
 //             >{" "}
 //           Register
 //             </Text>
@@ -367,10 +351,10 @@
 //       </Animatable.View>
 //     </View>
 //      ) :  (
-//         <View 
-      
+//         <View
+
 //         style={{ justifyContent: "center",
-//       alignItems: "center",backgroundColor: !User?'#e8dcef':'white',height:'100%'}}> 
+//       alignItems: "center",backgroundColor: !User?'#e8dcef':'white',height:'100%'}}>
 
 //         <View style={{flex:1,width:'100%',justifyContent:'space-evenly'}}>
 //             {User.privateKey?
@@ -379,51 +363,49 @@
 //                 <View style={styles.midContainer} >
 //                     <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}><Text style={styles.username}>{User.firstName?`${User.firstName} ${User.lastName}`:null}</Text>
 //                     <AntDesign name="edit" size={18} color="black" /></View>
-                 
+
 //          <Text style={styles.time}>{User.privateKey}</Text></View>
 //          <View style={{marginLeft:'auto',justifyContent:'center'}}>
 //              <TouchableWithoutFeedback onPress={logOut}>
-//                 <AntDesign name="logout" size={24} color={Colors.light.tint}/>   
+//                 <AntDesign name="logout" size={24} color={Colors.light.tint}/>
 //              </TouchableWithoutFeedback>
 //            </View>
-         
+
 //             </View>
-         
+
 //            :null}
-         
+
 //            {User.privateKey?<View>
 //              <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Account</Text></View>
-           
+
 //            </View>:null}
 //            {User.privateKey?<View>
 //              <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Chats</Text></View>
-           
+
 //            </View>:null}
 //            {User.privateKey?<View>
 //              <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Appearance</Text></View>
-           
+
 //            </View>:null}
 //            {User.privateKey?<View>
 //              <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Linked devices</Text></View>
-           
+
 //            </View>:null}
 //            {User.privateKey?<View>
 //              <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Data and Storage</Text></View>
-           
+
 //            </View>:null}
-         
+
 //            {User.privateKey?<View>
 //              <View style={{backgroundColor:Colors.light.background,borderRadius:10,padding:10,alignSelf:'flex-start',marginLeft:15}}><Text style={{color:'grey',textAlign:'center',fontSize:16,fontWeight:'bold'}}>Invite</Text></View>
-             
-           
+
 //            </View>:null}
-         
+
 //         </View>
 //         </View>
 //       )  }
 //     </View>
-    
-    
+
 //   );
 // };
 
@@ -448,7 +430,7 @@
 //     borderTopLeftRadius: 30,
 //     borderTopRightRadius: 30,
 //     paddingHorizontal: 18,
-//     paddingVertical: 30, 
+//     paddingVertical: 30,
 //     flexDirection: "column"
 //   },
 //   text_header: {
@@ -478,9 +460,7 @@
 //   button: {
 //     alignItems: "center",
 //     marginTop: 50
-    
-   
-    
+
 //   },
 //   signUp: {
 //     width: "100%",
@@ -530,7 +510,6 @@
 // });
 
 //kunal khanna
-
 
 import {
   AntDesign,
@@ -737,9 +716,12 @@ const SignInScreen = () => {
   //  const navigation = useNavigation();
 
   const OpenProfilePage = () => {
-    navigation.navigate("ProfileEdit", {userPicture: User.ProfilePic, userFirstName: User.firstName, userLastName: User.lastName });
+    navigation.navigate("ProfileEdit", {
+      userPicture: User.ProfilePic,
+      userFirstName: User.firstName,
+      userLastName: User.lastName,
+    });
   };
-  
 
   return (
     <View style={styles.container}>
@@ -828,25 +810,6 @@ const SignInScreen = () => {
                 </Text>
               </View>
               <View style={[styles.button, { bottom: 0 }]}>
-                <TouchableOpacity style={styles.signUp}>
-                  {/* <LinearGradient
-                    colors={['#08d4c4', '#01ab9d']}
-                    style={styles.signIn}
-                > */}
-
-                  <Text
-                    style={[
-                      styles.textSign,
-                      {
-                        color: "#fff",
-                      },
-                    ]}
-                  >
-                    Sign In
-                  </Text>
-                  {/* </LinearGradient> */}
-                </TouchableOpacity>
-
                 <TouchableOpacity
                   //   onPress={() => navigation.goBack()}
                   //   onPress={() => verifyForm()}
@@ -915,16 +878,22 @@ const SignInScreen = () => {
               >
                 {/* Kunal edit this part */}
                 {/* <TouchableOpacity onPress={OpenProfilePage}> */}
-                <TouchableOpacity onPress={() => { 
-    navigation.navigate("ProfileEdit", {userPicture: User.ProfilePic, userFirstName: User.firstName, userLastName: User.lastName });
-  }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("ProfileEdit", {
+                      userPicture: User.ProfilePic,
+                      userFirstName: User.firstName,
+                      userLastName: User.lastName,
+                    });
+                  }}
+                >
                   <Image
                     source={{ uri: User.ProfilePic }}
                     style={styles.avatar}
                   />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={OpenProfilePage}>
-                {/* <TouchableOpacity onPress={()=>{console.log(User.firstName)}}> */}
+                  {/* <TouchableOpacity onPress={()=>{console.log(User.firstName)}}> */}
                   <View style={styles.midContainer}>
                     <View
                       style={{
@@ -938,8 +907,13 @@ const SignInScreen = () => {
                           ? `${User.firstName} ${User.lastName}`
                           : null}
                       </Text>
-                      
-                      <AntDesign name="edit" size={18} color="black" style={{marginLeft: 10}} />
+
+                      <AntDesign
+                        name="edit"
+                        size={18}
+                        color="black"
+                        style={{ marginLeft: 10 }}
+                      />
                     </View>
 
                     <Text style={styles.time}>{User.privateKey}</Text>
@@ -1206,8 +1180,3 @@ const styles = StyleSheet.create({
     color: "grey",
   },
 });
-
-
-
-
-
