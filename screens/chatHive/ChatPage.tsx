@@ -86,7 +86,7 @@ const ChatPage = () => {
         <TouchableOpacity>
           <View
             style={{
-              backgroundColor: "black",
+              backgroundColor: "#A983B2",
               borderRadius: 50,
               borderWidth: 0.5,
               borderColor: "grey",
@@ -106,14 +106,14 @@ const ChatPage = () => {
             borderRadius: 10,
             fontSize: 16,
           }}
-          placeholderTextColor="white"
+          placeholderTextColor="#A983B2"
           multiline
         />
         <TouchableOpacity>
-          <Feather name="camera" size={26} color="white" />
+          <Feather name="camera" size={26} color="#A983B2" />
         </TouchableOpacity>
         <TouchableOpacity>
-          <Entypo name="emoji-happy" size={26} color="white" />
+          <Entypo name="emoji-happy" size={26} color="#A983B2" />
         </TouchableOpacity>
       </View>
     </View>
