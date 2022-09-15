@@ -51,11 +51,12 @@ const ChatLists = () => {
     <>
       <View style={styles.chatHolder}>
         <MonoText style={styles.text}>Chats</MonoText>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <View>
             <Octicons name="search" size={22} color={"white"} />
           </View>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Searchbar/>
       </View>
       {/* chat listing */}
       <ScrollView>
