@@ -66,7 +66,7 @@ const ChatPage = () => {
   ]);
   return (
     <View style={styles.container}>
-      <ScrollView style={{marginBottom: 60}} >
+      <ScrollView style={{ marginBottom: 60 }}>
         {messages.map((e, index) => (
           <View
             key={index}
@@ -83,7 +83,7 @@ const ChatPage = () => {
         ))}
       </ScrollView>
       <View style={styles.messageSender}>
-        <TouchableOpacity>
+        {/* <TouchableOpacity>
           <View
             style={{
               backgroundColor: "#A983B2",
@@ -94,6 +94,12 @@ const ChatPage = () => {
           >
             <AntDesign name="plus" size={26} color="white" />
           </View>
+        </TouchableOpacity> */}
+        <TouchableOpacity>
+          <Feather name="camera" size={26} color="#A983B2" />
+        </TouchableOpacity>
+        <TouchableOpacity>
+          <Entypo name="emoji-happy" size={26} color="#A983B2" />
         </TouchableOpacity>
         <TextInput
           placeholder="Message..."
@@ -110,10 +116,7 @@ const ChatPage = () => {
           multiline
         />
         <TouchableOpacity>
-          <Feather name="camera" size={26} color="#A983B2" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Entypo name="emoji-happy" size={26} color="#A983B2" />
+          <Feather name="send" size={26} color="#A983B2" />
         </TouchableOpacity>
       </View>
     </View>
@@ -130,14 +133,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     position: "absolute",
-    width: "90%",
+    width: "95%",
     bottom: 10,
     borderWidth: 0.5,
     borderColor: "grey",
     marginLeft: "5%",
     borderRadius: 10,
     padding: 10,
-    backgroundColor: "rgba(0, 0, 0, 0.32)"
+    backgroundColor: "rgba(0, 0, 0, 0.32)",
   },
   textRight: {
     backgroundColor: "#A983B2",
