@@ -10,8 +10,8 @@ export default {
     // tabIconDefault: '#ccc',
     // tabIconSelected: tintColorLight,
     //light mode has the same color as dark mode
-    text: '#fff',
-    background: '#1b1b23',
+    text: '#000',
+    background: '#fff',
     tint: tintColorDark,
     tabIconDefault: '#fff',
     tabIconSelected: tintColorDark,

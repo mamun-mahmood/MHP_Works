@@ -369,7 +369,7 @@ function RootNavigator() {
               <Avatar.Image size={40} source={{}} />
             </View>
           ),
-          headerRight: () => (
+          headerRight: () => (  
             <View
               style={{
                 flexDirection: "row",
