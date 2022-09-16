@@ -1,7 +1,7 @@
 import { Feather, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -20,7 +20,7 @@ import * as Animatable from "react-native-animatable";
 import Colors from "../constants/Colors";
 
 const Register = () => {
-  const [data, setData] = React.useState({
+  const [data, setData] = useState({
     first_name: "",
     last_name: "",
     username: "",
@@ -56,14 +56,14 @@ const Register = () => {
     }
   };
 
-  const handlePasswordChange = (val) => {
+  const handlePasswordChange = (val: string) => {
     setData({
       ...data,
       password: val,
     });
   };
 
-  const handleConfirmPasswordChange = (val) => {
+  const handleConfirmPasswordChange = (val: string) => {
     setData({
       ...data,
       confirm_password: val,
@@ -120,15 +120,15 @@ const Register = () => {
       );
     }
   };
-  const isValidEmail = (text: string) => {
-    console.log(text);
-    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-    if (reg.test(text) === false) {
-      return false;
-    } else {
-      return true;
-    }
-  };
+  // const isValidEmail = (text: string) => {
+  //   console.log(text);
+  //   let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+  //   if (reg.test(text) === false) {
+  //     return false;
+  //   } else {
+  //     return true;
+  //   }
+  // };
 
   return (
     <View style={styles.container}>

@@ -54,6 +54,7 @@ const NewContactDot = () => {
     const handlelogout = async (key: string) => {
       await SecureStore.deleteItemAsync(key);
       // setUser(null);
+      navigation.navigate("SignIn");
     };
     handlelogout("userAuthToken");
   };

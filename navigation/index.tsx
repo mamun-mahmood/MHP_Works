@@ -227,16 +227,18 @@ import ChatPage from "../screens/chatHive/ChatPage";
 import { Avatar } from "react-native-paper";
 
 export default function Navigation({
-  colorScheme,
+  colorScheme, user
 }: {
-  colorScheme: ColorSchemeName;
+  colorScheme: ColorSchemeName,
 }) {
+  console.log(user);
+  
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
     >
-      <RootNavigator />
+      <RootNavigator user={user} />
     </NavigationContainer>
   );
 }
@@ -245,7 +247,7 @@ export default function Navigation({
 // Read more here: https://reactnavigation.org/docs/modal
 const Stack = createStackNavigator<RootStackParamList>();
 
-function RootNavigator() {
+function RootNavigator({user}) {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -260,12 +262,13 @@ function RootNavigator() {
           fontWeight: "bold",
         },
       }}
+      initialRouteName={`${user ? "Root" : "SignIn"}`}
     >
       <Stack.Screen
         name="Root"
         component={MainTabNavigator}
         options={{
-          title: "MegaHoot",
+          title: `${user.username ? user.username : "MegaHoot"}`,
           headerLeft: () => (
             <View>
               <ProfileSetting />
@@ -369,7 +372,7 @@ function RootNavigator() {
               <Avatar.Image size={40} source={{}} />
             </View>
           ),
-          headerRight: () => (  
+          headerRight: () => (
             <View
               style={{
                 flexDirection: "row",

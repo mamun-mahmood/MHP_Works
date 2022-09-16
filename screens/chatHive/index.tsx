@@ -9,11 +9,11 @@ import { Ionicons } from "@expo/vector-icons";
 import ChatLists from "./ChatLists";
 import { useState } from "react";
 
-const ChatHiveIndex = () => {
+const ChatHiveIndex = ({user}) => {
   const [tab, setTab] = useState("ChatLists");
   return (
     <View style={styles.container}>
-      {tab === "ChatLists" && <ChatLists />} 
+      {tab === "ChatLists" && <ChatLists user={user} />} 
       {/* Bottom bar for page navigation */}
       {/* <View style={styles.bottomBar}>
         <TouchableOpacity>

@@ -10,7 +10,8 @@ import { notificationCustom } from "./notifications";
 import { AppState, TouchableOpacity } from "react-native";
 import * as Updates from "expo-updates";
 import { View, Text } from "./components/Themed";
-
+import { useNavigation } from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
 // const db = SQLite.openDatabase('db.testDb') // returns Database object
 
 // function myTask() {
@@ -47,6 +48,15 @@ export default function App() {
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
   const [updateAvailable, setUpdateAvailable] = useState(false);
+  // const navigation = useNavigation();
+  const [user, setUser] = React.useState(null)
+  const checkUser = async (key: string) => {
+    let findUser = await SecureStore.getItemAsync(key)
+    setUser(JSON.parse(findUser));
+  }
+  React.useEffect(() => {
+    checkUser("userAuthToken");
+  }, [])
 
   // const createDb=()=>{
   //   db.transaction(tx => {
@@ -79,7 +89,7 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
+        <Navigation colorScheme={colorScheme} user={user} />
         {updateAvailable ? (
           <View style={{ minHeight: "10%" ,flexDirection:'column',justifyContent:'center',alignItems:'center',backgroundColor:'white'}}>
             <Text>Latest Update Available</Text>

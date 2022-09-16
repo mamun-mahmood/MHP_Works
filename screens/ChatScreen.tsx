@@ -92,14 +92,15 @@ export default function ChatScreen() {
     const tokenFromPersistentState = await SecureStore.getItemAsync(key);
     if (tokenFromPersistentState) {
       let data = JSON.parse(tokenFromPersistentState);
-      console.log(data.firstName);
+      console.log(data);
       let name = data.firstName + " " + data.lastName;
       let privateKey = data.privateKey;
       setMyToken(data);
       global.privateKey = privateKey;
       global.name = name;
       global.imageUri = data.ProfilePic;
-      setUser({ name: name, id: privateKey });
+      // setUser({ name: name, id: privateKey });
+      setUser(data);
       fetUsers(name, privateKey);
     }
   };
@@ -303,7 +304,7 @@ export default function ChatScreen() {
 
   return (
     <View style={styles.container}>
-      {myToken.privateKey ? (
+      {user ? (
         // <FlatList
         //   ListHeaderComponent={renderHeader}
         //   style={{ width: "100%" }}
@@ -313,7 +314,7 @@ export default function ChatScreen() {
         //   )}
         //   keyExtractor={(item) => item.veroKey}
         // />
-        <ChatHiveIndex/>
+        <ChatHiveIndex user={user} />
       ) : (
         <View
           style={{

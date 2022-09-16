@@ -577,15 +577,13 @@ const SignInScreen = () => {
         password,
       })
       .then((response) => {
-        console.log(response.data);
-
         if (response.data.loggedIn) {
           const loggedIn = {
             username: response.data.username,
             email: response.data.email,
           };
-          console.log(loggedIn);
           handleSetToken("userAuthToken", JSON.stringify(loggedIn));
+          navigation.navigate("Root");
         }
         // setMessage(response.data.message);
       });
