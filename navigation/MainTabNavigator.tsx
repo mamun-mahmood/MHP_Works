@@ -24,6 +24,8 @@ import ContactScreen from "../screens/ContactScreen";
 import VeroHive from "../screens/veroHive";
 import SoapBox from "../screens/soapBox";
 import Kali from "../screens/imagePicker";
+import ChatPage from "../screens/chatHive/ChatPage";
+import Promos from "../screens/chatHive/Promos";
 const MainTab = createMaterialTopTabNavigator<MainTabParamList>();
 
 export default function MainTabNavigator() {
@@ -49,7 +51,8 @@ export default function MainTabNavigator() {
     >
       <MainTab.Screen name="Contacts" component={ContactScreen} options={{}} />
       <MainTab.Screen name="My Chats" component={ChatScreen} />
-      <MainTab.Screen name="Promos" component={VeroHive} />
+      {/* <MainTab.Screen name="Vero Hive" component={VeroHive} /> */}
+      <MainTab.Screen name="Promos" component={Promos} />
       <MainTab.Screen name="SoapBox" component={SoapBox} />
       {/* <MainTab.Screen
         name="SoapBoxx"

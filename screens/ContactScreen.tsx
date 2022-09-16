@@ -20,10 +20,11 @@ import { useEffect } from "react";
 import axios from "axios";
 import Colors from "../constants/Colors";
 import { useFocusEffect } from "@react-navigation/native";
+import { MonoText } from "../components/StyledText";
 
 export default function ContactScreen() {
   const [FormVisible, setFormVisible] = useState(false);
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(null);
   const [cname, setCname] = useState("");
   const [email, setEmail] = useState("");
   const [cveroKey, setCveroKey] = useState("");
@@ -176,6 +177,7 @@ export default function ContactScreen() {
 
   return (
     <View style={styles.container}>
+      {!users && <MonoText style={{marginTop: 300}} >No Contacts Available</MonoText>}
       {FormVisible ? (
         <View style={styles.container}>
           <Text style={styles.title}>New Contact</Text>
@@ -230,7 +232,6 @@ export default function ContactScreen() {
           keyExtractor={(item) => item.veroKey}
         />
       )}
-
       <NewContactButton onCreateContact={() => setFormVisible(!FormVisible)} />
     </View>
   );
