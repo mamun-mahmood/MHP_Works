@@ -17,7 +17,6 @@ import {
   Image,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
-import LinearGradient from "react-native-linear-gradient";
 import Colors from "../constants/Colors";
 
 const Register = () => {
@@ -37,7 +36,7 @@ const Register = () => {
   });
 
   const navigation = useNavigation();
-  const textInputChange = (val, inputName, inputChange) => {
+  const textInputChange = (val: string, inputName: string, inputChange: string) => {
     if (val.length !== 0) {
       setData({
         ...data,
@@ -56,10 +55,6 @@ const Register = () => {
       });
     }
   };
-
-  //   const inputFirstname = (val) => {
-  //     if (val.length !== 0) check_textInputChange
-  //   }
 
   const handlePasswordChange = (val) => {
     setData({
@@ -88,23 +83,6 @@ const Register = () => {
       confirm_secureTextEntry: !data.confirm_secureTextEntry,
     });
   };
-
-  //   var CheckTextInputIsEmptyOrNot = () =>{
-
-  //     const { TextInputName }  = this.state ;
-  //     const { TextInputEmail }  = this.state ;
-  //     const { TextInputPhoneNumber }  = this.state ;
-
-  //    if(TextInputName == '' || TextInputEmail == '' || TextInputPhoneNumber == '')
-  //    {
-  //      Alert.alert("Please Enter All the Values.");
-
-  //    }
-  //    else{
-
-  //    Alert.alert("All Text Input is Filled.");
-
-  //    }
   const signup = (
     name: string,
     username: string,
@@ -142,33 +120,13 @@ const Register = () => {
       );
     }
   };
-  const [event, setEvent] = React.useState("");
-  function handleChange(evt) {
-    const value = evt.target;
-
-    // setEvent({
-
-    //   [evt.target.name]: value
-
-    // });
-    console.log(evt.target.Name);
-  }
-
-  // function isValidEmail(email) {
-  // 	var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-  // 	return !!email && typeof email === 'string'
-  // 		&& email.match(emailformat)};
-
-  const isValidEmail = (text) => {
+  const isValidEmail = (text: string) => {
     console.log(text);
     let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (reg.test(text) === false) {
-      console.log("Email is Not Correct");
-      this.setState({ email: text });
       return false;
     } else {
-      this.setState({ email: text });
-      console.log("Email is Correct");
+      return true;
     }
   };
 
@@ -190,7 +148,6 @@ const Register = () => {
               placeholder="Your Firstname"
               style={styles.textInput}
               autoCapitalize="none"
-              onChange={handleChange}
               onChangeText={(val) =>
                 textInputChange(val, "first_name", "check_textInputChangeFn")
               }
