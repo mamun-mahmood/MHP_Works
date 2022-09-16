@@ -547,8 +547,8 @@ import Navigation from "../navigation";
 const SignInScreen = () => {
   const navigation = useNavigation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [Email, setEmail] = useState("");
-  const [Password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [User, setUser] = useState();
   const [myToken, setMyToken] = useState({});
   notificationCustom();
@@ -570,13 +570,33 @@ const SignInScreen = () => {
       setUser(mydata);
     }
   };
+  const login = (event) => {
+    axios
+      .post(`https://soapboxapi.megahoot.net/user/login`, {
+        email,
+        password,
+      })
+      .then((response) => {
+        console.log(response.data);
+
+        if (response.data.loggedIn) {
+          const loggedIn = {
+            username: response.data.username,
+            email: response.data.email,
+          };
+          console.log(loggedIn);
+          handleSetToken("userAuthToken", JSON.stringify(loggedIn));
+        }
+        // setMessage(response.data.message);
+      });
+  };
   const signInHandler = () => {
     var decoded;
 
     axios
       .post(`https://messangerapi533cdgf6c556.amaprods.com/api/users/login`, {
-        email: Email,
-        password: Password,
+        email: email,
+        password: password,
       })
       .then((res) => {
         const data = res.data;
@@ -750,7 +770,7 @@ const SignInScreen = () => {
                   //   onChangeText={(val) => textInputChange(val, 'email','check_textInputChangeE')}
 
                   //   onBlur={ val => this.isValidEmail(val) }
-                  value={Email}
+                  value={email}
                   onChangeText={setEmail}
                 />
 
@@ -779,7 +799,7 @@ const SignInScreen = () => {
                   style={styles.textInput}
                   autoCapitalize="none"
                   //   onChangeText={(val) => handlePasswordChange(val)}
-                  value={Password}
+                  value={password}
                   onChangeText={setPassword}
                 />
                 <TouchableOpacity onPress={updateSecureTextEntry}>
@@ -814,7 +834,7 @@ const SignInScreen = () => {
                   //   onPress={() => navigation.goBack()}
                   //   onPress={() => verifyForm()}
 
-                  onPress={signInHandler}
+                  onPress={login}
                   style={[
                     styles.signUp,
                     {

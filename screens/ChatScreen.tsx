@@ -303,7 +303,7 @@ export default function ChatScreen() {
 
   return (
     <View style={styles.container}>
-      {!myToken.privateKey ? (
+      {myToken.privateKey ? (
         // <FlatList
         //   ListHeaderComponent={renderHeader}
         //   style={{ width: "100%" }}
