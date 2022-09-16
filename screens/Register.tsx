@@ -1,6 +1,7 @@
 import { Feather, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -13,12 +14,11 @@ import {
   ScrollView,
   StatusBar,
   Linking,
-  Image
+  Image,
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 import LinearGradient from "react-native-linear-gradient";
 import Colors from "../constants/Colors";
-
 
 const Register = () => {
   const [data, setData] = React.useState({
@@ -35,7 +35,7 @@ const Register = () => {
     secureTextEntry: true,
     confirm_secureTextEntry: true,
   });
-  
+
   const navigation = useNavigation();
   const textInputChange = (val, inputName, inputChange) => {
     if (val.length !== 0) {
@@ -57,19 +57,16 @@ const Register = () => {
     }
   };
 
-//   const inputFirstname = (val) => {
-//     if (val.length !== 0) check_textInputChange
-//   }
-  
+  //   const inputFirstname = (val) => {
+  //     if (val.length !== 0) check_textInputChange
+  //   }
 
-  
-
-const handlePasswordChange = (val) => {
-  setData({
-    ...data,
-    password: val,
-  });
-};
+  const handlePasswordChange = (val) => {
+    setData({
+      ...data,
+      password: val,
+    });
+  };
 
   const handleConfirmPasswordChange = (val) => {
     setData({
@@ -92,91 +89,113 @@ const handlePasswordChange = (val) => {
     });
   };
 
-//   var CheckTextInputIsEmptyOrNot = () =>{
- 
-//     const { TextInputName }  = this.state ;
-//     const { TextInputEmail }  = this.state ;
-//     const { TextInputPhoneNumber }  = this.state ;
-    
-//    if(TextInputName == '' || TextInputEmail == '' || TextInputPhoneNumber == '')
-//    {
-//      Alert.alert("Please Enter All the Values.");
+  //   var CheckTextInputIsEmptyOrNot = () =>{
 
-//    }
-//    else{
+  //     const { TextInputName }  = this.state ;
+  //     const { TextInputEmail }  = this.state ;
+  //     const { TextInputPhoneNumber }  = this.state ;
 
-//    Alert.alert("All Text Input is Filled.");
-    
-//    }
+  //    if(TextInputName == '' || TextInputEmail == '' || TextInputPhoneNumber == '')
+  //    {
+  //      Alert.alert("Please Enter All the Values.");
 
-   var verifyForm = () => {
-    if (data.first_name == '' || data.last_name == '' || data.email == '' || data.username == '' || data.password == '' || data.confirm_password == '' || data.password !== data.confirm_password ) {
-        alert("Please Fill all details");
-    } else{
-        alert("success");
+  //    }
+  //    else{
+
+  //    Alert.alert("All Text Input is Filled.");
+
+  //    }
+  const signup = (
+    name: string,
+    username: string,
+    email: string,
+    password: string
+  ) => {
+    axios
+      .post(`https://soapboxapi.megahoot.net/user/signup`, {
+        name,
+        username,
+        email,
+        password,
+      })
+      .then((response) => {
+        navigation.navigate("SignIn");
+      });
+  };
+  const verifyForm = () => {
+    if (
+      data.first_name == "" ||
+      data.last_name == "" ||
+      data.email == "" ||
+      data.username == "" ||
+      data.password == "" ||
+      data.confirm_password == "" ||
+      data.password !== data.confirm_password
+    ) {
+      alert("Please Fill all details");
+    } else {
+      signup(
+        data.first_name + data.last_name,
+        data.username,
+        data.email,
+        data.password
+      );
     }
-
-   }
-   const [event, setEvent] = React.useState("");
-   function handleChange(evt) {
-
+  };
+  const [event, setEvent] = React.useState("");
+  function handleChange(evt) {
     const value = evt.target;
-  
+
     // setEvent({
 
     //   [evt.target.name]: value
 
     // });
     console.log(evt.target.Name);
-  
   }
 
-  
-// function isValidEmail(email) {
-// 	var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-// 	return !!email && typeof email === 'string'
-// 		&& email.match(emailformat)};
-       
+  // function isValidEmail(email) {
+  // 	var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  // 	return !!email && typeof email === 'string'
+  // 		&& email.match(emailformat)};
 
-const  isValidEmail = (text) => {
-            console.log(text);
-            let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-            if (reg.test(text) === false) {
-              console.log("Email is Not Correct");
-              this.setState({ email: text })
-              return false;
-            }
-            else {
-              this.setState({ email: text })
-              console.log("Email is Correct");
-            }
-          }
-
+  const isValidEmail = (text) => {
+    console.log(text);
+    let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(text) === false) {
+      console.log("Email is Not Correct");
+      this.setState({ email: text });
+      return false;
+    } else {
+      this.setState({ email: text });
+      console.log("Email is Correct");
+    }
+  };
 
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={Colors.light.tint} barStyle="light-content" />
 
       <View style={styles.header}>
-      <Image
-              style={{ width: 100, height: 100,alignSelf:'center' }}
-              source={require("../assets/images/logo.png")}
-            ></Image>
+        <Image
+          style={{ width: 100, height: 100, alignSelf: "center" }}
+          source={require("../assets/images/logo.png")}
+        ></Image>
       </View>
       <Animatable.View animation="fadeInUpBig" style={styles.footer}>
         <ScrollView>
           <Text style={styles.text_footer}>First Name</Text>
           <View style={styles.action}>
             <TextInput
-              
               placeholder="Your Firstname"
               style={styles.textInput}
               autoCapitalize="none"
               onChange={handleChange}
-              
-              onChangeText={(val) => textInputChange(val, 'first_name', 'check_textInputChangeFn')}
+              onChangeText={(val) =>
+                textInputChange(val, "first_name", "check_textInputChangeFn")
+              }
             />
-             {data.check_textInputChangeFn ? (
+            {data.check_textInputChangeFn ? (
               <Animatable.View animation="bounceIn">
                 <Feather name="check-circle" color="green" size={18} />
               </Animatable.View>
@@ -194,12 +213,13 @@ const  isValidEmail = (text) => {
             Last Name
           </Text>
           <View style={styles.action}>
-           
             <TextInput
               placeholder="Your Lastname"
               style={styles.textInput}
               autoCapitalize="none"
-              onChangeText={(val) => textInputChange(val, 'last_name','check_textInputChangeLn')}
+              onChangeText={(val) =>
+                textInputChange(val, "last_name", "check_textInputChangeLn")
+              }
             />
             {data.check_textInputChangeLn ? (
               <Animatable.View animation="bounceIn">
@@ -224,7 +244,9 @@ const  isValidEmail = (text) => {
               placeholder="Your Username"
               style={styles.textInput}
               autoCapitalize="none"
-              onChangeText={(val) => textInputChange(val, 'username', 'check_textInputChangeUn')}
+              onChangeText={(val) =>
+                textInputChange(val, "username", "check_textInputChangeUn")
+              }
             />
             {data.check_textInputChangeUn ? (
               <Animatable.View animation="bounceIn">
@@ -232,7 +254,7 @@ const  isValidEmail = (text) => {
               </Animatable.View>
             ) : null}
           </View>
-          
+
           <Text
             style={[
               styles.text_footer,
@@ -249,18 +271,19 @@ const  isValidEmail = (text) => {
               textContentType="emailAddress"
               style={styles.textInput}
               autoCapitalize="none"
-              onChangeText={(val) => textInputChange(val, 'email','check_textInputChangeE')}
+              onChangeText={(val) =>
+                textInputChange(val, "email", "check_textInputChangeE")
+              }
 
-            //   onBlur={ val => this.isValidEmail(val) }
+              //   onBlur={ val => this.isValidEmail(val) }
             />
-             
+
             {/* {data.check_textInputChange ? (
               <Animatable.View animation="bounceIn">
                 <Feather name="check-circle" color="green" size={18} />
               </Animatable.View>
             ) : null} */}
           </View>
-
 
           <Text
             style={[
@@ -279,8 +302,7 @@ const  isValidEmail = (text) => {
               secureTextEntry={data.secureTextEntry ? true : false}
               style={styles.textInput}
               autoCapitalize="none"
-              onChangeText={(val) => handlePasswordChange(val)
-              }
+              onChangeText={(val) => handlePasswordChange(val)}
             />
             <TouchableOpacity onPress={updateSecureTextEntry}>
               {data.secureTextEntry ? (
@@ -353,7 +375,7 @@ const  isValidEmail = (text) => {
             </TouchableOpacity>
 
             <TouchableOpacity
-            //   onPress={() => navigation.goBack()}
+              //   onPress={() => navigation.goBack()}
               onPress={() => verifyForm()}
               style={[
                 styles.signUp,
@@ -379,17 +401,17 @@ const  isValidEmail = (text) => {
             </TouchableOpacity>
           </View>
           <View style={styles.textPrivate}>
-            <Text style={styles.color_textPrivate}>
-              Already Registered? 
-            </Text>
-            <Text style={[styles.color_textPrivate, { fontWeight: "bold" }]} 
-            //  onPress={() => Linking.openURL('http://google.com')}>{" "}
-            // onPress={()=>{  navigation.navigate('SignIn') 
-            onPress={()=>{  navigation.navigate('SignIn') 
-          }}
-           
-            >{" "}
-          Sign In
+            <Text style={styles.color_textPrivate}>Already Registered?</Text>
+            <Text
+              style={[styles.color_textPrivate, { fontWeight: "bold" }]}
+              //  onPress={() => Linking.openURL('http://google.com')}>{" "}
+              // onPress={()=>{  navigation.navigate('SignIn')
+              onPress={() => {
+                navigation.navigate("SignIn");
+              }}
+            >
+              {" "}
+              Sign In
             </Text>
           </View>
         </ScrollView>
