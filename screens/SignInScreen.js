@@ -551,6 +551,7 @@ const SignInScreen = () => {
   const [password, setPassword] = useState("");
   const [User, setUser] = useState();
   const [myToken, setMyToken] = useState({});
+  const [loading, setLoading] = useState(false);
   notificationCustom();
 
   useFocusEffect(
@@ -571,22 +572,29 @@ const SignInScreen = () => {
     }
   };
   const login = (event) => {
-    axios
-      .post(`https://soapboxapi.megahoot.net/user/login`, {
-        email,
-        password,
-      })
-      .then((response) => {
-        if (response.data.loggedIn) {
-          const loggedIn = {
-            username: response.data.username,
-            email: response.data.email,
-          };
-          handleSetToken("userAuthToken", JSON.stringify(loggedIn));
-          navigation.navigate("Root");
-        }
-        // setMessage(response.data.message);
-      });
+    setLoading(true);
+    if (email && password) {
+      axios
+        .post(`https://soapboxapi.megahoot.net/user/login`, {
+          email,
+          password,
+        })
+        .then((response) => {
+          if (response.data.loggedIn) {
+            setLoading(false);
+            const loggedIn = {
+              username: response.data.username,
+              email: response.data.email,
+            };
+            handleSetToken("userAuthToken", JSON.stringify(loggedIn));
+            navigation.navigate("Root");
+          }
+          // setMessage(response.data.message);
+        })
+        .catch((err) => {
+          setLoading(false);
+        });
+    }
   };
   const signInHandler = () => {
     var decoded;
@@ -831,12 +839,11 @@ const SignInScreen = () => {
                 <TouchableOpacity
                   //   onPress={() => navigation.goBack()}
                   //   onPress={() => verifyForm()}
-
+                  disabled={!email && !password && loading}
                   onPress={login}
                   style={[
                     styles.signUp,
                     {
-                      //   borderColor: "#009387",
                       borderColor: Colors.light.text,
                       borderWidth: 1,
                       marginTop: 0,
