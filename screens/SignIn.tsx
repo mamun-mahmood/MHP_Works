@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Button, Image,SafeAreaView,AsyncStorage, FlatList } from "react-native";
+import { Text, TextInput, Button, Image,SafeAreaView,AsyncStorage, FlatList } from "react-native";
 import styles from "../components/ContactListItem/style";
 import Colors from "../constants/Colors";
 import { AntDesign } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import { useFocusEffect } from "@react-navigation/native";
 
 import * as SecureStore from 'expo-secure-store';
 import { notificationCustom } from "../notifications";
+import { View } from "../components/Themed";
 export default function SignIn() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [Email, setEmail] = useState("");

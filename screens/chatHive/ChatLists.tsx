@@ -7,46 +7,21 @@ import { View } from "../../components/Themed";
 import Colors from "../../constants/Colors";
 import ChatCard from "./ChatCard";
 
-const ChatLists = ({user}) => {
+const ChatLists = ({ user }) => {
   const [chats, setChats] = useState([
-    {
-  
-    },
-    {
-  
-    },
-    {
-  
-    },
-    {
-  
-    },
-    {
-  
-    },
-    {
-  
-    },
-    {
-  
-    },
-    {
-  
-    },
-    {
-  
-    },
-    {
-  
-    },
-    {
-  
-    },
-    {
-  
-    },
-    
-  ])
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+    {},
+  ]);
   return (
     <>
       <View style={styles.chatHolder}>
@@ -56,11 +31,14 @@ const ChatLists = ({user}) => {
             <Octicons name="search" size={22} color={"white"} />
           </View>
         </TouchableOpacity> */}
-        <Searchbar/>
+        <Searchbar />
       </View>
       {/* chat listing */}
       <ScrollView>
         {chats.map((e, index) => <ChatCard key={index} index={index} />)}
+        {/* <MonoText style={{ textAlign: "center", marginTop: 300 }}>
+          No chats yet!
+        </MonoText> */}
       </ScrollView>
     </>
   );

@@ -6,7 +6,7 @@ export default {
   light: {
     // text: '#000',
     // background: '#fff',
-    // tint: tintColorLight, 
+    // tint: tintColorLight,
     // tabIconDefault: '#ccc',
     // tabIconSelected: tintColorLight,
     //light mode has the same color as dark mode
@@ -18,7 +18,7 @@ export default {
   },
   dark: {
     text: '#fff',
-    background: '#000',
+    background: '#1b1b23',
     tint: tintColorDark,
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,

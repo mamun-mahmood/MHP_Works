@@ -56,7 +56,7 @@ export default function App() {
   }
   React.useEffect(() => {
     checkUser("userAuthToken");
-  }, [])
+  }, []) 
 
   // const createDb=()=>{
   //   db.transaction(tx => {
@@ -70,17 +70,17 @@ export default function App() {
     startSocket();
   });
 
-  useEffect(() => {
-    Updates.checkForUpdateAsync()
-      .then((res) => {
-        res.isAvailable ? setUpdateAvailable(true) : null;
-      })
-      .catch((err) => console.log(err));
+  // useEffect(() => {
+  //   Updates.checkForUpdateAsync()
+  //     .then((res) => {
+  //       res.isAvailable ? setUpdateAvailable(true) : null;
+  //     })
+  //     .catch((err) => console.log(err));
 
    
-  }, []);
+  // }, []);
 
-  useEffect(() => {
+  useEffect(() => { 
     // createDb()
     startSocket();
   }, []);
