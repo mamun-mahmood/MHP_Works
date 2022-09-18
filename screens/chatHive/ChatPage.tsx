@@ -68,9 +68,8 @@ const ChatPage = () => {
     <View style={styles.container}>
       <ScrollView style={{ marginBottom: 60 }}>
         {messages.map((e, index) => (
-          <TouchableOpacity onLongPress={() => alert("Actions...")} >
+          <TouchableOpacity onLongPress={() => alert("Actions...")} key={index}>
             <View
-              key={index}
               style={[
                 e.sentBy === "me" ? styles.textRight : styles.textLeft,
                 { marginTop: 10 },

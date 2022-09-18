@@ -7,12 +7,13 @@ import useColorScheme from "./hooks/useColorScheme";
 import Navigation from "./navigation";
 import socket, { startSocket } from "./socket";
 import { notificationCustom } from "./notifications";
-import { AppState, TouchableOpacity } from "react-native";
+import { AppState, LogBox, TouchableOpacity } from "react-native";
 import * as Updates from "expo-updates";
 import { View, Text } from "./components/Themed";
 import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
+import { getUserData } from "./screens/chatHive/DataFetcher";
 // const db = SQLite.openDatabase('db.testDb') // returns Database object
 
 // function myTask() {
@@ -46,31 +47,23 @@ import axios from "axios";
 // initBackgroundFetch('myTaskName', myTask, 5);
 
 export default function App() {
+  LogBox.ignoreLogs(["EventEmitter.removeListener('url', ...)"]);
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
   const [updateAvailable, setUpdateAvailable] = useState(false);
   // const navigation = useNavigation();
   const [userLoggedIn, setUserLoggedIn] = React.useState(null);
-  const [user, setUser] = React.useState(null);
+  
   const checkUser = async (key: string) => {
     const findUser = await SecureStore.getItemAsync(key);
     setUserLoggedIn(JSON.parse(findUser));
   };
-  const BaseURL = "https://soapboxapi.megahoot.net";
-  // const LIMIT = 9;
-  const getUserData = async (e: any) => {
-    axios.get(`${BaseURL}/user/${e.username}`).then((response) => {
-      setUser(response.data[0]);
-      // setLoading(false);
-      console.log(response.data[0]); 
-    });
-  };
-
+  
   React.useEffect(() => {
     checkUser("userAuthToken");
-    if (userLoggedIn) {
-      getUserData(userLoggedIn);
-    }
+    // if (userLoggedIn && !user) {
+    //   getUserData(userLoggedIn, setUser)
+    // }
   }, []);
   // const createDb=()=>{
   //   db.transaction(tx => {
@@ -103,7 +96,10 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} user={userLoggedIn} userData={user} />
+        <Navigation
+          colorScheme={colorScheme}
+          userLoggedIn={userLoggedIn}
+        />
         {updateAvailable ? (
           <View
             style={{

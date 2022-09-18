@@ -57,6 +57,7 @@ const NewContactDot = () => {
       navigation.navigate("SignIn");
     };
     handlelogout("userAuthToken");
+    hideMenu();
   };
   return (
     <TouchableOpacity

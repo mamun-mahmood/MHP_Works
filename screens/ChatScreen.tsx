@@ -45,7 +45,7 @@ Notifications.setNotificationHandler({
 export default function ChatScreen() {
   const [users, setUsers] = useState([]);
   const [myToken, setMyToken] = useState({});
-  const [user, setUser] = useState();
+  const [userLoggedIn, setUserLoggedIn] = useState();
   const [query, setQuery] = useState("");
   const [fullData, setFullData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,7 +57,7 @@ export default function ChatScreen() {
   const notificationListener = useRef();
   const responseListener = useRef();
   const fetUsers = async (name, privateKey) => {
-    console.log(myToken, name);
+    // console.log(myToken, name);
     try {
       const userData = await axios.post(
         "https://messangerapi533cdgf6c556.amaprods.com/api/contact/contact-list-chat/",
@@ -92,7 +92,6 @@ export default function ChatScreen() {
     const tokenFromPersistentState = await SecureStore.getItemAsync(key);
     if (tokenFromPersistentState) {
       let data = JSON.parse(tokenFromPersistentState);
-      console.log(data);
       let name = data.firstName + " " + data.lastName;
       let privateKey = data.privateKey;
       setMyToken(data);
@@ -100,15 +99,14 @@ export default function ChatScreen() {
       global.name = name;
       global.imageUri = data.ProfilePic;
       // setUser({ name: name, id: privateKey });
-      setUser(data);
-      fetUsers(name, privateKey);
+      setUserLoggedIn(data);
+      // fetUsers(name, privateKey);
     }
   };
 
   useFocusEffect(
     React.useCallback(() => {
       handleGetToken("userAuthToken");
-
       // initSocketConnection()
     }, [])
   );
@@ -304,8 +302,7 @@ export default function ChatScreen() {
 
   return (
     <View style={styles.container}>
-      {user ? (
-        // <FlatList
+        {/* // <FlatList
         //   ListHeaderComponent={renderHeader}
         //   style={{ width: "100%" }}
         //   data={users}
@@ -313,34 +310,8 @@ export default function ChatScreen() {
         //     <ChatListItem socket={socket} chatRoom={item} />
         //   )}
         //   keyExtractor={(item) => item.veroKey}
-        // />
-        <ChatHiveIndex user={user} />
-      ) : (
-        <View
-          style={{
-            backgroundColor: Colors.light.tint,
-            padding: 10,
-            borderRadius: 10,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("SignIn");
-            }}
-          >
-            <Text style={{ color: Colors.light.background }}>
-              Please Login To Continue
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      {/* <Button
-        title="Press to Send Notification"
-        onPress={async () => {
-          await sendPushNotification(expoPushToken);
-        }}
-      /> */}
-      {/* <NewMessageButton /> */}
+        // /> */}
+        <ChatHiveIndex />
     </View>
   );
 }

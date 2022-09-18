@@ -7,7 +7,7 @@ import { View } from "../../components/Themed";
 import Colors from "../../constants/Colors";
 import ChatCard from "./ChatCard";
 
-const ChatLists = ({ user }) => {
+const ChatLists = () => {
   const [chats, setChats] = useState([
     {},
     {},

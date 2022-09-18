@@ -225,11 +225,11 @@ import SignInScreen from "../screens/SignInScreen";
 import ProfileEdit from "../screens/ProfileEdit";
 import ChatPage from "../screens/chatHive/ChatPage";
 import { Avatar } from "react-native-paper";
+import { getUserData } from "../screens/chatHive/DataFetcher";
 
 export default function Navigation({
   colorScheme,
-  user,
-  userData,
+  userLoggedIn,
 }: {
   colorScheme: ColorSchemeName;
 }) {
@@ -238,7 +238,7 @@ export default function Navigation({
       linking={LinkingConfiguration}
       theme={colorScheme === "dark" ? DarkTheme : DefaultTheme}
     >
-      <RootNavigator user={user} userData={userData} />
+      <RootNavigator userLoggedIn={userLoggedIn} />
     </NavigationContainer>
   );
 }
@@ -247,7 +247,11 @@ export default function Navigation({
 // Read more here: https://reactnavigation.org/docs/modal
 const Stack = createStackNavigator<RootStackParamList>();
 
-function RootNavigator({ user, userData }) {
+function RootNavigator({ userLoggedIn }: any) {
+  const [userData, setUserData] = React.useState(null);
+  if (userLoggedIn && !userData) {
+    getUserData(userLoggedIn, setUserData);
+  }
   return (
     <Stack.Navigator
       screenOptions={{
@@ -262,7 +266,7 @@ function RootNavigator({ user, userData }) {
           fontWeight: "bold",
         },
       }}
-      initialRouteName={`${user ? "Root" : "SignIn"}`}
+      initialRouteName={`${userLoggedIn ? "Root" : "SignIn"}`}
     >
       <Stack.Screen
         name="Root"
@@ -277,9 +281,9 @@ function RootNavigator({ user, userData }) {
           headerRight: () => (
             <View
               style={{
-                flexDirection: "row",
-                width: 30,
-                justifyContent: "space-between",
+                // flexDirection: "row",
+                // width: 30,
+                // justifyContent: "space-between",
                 marginRight: 10,
               }}
             >
@@ -340,6 +344,8 @@ function RootNavigator({ user, userData }) {
         component={SignInScreen}
         options={({ route }) => ({
           title: "SignIn",
+          headerLeft: () => <></>,
+          headerTitleAlign: "center",
         })}
       />
       <Stack.Screen name="Camera" component={CameraScreen} />

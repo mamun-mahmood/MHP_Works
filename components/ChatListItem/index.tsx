@@ -26,7 +26,6 @@ const [LastMessageTime,setLastMessageTime]=useState('')
   const { chatRoom } = props;
   const navigation =useNavigation();
   const user = chatRoom;
-  console.log(user,"user")
 
   const onClick =()=>{
 

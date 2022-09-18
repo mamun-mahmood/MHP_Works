@@ -41,7 +41,6 @@ const getRandomColor = (name) => {
 
 const ContactListItem = (props: ContactListItemProps) => {
   const { user } = props;
-  console.log(user);
   const navigation = useNavigation();
 
   const onClick = () => {
