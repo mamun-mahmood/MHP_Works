@@ -5,33 +5,36 @@ import { AntDesign, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 import styles from "./style";
 import { useNavigation } from "@react-navigation/core";
 import * as SecureStore from "expo-secure-store";
-const ProfileSetting = () => {
+const ProfileSetting = ({ userData }) => {
   const navigation = useNavigation();
+  const [User, setUser] = useState(userData);
+  const BaseURL = "https://soapboxapi.megahoot.net";
+  const profilePicPath = `${BaseURL}/profile-pictures/${userData[0].profilePic}`;
+  console.log(userData[0],"pro", profilePicPath);
 
-  const [User, setUser] = useState();
   const onClick = () => {
     navigation.navigate("Settings");
   };
-  const handleGetToken = async (key) => {
-    const tokenFromPersistentState = await SecureStore.getItemAsync(key);
-    if (tokenFromPersistentState) {
-      const mydata = JSON.parse(tokenFromPersistentState);
-      setUser(mydata);
-    }
-  };
+  // const handleGetToken = async (key) => {
+  //   const tokenFromPersistentState = await SecureStore.getItemAsync(key);
+  //   if (tokenFromPersistentState) {
+  //     const mydata = JSON.parse(tokenFromPersistentState);
+  //     setUser(mydata);
+  //   }
+  // };
 
-  useFocusEffect(
-    React.useCallback(() => {
-      // getToken()
-      handleGetToken("userAuthToken");
-    }, [])
-  );
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     // getToken()
+  //     // handleGetToken("userAuthToken");
+  //   }, [])
+  // );
 
   return (
     <TouchableOpacity onPress={onClick} style={styles.container}>
       <View>
-        {User ? (
-          <Image source={{ uri: User.ProfilePic }} style={styles.avatar} />
+        {profilePicPath ? (
+          <Image source={{ uri: profilePicPath }} style={styles.avatar} />
         ) : (
           <View style={{ marginLeft: 20 }}>
             <FontAwesome name="user" size={24} color="white" />

@@ -68,18 +68,20 @@ const ChatPage = () => {
     <View style={styles.container}>
       <ScrollView style={{ marginBottom: 60 }}>
         {messages.map((e, index) => (
-          <View
-            key={index}
-            style={[
-              e.sentBy === "me" ? styles.textRight : styles.textLeft,
-              { marginTop: 10 },
-            ]}
-          >
-            <MonoText>{e.message}</MonoText>
-            <MonoText style={{ textAlign: "right", fontSize: 10 }}>
-              5.00 Sent
-            </MonoText>
-          </View>
+          <TouchableOpacity onLongPress={() => alert("Actions...")} >
+            <View
+              key={index}
+              style={[
+                e.sentBy === "me" ? styles.textRight : styles.textLeft,
+                { marginTop: 10 },
+              ]}
+            >
+              <MonoText>{e.message}</MonoText>
+              <MonoText style={{ textAlign: "right", fontSize: 10 }}>
+                5.00 Sent
+              </MonoText>
+            </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
       <View style={styles.messageSender}>

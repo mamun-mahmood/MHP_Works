@@ -12,6 +12,7 @@ import * as Updates from "expo-updates";
 import { View, Text } from "./components/Themed";
 import { useNavigation } from "@react-navigation/native";
 import * as SecureStore from "expo-secure-store";
+import axios from "axios";
 // const db = SQLite.openDatabase('db.testDb') // returns Database object
 
 // function myTask() {
@@ -49,15 +50,28 @@ export default function App() {
   const colorScheme = useColorScheme();
   const [updateAvailable, setUpdateAvailable] = useState(false);
   // const navigation = useNavigation();
-  const [user, setUser] = React.useState(null)
+  const [userLoggedIn, setUserLoggedIn] = React.useState(null);
+  const [user, setUser] = React.useState(null);
   const checkUser = async (key: string) => {
-    let findUser = await SecureStore.getItemAsync(key)
-    setUser(JSON.parse(findUser));
-  }
+    const findUser = await SecureStore.getItemAsync(key);
+    setUserLoggedIn(JSON.parse(findUser));
+  };
+  const BaseURL = "https://soapboxapi.megahoot.net";
+  // const LIMIT = 9;
+  const getUserData = async (e: any) => {
+    axios.get(`${BaseURL}/user/${e.username}`).then((response) => {
+      setUser(response.data);
+      // setLoading(false);
+      console.log(response.data);
+    });
+  };
+
   React.useEffect(() => {
     checkUser("userAuthToken");
-  }, []) 
-
+    if (userLoggedIn) {
+      getUserData(userLoggedIn);
+    }
+  }, []);
   // const createDb=()=>{
   //   db.transaction(tx => {
   //     tx.executeSql(
@@ -77,26 +91,68 @@ export default function App() {
   //     })
   //     .catch((err) => console.log(err));
 
-   
   // }, []);
 
-  useEffect(() => { 
+  useEffect(() => {
     // createDb()
     startSocket();
   }, []);
+
   if (!isLoadingComplete) {
     return null;
   } else {
     return (
       <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} user={user} />
+        <Navigation colorScheme={colorScheme} user={userLoggedIn} userData={user} />
         {updateAvailable ? (
-          <View style={{ minHeight: "10%" ,flexDirection:'column',justifyContent:'center',alignItems:'center',backgroundColor:'white'}}>
+          <View
+            style={{
+              minHeight: "10%",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "white",
+            }}
+          >
             <Text>Latest Update Available</Text>
-            <View style={{flexDirection:'row',justifyContent:'space-evenly'}}><TouchableOpacity onPress={()=>{ Updates.fetchUpdateAsync().then((res) => {
-      res.isNew?Updates.reloadAsync():null
-    });}}><Text style={{backgroundColor:'#2C88F7',color:'white',margin:10,padding:5,borderRadius:5}}>Update</Text></TouchableOpacity><TouchableOpacity onPress={()=>setUpdateAvailable(!updateAvailable)}><Text style={{backgroundColor:'red',color:'white',margin:10,padding:5,borderRadius:5}}>Cancel</Text></TouchableOpacity></View>
-          
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-evenly" }}
+            >
+              <TouchableOpacity
+                onPress={() => {
+                  Updates.fetchUpdateAsync().then((res) => {
+                    res.isNew ? Updates.reloadAsync() : null;
+                  });
+                }}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "#2C88F7",
+                    color: "white",
+                    margin: 10,
+                    padding: 5,
+                    borderRadius: 5,
+                  }}
+                >
+                  Update
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setUpdateAvailable(!updateAvailable)}
+              >
+                <Text
+                  style={{
+                    backgroundColor: "red",
+                    color: "white",
+                    margin: 10,
+                    padding: 5,
+                    borderRadius: 5,
+                  }}
+                >
+                  Cancel
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         ) : null}
         <StatusBar />
