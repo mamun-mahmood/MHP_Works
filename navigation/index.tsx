@@ -226,6 +226,7 @@ import ProfileEdit from "../screens/ProfileEdit";
 import ChatPage from "../screens/chatHive/ChatPage";
 import { Avatar } from "react-native-paper";
 import { getUserData } from "../screens/chatHive/DataFetcher";
+import ProfilePictureModal from "../screens/chatHive/Components/ProfilePictureModal";
 
 export default function Navigation({
   colorScheme,
@@ -275,7 +276,8 @@ function RootNavigator({ userLoggedIn }: any) {
           title: `${userData?.name ? userData.name : "MegaHoot"}`,
           headerLeft: () => (
             <View>
-              <ProfileSetting userData={userData} />
+              {/* <ProfileSetting userData={userData} /> */}
+              <ProfilePictureModal userData={userData} />
             </View>
           ),
           headerRight: () => (

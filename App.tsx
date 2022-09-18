@@ -47,23 +47,19 @@ import { getUserData } from "./screens/chatHive/DataFetcher";
 // initBackgroundFetch('myTaskName', myTask, 5);
 
 export default function App() {
-  LogBox.ignoreLogs(["EventEmitter.removeListener('url', ...)"]);
   const isLoadingComplete = useCachedResources();
   const colorScheme = useColorScheme();
   const [updateAvailable, setUpdateAvailable] = useState(false);
   // const navigation = useNavigation();
   const [userLoggedIn, setUserLoggedIn] = React.useState(null);
-  
+
   const checkUser = async (key: string) => {
     const findUser = await SecureStore.getItemAsync(key);
     setUserLoggedIn(JSON.parse(findUser));
   };
-  
+
   React.useEffect(() => {
     checkUser("userAuthToken");
-    // if (userLoggedIn && !user) {
-    //   getUserData(userLoggedIn, setUser)
-    // }
   }, []);
   // const createDb=()=>{
   //   db.transaction(tx => {
@@ -96,10 +92,7 @@ export default function App() {
   } else {
     return (
       <SafeAreaProvider>
-        <Navigation
-          colorScheme={colorScheme}
-          userLoggedIn={userLoggedIn}
-        />
+        <Navigation colorScheme={colorScheme} userLoggedIn={userLoggedIn} />
         {updateAvailable ? (
           <View
             style={{
