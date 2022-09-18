@@ -9,8 +9,8 @@ const ProfileSetting = ({ userData }) => {
   const navigation = useNavigation();
   const [User, setUser] = useState(userData);
   const BaseURL = "https://soapboxapi.megahoot.net";
-  const profilePicPath = `${BaseURL}/profile-pictures/${userData[0].profilePic}`;
-  console.log(userData[0],"pro", profilePicPath);
+  const profilePicPath = `${BaseURL}/profile-pictures/${userData && userData.profilePic}`;
+  console.log(userData,"pro", profilePicPath);
 
   const onClick = () => {
     navigation.navigate("Settings");

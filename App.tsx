@@ -60,9 +60,9 @@ export default function App() {
   // const LIMIT = 9;
   const getUserData = async (e: any) => {
     axios.get(`${BaseURL}/user/${e.username}`).then((response) => {
-      setUser(response.data);
+      setUser(response.data[0]);
       // setLoading(false);
-      console.log(response.data);
+      console.log(response.data[0]); 
     });
   };
 

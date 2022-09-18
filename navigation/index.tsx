@@ -268,7 +268,7 @@ function RootNavigator({ user, userData }) {
         name="Root"
         component={MainTabNavigator}
         options={{
-          title: `${user?.username ? user.username : "MegaHoot"}`,
+          title: `${userData?.name ? userData.name : "MegaHoot"}`,
           headerLeft: () => (
             <View>
               <ProfileSetting userData={userData} />
