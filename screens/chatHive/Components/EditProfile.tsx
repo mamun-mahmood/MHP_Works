@@ -11,7 +11,7 @@ import {
 import { MonoText } from "../../../components/StyledText";
 import { View } from "../../../components/Themed";
 
-const EditProfile = ({ userData, setShowEditProfile }: any) => {
+const EditProfile = ({ userData, setShowEditProfile, closeModal }: any) => {
   const BaseURL = "https://soapboxapi.megahoot.net";
   const profilePicPath = `${BaseURL}/profile-pictures/${
     userData && userData.profilePic
@@ -40,10 +40,10 @@ const EditProfile = ({ userData, setShowEditProfile }: any) => {
             <Ionicons
               onPress={() => setShowEditProfile(false)}
               name="arrow-back"
-              size={24}
+              size={30}
               color="white"
             />
-            <Entypo name="cross" size={24} color="white" />
+            <Entypo onPress={closeModal} name="cross" size={30} color="white" />
           </View>
           <View
             style={{
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     borderRadius: 5,
-    marginTop: 10
+    marginTop: 10,
   },
 });
 export default EditProfile;

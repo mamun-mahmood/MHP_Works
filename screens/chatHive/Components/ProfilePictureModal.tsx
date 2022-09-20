@@ -17,17 +17,16 @@ import EditProfile from "./EditProfile";
 
 const ProfilePictureModal = ({ userData }: any) => {
   const [openModal, setOpenModal] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
   const BaseURL = "https://soapboxapi.megahoot.net";
   const profilePicPath = `${BaseURL}/profile-pictures/${
     userData && userData.profilePic
   }`;
   const closeModal = () => {
-    if (!showEditProfile) {
-      setOpenModal(false);
-    }
+    setOpenModal(false);
+    setShowEditProfile(false);
   };
   console.log(userData);
-  const [showEditProfile, setShowEditProfile] = useState(false);
   return (
     <>
       <TouchableOpacity
@@ -37,7 +36,7 @@ const ProfilePictureModal = ({ userData }: any) => {
         }}
         style={styles.container}
       >
-        <View style={{backgroundColor: "transparent"}} > 
+        <View style={{ backgroundColor: "transparent" }}>
           {profilePicPath ? (
             <Image source={{ uri: profilePicPath }} style={styles.avatar} />
           ) : (
@@ -53,18 +52,16 @@ const ProfilePictureModal = ({ userData }: any) => {
         animationType="slide"
         transparent={true}
         visible={openModal}
-        onRequestClose={() => closeModal()}
+        onRequestClose={closeModal}
         hardwareAccelerated={true}
       >
-        <Pressable
-          onPress={() => closeModal()}
-          style={styles.modalContainerStyle}
-        >
+        <Pressable onPress={closeModal} style={styles.modalContainerStyle}>
           <Pressable style={styles.modalContent}>
             {showEditProfile ? (
               <EditProfile
                 userData={userData}
                 setShowEditProfile={setShowEditProfile}
+                closeModal={closeModal}
               />
             ) : (
               <>
