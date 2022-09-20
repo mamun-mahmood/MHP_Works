@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   textLeft: {
-    backgroundColor: "rgba(0, 0, 0, 0.32)",
+    backgroundColor: "#1b1b23",
     maxWidth: "70%",
     padding: 5,
     borderRadius: 10,

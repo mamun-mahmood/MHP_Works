@@ -277,7 +277,7 @@ function RootNavigator({ userLoggedIn }: any) {
           headerLeft: () => (
             <View>
               {/* <ProfileSetting userData={userData} /> */}
-              <ProfilePictureModal userData={userData} />
+              {userData?.name && <ProfilePictureModal userData={userData} />}
             </View>
           ),
           headerRight: () => (
