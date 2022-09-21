@@ -14,9 +14,6 @@ import moment from "moment";
 
 const ChatPage = ({ route }: any) => {
   const { chatname, imgSrc, userFullName } = route.params;
-  const [user, setUser] = useState({
-    username: null,
-  });
   const [messages, setMessages] = useState([
     {
       chatname: null,
@@ -28,12 +25,7 @@ const ChatPage = ({ route }: any) => {
       isSticker: false,
     },
   ]);
-  console.log(messages);
-
   useEffect(() => {
-    if (!user.username) {
-      getUser(setUser);
-    }
     if (!messages[0].chatname) {
       getChatDataPrivate(chatname, userFullName, setMessages);
     }

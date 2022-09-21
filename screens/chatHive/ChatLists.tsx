@@ -20,8 +20,6 @@ const ChatLists = () => {
   if (!chats.length && userFullName) {
     getChatData(userFullName, setChats);
   }
-  console.log(chats);
-
   return (
     <>
       <View style={styles.chatHolder}>

@@ -9,8 +9,6 @@ import moment from "moment";
 const ChatCard = ({ chat, userFullName }: any) => {
   const navigation = useNavigation();
   const BaseURL = "https://soapboxapi.megahoot.net";
-  {console.log(chat.createdAt)
-  }
   return (
     <TouchableOpacity
       onPress={() => {
@@ -24,17 +22,26 @@ const ChatCard = ({ chat, userFullName }: any) => {
       <View style={styles.container}>
         <View style={{ flex: 0.5 }}>
           <Avatar.Image
-            size={50}
+            size={60}
             source={{
               uri: `${BaseURL}/profile-pictures/${chat.chat.profilePic}`,
             }}
           />
         </View>
-        <View style={{ marginLeft: -30, flex: 1 }}>
+        <View style={{ flex: 1.5 }}>
           <MonoText style={styles.text1}>{chat.chatFrom}</MonoText>
-          <MonoText style={styles.text2}>Messages {chat.chat.message}</MonoText>
+          <MonoText style={styles.text2}>{chat.chat.message}</MonoText>
         </View>
-        <View style={{ display: "flex", alignItems: "center" }}>
+        <View
+          style={{
+            flex: 0.5,
+            display: "flex",
+            alignItems: "center",
+            borderColor: "grey",
+            borderLeftWidth: 0.5,
+            marginRight: -20
+          }}
+        >
           <MonoText style={{ fontSize: 12 }}>
             {moment(chat.createdAt).fromNow()}
           </MonoText>
