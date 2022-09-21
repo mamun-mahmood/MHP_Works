@@ -4,9 +4,11 @@ import { GiftedAvatar } from "react-native-gifted-chat";
 import { Avatar } from "react-native-paper";
 import { MonoText } from "../../components/StyledText";
 import { View } from "../../components/Themed";
+import moment from "moment";
 
-const ChatCard = ({index}) => {
+const ChatCard = ({ chat }: any) => {
   const navigation = useNavigation();
+  const BaseURL = "https://soapboxapi.megahoot.net";
   return (
     <TouchableOpacity
       onPress={() => {
@@ -15,15 +17,23 @@ const ChatCard = ({index}) => {
     >
       <View style={styles.container}>
         <View style={{ flex: 0.5 }}>
-          <Avatar.Image size={50} source={{}} />
+          <Avatar.Image
+            size={50}
+            source={{
+              uri: `${BaseURL}/profile-pictures/${
+                chat.chat.profilePic
+              }`,
+            }}
+          />
         </View>
         <View style={{ marginLeft: -30, flex: 1 }}>
-          <MonoText style={styles.text1}>User {index+1}</MonoText>
-          <MonoText style={styles.text2}>Messages {index+1}</MonoText>
+          <MonoText style={styles.text1}>{chat.chatFrom}</MonoText>
+          <MonoText style={styles.text2}>Messages {chat.chat.message}</MonoText>
         </View>
         <View style={{ display: "flex", alignItems: "center" }}>
-          <MonoText style={{ fontSize: 12 }}>Timestamp</MonoText>
-          <MonoText style={{ fontSize: 10 }}>Sent</MonoText>
+          <MonoText style={{ fontSize: 12 }}>
+            {moment(chat.createdAt).fromNow()}
+          </MonoText>
         </View>
       </View>
     </TouchableOpacity>
@@ -43,11 +53,12 @@ const styles = StyleSheet.create({
   },
   text1: {
     // color: Colors.light.background
-    fontSize: 18,
+    fontSize: 16,
   },
   text2: {
     // color: Colors.light.background
-    fontSize: 14,
+    fontSize: 12,
+    marginTop: 5,
   },
 });
 export default ChatCard;

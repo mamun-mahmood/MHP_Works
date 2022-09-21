@@ -253,7 +253,8 @@ function RootNavigator({ userLoggedIn }: any) {
   if (userLoggedIn && !userData) {
     getUserData(userLoggedIn, setUserData);
   }
-  return (
+  
+  return ( 
     <Stack.Navigator
       screenOptions={{
         headerStyle: {

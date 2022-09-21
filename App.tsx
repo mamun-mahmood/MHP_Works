@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import useCachedResources from "./hooks/useCachedResources";
 import useColorScheme from "./hooks/useColorScheme";
@@ -11,9 +11,9 @@ import { AppState, LogBox, TouchableOpacity } from "react-native";
 import * as Updates from "expo-updates";
 import { View, Text } from "./components/Themed";
 import { useNavigation } from "@react-navigation/native";
-import * as SecureStore from "expo-secure-store";
+
 import axios from "axios";
-import { getUserData } from "./screens/chatHive/DataFetcher";
+import { getUser, getUserData } from "./screens/chatHive/DataFetcher";
 // const db = SQLite.openDatabase('db.testDb') // returns Database object
 
 // function myTask() {
@@ -51,22 +51,19 @@ export default function App() {
   const colorScheme = useColorScheme();
   const [updateAvailable, setUpdateAvailable] = useState(false);
   // const navigation = useNavigation();
-  const [userLoggedIn, setUserLoggedIn] = React.useState(null);
+  const [userLoggedIn, setUserLoggedIn] = useState(null);
 
-  const checkUser = async (key: string) => {
-    const findUser = await SecureStore.getItemAsync(key);
-    setUserLoggedIn(JSON.parse(findUser));
-  };
-
-  React.useEffect(() => {
-    checkUser("userAuthToken");
+  useEffect(() => {
+    if (!userLoggedIn) {
+      getUser(setUserLoggedIn);
+    }
   }, []);
   // const createDb=()=>{
   //   db.transaction(tx => {
   //     tx.executeSql(
   //       'CREATE TABLE IF NOT EXISTS chatData (id INTEGER PRIMARY KEY AUTOINCREMENT, veroKey TEXT,chats TEXT)'
   //     )
-  //   })
+  //   }) 
   // }
 
   AppState.addEventListener("change", () => {

@@ -26,7 +26,7 @@ const ProfilePictureModal = ({ userData }: any) => {
     setOpenModal(false);
     setShowEditProfile(false);
   };
-  console.log(userData);
+  // console.log(userData);
   return (
     <>
       <TouchableOpacity
