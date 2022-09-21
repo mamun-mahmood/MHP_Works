@@ -253,8 +253,8 @@ function RootNavigator({ userLoggedIn }: any) {
   if (userLoggedIn && !userData) {
     getUserData(userLoggedIn, setUserData);
   }
-  
-  return ( 
+
+  return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: {
@@ -374,11 +374,11 @@ function RootNavigator({ userLoggedIn }: any) {
       <Stack.Screen
         name="ChatPage"
         component={ChatPage}
-        options={{
-          title: "User Name",
+        options={({route}) => ({
+          title: route.params.chatname ? route.params.chatname : "username",
           headerLeft: () => (
             <View style={{ marginLeft: 10 }}>
-              <Avatar.Image size={40} source={{}} />
+              <Avatar.Image size={50} source={{uri: route.params.imgSrc}} />
             </View>
           ),
           headerRight: () => (
@@ -400,7 +400,7 @@ function RootNavigator({ userLoggedIn }: any) {
               <NewContactDot />
             </View>
           ),
-        }}
+        })}
       />
     </Stack.Navigator>
   );

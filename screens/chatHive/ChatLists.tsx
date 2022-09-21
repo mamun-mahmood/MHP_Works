@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AntDesign, Feather, Octicons } from "@expo/vector-icons";
 import { ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import Searchbar from "../../components/searchBar/Searchbar";
@@ -6,19 +6,22 @@ import { MonoText } from "../../components/StyledText";
 import { View } from "../../components/Themed";
 import Colors from "../../constants/Colors";
 import ChatCard from "./ChatCard";
-import { getChatData, getUser } from "./DataFetcher";
+import { getChatData, getUser, getUserFullName } from "./DataFetcher";
 
 const ChatLists = () => {
   const [chats, setChats] = useState([]);
-  const [user, setUser] = useState({ username: null });
-  if (!user.username) {
-    getUser(setUser);
-  }
-  if (!chats.length && user.username) {
-    getChatData(user.username, setChats);
+  const [userFullName, setUserFullName] = useState(false);
+  useEffect(() => {
+    if (!userFullName) {
+      getUserFullName(setUserFullName);
+    }
+  }, []);
+
+  if (!chats.length && userFullName) {
+    getChatData(userFullName, setChats);
   }
   console.log(chats);
-  
+
   return (
     <>
       <View style={styles.chatHolder}>
@@ -33,7 +36,7 @@ const ChatLists = () => {
       {/* chat listing */}
       <ScrollView>
         {chats.map((e, index) => (
-          <ChatCard key={index} chat={e} />
+          <ChatCard key={index} chat={e} userFullName={userFullName} />
         ))}
         {/* <MonoText style={{ textAlign: "center", marginTop: 300 }}>
           No chats yet!

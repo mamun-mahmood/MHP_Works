@@ -1,6 +1,7 @@
 import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
-import { useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import {
+  Image,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -8,79 +9,83 @@ import {
 } from "react-native";
 import { MonoText } from "../../components/StyledText";
 import { View } from "../../components/Themed";
+import { getChatDataPrivate, getUser } from "./DataFetcher";
+import moment from "moment";
 
-const ChatPage = () => {
+const ChatPage = ({ route }: any) => {
+  const { chatname, imgSrc, userFullName } = route.params;
+  const [user, setUser] = useState({
+    username: null,
+  });
   const [messages, setMessages] = useState([
     {
-      message: "Hi, how are you?",
-      sentBy: "me",
-    },
-    {
-      message: "Heym I'm finejsdhsajdjsgdjsdgg!",
-      sentBy: "user",
-    },
-    {
-      message: "How are you, btw?",
-      sentBy: "user",
-    },
-    {
-      message: "I'm good. Wyd!",
-      sentBy: "me",
-    },
-    {
-      message: "Doing nothing",
-      sentBy: "user",
-    },
-    {
-      message: "Same here, haha",
-      sentBy: "me",
-    },
-    {
-      message: "Hi, how are you?",
-      sentBy: "me",
-    },
-    {
-      message: "Heym I'm finejsdhsajdjsgdjsdgg!",
-      sentBy: "user",
-    },
-    {
-      message: "How are you, btw?",
-      sentBy: "user",
-    },
-    {
-      message: "I'm good. Wyd!",
-      sentBy: "me",
-    },
-    {
-      message: "Doing nothing",
-      sentBy: "user",
-    },
-    {
-      message: "Same here, haha",
-      sentBy: "me",
-    },
-    {
-      message: "Ok",
-      sentBy: "me",
+      chatname: null,
+      message: "",
+      timestamp: null,
+      isImage: false,
+      isVideo: false,
+      isEmoji: false,
+      isSticker: false,
     },
   ]);
+  console.log(messages);
+
+  useEffect(() => {
+    if (!user.username) {
+      getUser(setUser);
+    }
+    if (!messages[0].chatname) {
+      getChatDataPrivate(chatname, userFullName, setMessages);
+    }
+  }, []);
   return (
     <View style={styles.container}>
       <ScrollView style={{ marginBottom: 60 }}>
         {messages.map((e, index) => (
-          <TouchableOpacity onLongPress={() => alert("Actions...")} key={index}>
-            <View
-              style={[
-                e.sentBy === "me" ? styles.textRight : styles.textLeft,
-                { marginTop: 10 },
-              ]}
-            >
-              <MonoText>{e.message}</MonoText>
-              <MonoText style={{ textAlign: "right", fontSize: 10 }}>
-                5.00 Sent
-              </MonoText>
-            </View>
-          </TouchableOpacity>
+          <Fragment key={index}>
+            {e.isImage && (
+              <TouchableOpacity onLongPress={() => alert("Actions...")}>
+                <View
+                  style={[
+                    e.chatname === userFullName
+                      ? styles.textRight
+                      : styles.textLeft,
+                    { marginTop: 10, padding: 10 },
+                  ]}
+                >
+                  <Image
+                    style={styles.image}
+                    source={{
+                      uri: e.message,
+                    }}
+                  />
+                  <MonoText style={{ textAlign: "right", fontSize: 10 }}>
+                    {e.timestamp}
+                  </MonoText>
+                </View>
+              </TouchableOpacity>
+            )}
+            {!e.isImage &&
+              !e.isSticker &&
+              !e.isEmoji &&
+              !e.isVideo && (
+                <TouchableOpacity onLongPress={() => alert("Actions...")}>
+                  <View
+                    style={[
+                      e.chatname === userFullName
+                        ? styles.textRight
+                        : styles.textLeft,
+                      { marginTop: 10 },
+                    ]}
+                  >
+                    <MonoText>{e.message}</MonoText>
+                    <MonoText style={{ textAlign: "right", fontSize: 10 }}>
+                      {e.timestamp}
+                    </MonoText>
+                  </View>
+                </TouchableOpacity>
+              )}
+          </Fragment>
         ))}
       </ScrollView>
       <View style={styles.messageSender}>
@@ -155,6 +160,10 @@ const styles = StyleSheet.create({
     maxWidth: "70%",
     padding: 5,
     borderRadius: 10,
+  },
+  image: {
+    width: "100%",
+    height: 200,
   },
 });
 export default ChatPage;

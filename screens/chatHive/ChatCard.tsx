@@ -6,13 +6,19 @@ import { MonoText } from "../../components/StyledText";
 import { View } from "../../components/Themed";
 import moment from "moment";
 
-const ChatCard = ({ chat }: any) => {
+const ChatCard = ({ chat, userFullName }: any) => {
   const navigation = useNavigation();
   const BaseURL = "https://soapboxapi.megahoot.net";
+  {console.log(chat.createdAt)
+  }
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate("ChatPage");
+        navigation.navigate("ChatPage", {
+          chatname: chat.chatFrom,
+          imgSrc: `${BaseURL}/profile-pictures/${chat.chat.profilePic}`,
+          userFullName: userFullName,
+        });
       }}
     >
       <View style={styles.container}>
@@ -20,9 +26,7 @@ const ChatCard = ({ chat }: any) => {
           <Avatar.Image
             size={50}
             source={{
-              uri: `${BaseURL}/profile-pictures/${
-                chat.chat.profilePic
-              }`,
+              uri: `${BaseURL}/profile-pictures/${chat.chat.profilePic}`,
             }}
           />
         </View>
